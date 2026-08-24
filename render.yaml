@@ -9,17 +9,20 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      # Fill these in manually in the Render dashboard after the first deploy:
-      - key: MONGODB_URI
-        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGINS
-        sync: false # e.g. https://your-app.vercel.app
+        value: https://frontend-silk-seven-87.vercel.app
       - key: FRONTEND_URL
-        sync: false # same as above
+        value: https://frontend-silk-seven-87.vercel.app
       - key: PUBLIC_URL
-        sync: false # this service's own Render URL, e.g. https://ags-backend.onrender.com
+        value: https://ags-backend.onrender.com
+      - key: GOOGLE_REDIRECT_URI
+        value: https://ags-backend.onrender.com/api/auth/google/callback
+      # Still needed before the backend can fully boot/function — fill in
+      # via the Render dashboard once ready (see docs/deployment notes):
+      - key: MONGODB_URI
+        sync: false
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
@@ -32,8 +35,6 @@ services:
         sync: false
       - key: GOOGLE_CLIENT_SECRET
         sync: false
-      - key: GOOGLE_REDIRECT_URI
-        sync: false # https://ags-backend.onrender.com/api/auth/google/callback
 
   - type: web
     name: ags-python-service
@@ -46,4 +47,4 @@ services:
       - key: PYTHON_VERSION
         value: 3.12.7
       - key: CORS_ORIGINS
-        sync: false # e.g. https://your-app.vercel.app,https://ags-backend.onrender.com
+        value: https://frontend-silk-seven-87.vercel.app,https://ags-backend.onrender.com
