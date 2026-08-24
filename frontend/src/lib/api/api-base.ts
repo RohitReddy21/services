@@ -1,0 +1,3 @@
+// Points the frontend at the real Node/Express + MongoDB backend (Phase 8).
+// Falls back to the local dev backend port when unset.
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
