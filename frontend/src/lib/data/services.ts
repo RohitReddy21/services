@@ -27,11 +27,24 @@ export const serviceCategories: ServiceCategory[] = [
 const serviceImage = (name: string) => `/images/services/${name}.png`;
 
 const img = {
+  // Air conditioning
   wall: serviceImage("wall-mounted-ac"),
   cassette: serviceImage("cassette-ac"),
   outdoor: serviceImage("outdoor-condenser-units"),
+  vrv: serviceImage("ac-vrv-outdoor-unit"),
+  vrf: serviceImage("ac-vrf-condenser"),
+  multiSplit: serviceImage("ac-multi-split-units"),
+  commercialAc: serviceImage("ac-commercial-warehouse"),
+  residential: serviceImage("ac-residential-exterior"),
   install: serviceImage("ac-installation"),
   repair: serviceImage("hvac-repair-technician"),
+  acServicing: serviceImage("ac-servicing-technician"),
+  acMaintenance: serviceImage("ac-maintenance-unit"),
+  acDiagnostics: serviceImage("ac-diagnostics-inspection"),
+  acReplacement: serviceImage("ac-replacement-wall"),
+  acEmergency: serviceImage("ac-emergency-condenser"),
+
+  // Refrigeration
   cold: serviceImage("cold-storage"),
   kitchen: serviceImage("commercial-refrigeration"),
   fridge: serviceImage("commercial-fridge"),
@@ -39,6 +52,17 @@ const img = {
   ice: serviceImage("ice-machine"),
   industrial: serviceImage("industrial-refrigeration"),
   display: serviceImage("display-fridge"),
+  blastChiller: serviceImage("ref-blast-chiller-machine"),
+  walkInFridge: serviceImage("ref-walk-in-fridge-storage"),
+  walkInFreezer: serviceImage("ref-walk-in-freezer-shelves"),
+  refInstall: serviceImage("ref-installation-machinery"),
+  refRepairs: serviceImage("ref-repairs-engine"),
+  refServicing: serviceImage("ref-servicing-bottles"),
+  refMaintenance: serviceImage("ref-maintenance-industrial"),
+  refDiagnostics: serviceImage("ref-diagnostics-mechanic"),
+  refEmergency: serviceImage("ref-emergency-retail"),
+  coldRoomMaintenance: serviceImage("ref-cold-room-maintenance-produce"),
+  displayCabinet: serviceImage("ref-display-cabinet-bakery"),
 };
 
 export const services: ServiceDetail[] = [
@@ -78,8 +102,8 @@ export const services: ServiceDetail[] = [
     slug: "vrv",
     shortDescription:
       "Variable Refrigerant Volume systems for precise, zoned climate control at scale.",
-    image: img.outdoor,
-    heroImage: img.outdoor,
+    image: img.vrv,
+    heroImage: img.vrv,
     description:
       "VRV (Variable Refrigerant Volume) systems allow a single outdoor condenser to serve multiple indoor units independently, giving precise zoned control across large or multi-room buildings.",
     applications: ["Multi-storey offices", "Hotels", "Large retail units", "Mixed-use developments"],
@@ -92,8 +116,8 @@ export const services: ServiceDetail[] = [
     slug: "vrf",
     shortDescription:
       "Variable Refrigerant Flow systems combining efficiency with simultaneous heating and cooling.",
-    image: img.outdoor,
-    heroImage: img.outdoor,
+    image: img.vrf,
+    heroImage: img.vrf,
     description:
       "VRF (Variable Refrigerant Flow) technology enables simultaneous heating and cooling across different zones from one system, reducing running costs in larger commercial buildings.",
     applications: ["Corporate headquarters", "Educational buildings", "Healthcare facilities", "Large restaurants"],
@@ -106,8 +130,8 @@ export const services: ServiceDetail[] = [
     slug: "multi-split",
     shortDescription:
       "One outdoor condenser powering multiple indoor units for flexible room-by-room cooling.",
-    image: img.outdoor,
-    heroImage: img.outdoor,
+    image: img.multiSplit,
+    heroImage: img.multiSplit,
     description:
       "Multi-split systems connect up to five indoor units to a single outdoor condenser, giving homes and small businesses independent room-by-room control without multiple outdoor units.",
     applications: ["Multi-room homes", "Small offices", "Cafes", "Clinics"],
@@ -120,8 +144,8 @@ export const services: ServiceDetail[] = [
     slug: "commercial",
     shortDescription:
       "Robust, scalable AC solutions engineered for commercial premises.",
-    image: img.outdoor,
-    heroImage: img.outdoor,
+    image: img.commercialAc,
+    heroImage: img.commercialAc,
     description:
       "We design, install and maintain commercial air conditioning systems for offices, retail units and hospitality venues, balancing comfort, energy efficiency and reliability.",
     applications: ["Office buildings", "Retail chains", "Restaurants & bars", "Warehouses"],
@@ -134,8 +158,8 @@ export const services: ServiceDetail[] = [
     slug: "residential",
     shortDescription:
       "Comfortable, quiet home cooling and heating tailored to your property.",
-    image: img.wall,
-    heroImage: img.wall,
+    image: img.residential,
+    heroImage: img.residential,
     description:
       "Residential air conditioning installations designed around your home's layout, giving quiet, efficient comfort in the rooms that matter most, with tidy pipework and minimal disruption.",
     applications: ["Detached & semi-detached homes", "Apartments", "Home offices", "Loft conversions"],
@@ -176,8 +200,8 @@ export const services: ServiceDetail[] = [
     slug: "servicing",
     shortDescription:
       "Scheduled servicing to keep your system efficient, hygienic and reliable.",
-    image: img.repair,
-    heroImage: img.repair,
+    image: img.acServicing,
+    heroImage: img.acServicing,
     description:
       "Regular servicing keeps air conditioning systems running efficiently, extends equipment lifespan and helps maintain warranty and F-Gas compliance requirements.",
     applications: ["Annual service contracts", "Pre-summer readiness checks", "Landlord & letting compliance", "Warranty-required servicing"],
@@ -190,8 +214,8 @@ export const services: ServiceDetail[] = [
     slug: "maintenance",
     shortDescription:
       "Planned preventative maintenance to avoid costly breakdowns.",
-    image: img.repair,
-    heroImage: img.repair,
+    image: img.acMaintenance,
+    heroImage: img.acMaintenance,
     description:
       "A planned maintenance programme catches small issues before they become expensive breakdowns, keeping your air conditioning reliable across every season.",
     applications: ["Multi-site maintenance contracts", "Commercial facilities", "Retail estates", "Property management"],
@@ -204,8 +228,8 @@ export const services: ServiceDetail[] = [
     slug: "diagnostics",
     shortDescription:
       "Thorough fault-finding using proper diagnostic equipment, not guesswork.",
-    image: img.repair,
-    heroImage: img.repair,
+    image: img.acDiagnostics,
+    heroImage: img.acDiagnostics,
     description:
       "When a system isn't performing as it should, our engineers carry out a structured diagnostic assessment covering refrigerant pressures, electrics and airflow to pinpoint the root cause.",
     applications: ["Unexplained performance issues", "Pre-purchase system checks", "Recurring fault investigation", "Second-opinion assessments"],
@@ -218,8 +242,8 @@ export const services: ServiceDetail[] = [
     slug: "replacement-upgrade",
     shortDescription:
       "Replace ageing systems with modern, efficient equipment.",
-    image: img.install,
-    heroImage: img.install,
+    image: img.acReplacement,
+    heroImage: img.acReplacement,
     description:
       "We help you replace outdated or inefficient air conditioning with modern, energy-efficient systems — including guidance on the right specification for your space.",
     applications: ["End-of-life system replacement", "R22 refrigerant phase-out upgrades", "Energy efficiency upgrades", "Capacity upgrades"],
@@ -232,8 +256,8 @@ export const services: ServiceDetail[] = [
     slug: "emergency",
     shortDescription:
       "Rapid-response support when your system fails unexpectedly.",
-    image: img.repair,
-    heroImage: img.repair,
+    image: img.acEmergency,
+    heroImage: img.acEmergency,
     description:
       "System failure at the wrong time can disrupt a home or business. Our emergency air conditioning service prioritises rapid assessment and repair to minimise downtime.",
     applications: ["Total system failure", "Server room / critical cooling", "Commercial kitchens", "Out-of-hours breakdowns"],
@@ -286,8 +310,8 @@ export const services: ServiceDetail[] = [
     name: "Blast Chillers",
     slug: "blast-chillers",
     shortDescription: "Rapid-chill equipment servicing to protect food safety compliance.",
-    image: img.cold,
-    heroImage: img.cold,
+    image: img.blastChiller,
+    heroImage: img.blastChiller,
     description:
       "Blast chillers rapidly reduce food temperature for safe storage. We install and maintain this critical kitchen equipment to keep it performing to HACCP standards.",
     applications: ["Commercial kitchens", "Central production units", "Catering companies", "Hotels"],
@@ -325,8 +349,8 @@ export const services: ServiceDetail[] = [
     name: "Walk-In Fridges",
     slug: "walk-in-fridges",
     shortDescription: "Larger-scale walk-in chilled storage, installed and maintained.",
-    image: img.kitchen,
-    heroImage: img.kitchen,
+    image: img.walkInFridge,
+    heroImage: img.walkInFridge,
     description:
       "Walk-in fridges provide the chilled storage capacity growing kitchens and retailers need. We handle installation, servicing and repair to keep them running reliably.",
     applications: ["Restaurants", "Supermarkets", "Wholesalers", "Catering operations"],
@@ -338,8 +362,8 @@ export const services: ServiceDetail[] = [
     name: "Walk-In Freezers",
     slug: "walk-in-freezers",
     shortDescription: "Large-capacity frozen storage installation and repair.",
-    image: img.freezer,
-    heroImage: img.freezer,
+    image: img.walkInFreezer,
+    heroImage: img.walkInFreezer,
     description:
       "For businesses needing significant frozen storage, we install and maintain walk-in freezers built for consistent, reliable low-temperature performance.",
     applications: ["Food distributors", "Supermarkets", "Central kitchens", "Cold chain logistics"],
@@ -377,8 +401,8 @@ export const services: ServiceDetail[] = [
     name: "Refrigeration Installation",
     slug: "installation",
     shortDescription: "Professional installation across all refrigeration equipment types.",
-    image: img.install,
-    heroImage: img.install,
+    image: img.refInstall,
+    heroImage: img.refInstall,
     description:
       "Our engineers handle full-scope refrigeration installation — from site survey and system design through to commissioning and compliance documentation.",
     applications: ["New kitchen fit-outs", "Retail refurbishments", "Equipment upgrades", "New-build developments"],
@@ -390,8 +414,8 @@ export const services: ServiceDetail[] = [
     name: "Refrigeration Repairs",
     slug: "repairs",
     shortDescription: "Fast fault diagnosis and repair to protect stock and compliance.",
-    image: img.repair,
-    heroImage: img.repair,
+    image: img.refRepairs,
+    heroImage: img.refRepairs,
     description:
       "Refrigeration faults put stock and compliance at risk. Our engineers respond quickly to diagnose and repair issues, minimising downtime and food loss.",
     applications: ["Breakdown call-outs", "Temperature alarm response", "Post-installation issues", "Insurance-related repairs"],
@@ -403,8 +427,8 @@ export const services: ServiceDetail[] = [
     name: "Refrigeration Servicing",
     slug: "servicing",
     shortDescription: "Scheduled servicing to protect food safety and equipment lifespan.",
-    image: img.repair,
-    heroImage: img.repair,
+    image: img.refServicing,
+    heroImage: img.refServicing,
     description:
       "Regular refrigeration servicing keeps equipment running efficiently and helps meet food safety and hygiene requirements across your site.",
     applications: ["Annual service contracts", "Environmental health compliance", "Warranty-required servicing", "Multi-site programmes"],
@@ -416,8 +440,8 @@ export const services: ServiceDetail[] = [
     name: "Refrigeration Maintenance",
     slug: "maintenance",
     shortDescription: "Planned preventative maintenance to avoid costly downtime.",
-    image: img.repair,
-    heroImage: img.repair,
+    image: img.refMaintenance,
+    heroImage: img.refMaintenance,
     description:
       "A planned maintenance programme catches issues early, protecting stock, reducing energy waste and avoiding unplanned refrigeration downtime.",
     applications: ["Multi-site maintenance contracts", "Retail & hospitality groups", "Food production sites", "Property management"],
@@ -429,8 +453,8 @@ export const services: ServiceDetail[] = [
     name: "Refrigeration Diagnostics",
     slug: "diagnostics",
     shortDescription: "Structured fault-finding using proper diagnostic equipment.",
-    image: img.repair,
-    heroImage: img.repair,
+    image: img.refDiagnostics,
+    heroImage: img.refDiagnostics,
     description:
       "When refrigeration isn't performing as expected, our engineers carry out structured diagnostics covering refrigerant, electrics and airflow to find the true root cause.",
     applications: ["Unexplained performance issues", "Recurring fault investigation", "Pre-purchase equipment checks", "Second-opinion assessments"],
@@ -442,8 +466,8 @@ export const services: ServiceDetail[] = [
     name: "Emergency Refrigeration Services",
     slug: "emergency",
     shortDescription: "Rapid-response support to protect stock when equipment fails.",
-    image: img.repair,
-    heroImage: img.repair,
+    image: img.refEmergency,
+    heroImage: img.refEmergency,
     description:
       "A refrigeration breakdown can put stock and revenue at risk within hours. Our emergency service prioritises fast assessment and repair to protect your business.",
     applications: ["Total refrigeration failure", "Cold room/freezer breakdowns", "Out-of-hours call-outs", "Stock-critical situations"],
@@ -455,8 +479,8 @@ export const services: ServiceDetail[] = [
     name: "Cold Room Maintenance",
     slug: "cold-room-maintenance",
     shortDescription: "Dedicated maintenance programmes for walk-in cold rooms.",
-    image: img.cold,
-    heroImage: img.cold,
+    image: img.coldRoomMaintenance,
+    heroImage: img.coldRoomMaintenance,
     description:
       "Cold rooms require consistent upkeep to maintain temperature integrity and hygiene. We provide dedicated maintenance programmes tailored to your storage needs.",
     applications: ["Food wholesalers", "Restaurants & hotels", "Supermarkets", "Central kitchens"],
@@ -468,8 +492,8 @@ export const services: ServiceDetail[] = [
     name: "Display Cabinet Refrigeration",
     slug: "display-cabinet",
     shortDescription: "Specialist servicing for merchandising and display refrigeration.",
-    image: img.display,
-    heroImage: img.display,
+    image: img.displayCabinet,
+    heroImage: img.displayCabinet,
     description:
       "Display cabinets combine refrigeration performance with presentation. We service and repair merchandising units to keep them efficient, clear and food-safe.",
     applications: ["Bakeries & delis", "Supermarkets", "Convenience retail", "Cafes"],
