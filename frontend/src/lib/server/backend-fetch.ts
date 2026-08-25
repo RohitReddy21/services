@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000").replace(
+  /\/+$/,
+  ""
+);
 
 /**
  * Server Components can't rely on the browser to attach cookies when calling

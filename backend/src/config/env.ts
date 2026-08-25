@@ -8,6 +8,30 @@ function required(name: string, fallback?: string) {
   return value;
 }
 
+function normalizeOrigin(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+
+  try {
+    return new URL(trimmed).origin;
+  } catch {
+    return trimmed.replace(/\/+$/, "");
+  }
+}
+
+function csv(value?: string) {
+  return (value ?? "")
+    .split(",")
+    .map(normalizeOrigin)
+    .filter(Boolean);
+}
+
+const frontendUrl = process.env.FRONTEND_URL ?? "http://localhost:3000";
+const defaultCorsOrigins = [
+  "http://localhost:3000",
+  "https://frontend-silk-seven-87.vercel.app",
+];
+
 export const env = {
   port: Number(process.env.PORT ?? 4000),
   nodeEnv: process.env.NODE_ENV ?? "development",
@@ -21,10 +45,9 @@ export const env = {
     "JWT_SECRET",
     process.env.NODE_ENV === "production" ? undefined : "ags-dev-only-insecure-secret"
   ),
-  corsOrigins: (process.env.CORS_ORIGINS ?? "http://localhost:3000")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean),
+  corsOrigins: Array.from(
+    new Set([...csv(process.env.CORS_ORIGINS), normalizeOrigin(frontendUrl), ...defaultCorsOrigins])
+  ),
 
   // Phase 9 — Supabase Storage. Falls back to local disk when unset (see lib/storage.ts).
   supabaseUrl: process.env.SUPABASE_URL,
@@ -35,7 +58,7 @@ export const env = {
   // Phase 10 — Resend email. Falls back to console logging when unset (see lib/email.ts).
   resendApiKey: process.env.RESEND_API_KEY,
   resendFromEmail: process.env.RESEND_FROM_EMAIL ?? "AGS <onboarding@resend.dev>",
-  frontendUrl: process.env.FRONTEND_URL ?? "http://localhost:3000",
+  frontendUrl,
 
   // Google OAuth sign-in/sign-up. Leave unset to hide/disable the live callback flow.
   googleClientId: process.env.GOOGLE_CLIENT_ID,

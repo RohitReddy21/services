@@ -29,7 +29,21 @@ export function createApp() {
   app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
   app.use(
     cors({
-      origin: env.corsOrigins,
+      origin(origin, callback) {
+        if (!origin) {
+          callback(null, true);
+          return;
+        }
+
+        let normalizedOrigin = origin.replace(/\/+$/, "");
+        try {
+          normalizedOrigin = new URL(origin).origin;
+        } catch {
+          // Keep the trimmed fallback for non-URL origins.
+        }
+
+        callback(null, env.corsOrigins.includes(normalizedOrigin));
+      },
       credentials: true,
     })
   );
