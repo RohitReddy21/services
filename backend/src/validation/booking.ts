@@ -51,5 +51,6 @@ export const createBookingSchema = z.object({
 });
 
 export const rescheduleSchema = z.object({
-  note: z.string().default(""),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date"),
+  timeSlot: timeSlotSchema,
 });

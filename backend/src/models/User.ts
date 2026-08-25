@@ -11,6 +11,9 @@ const userSchema = new Schema(
     emailVerified: { type: Boolean, default: false },
     role: { type: String, enum: ["CUSTOMER", "ADMIN", "TECHNICIAN"], default: "CUSTOMER" },
     profileImage: { type: String, default: null },
+    loyaltyPoints: { type: Number, default: 0 },
+    referralCode: { type: String, unique: true, sparse: true, index: true },
+    referredBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
     notificationPreferences: {
       email: { type: Boolean, default: true },
       sms: { type: Boolean, default: false },

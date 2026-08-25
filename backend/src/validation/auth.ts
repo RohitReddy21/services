@@ -10,6 +10,7 @@ export const registerSchema = z.object({
   email: z.string().trim().email("Enter a valid email address"),
   phone: ukPhone,
   password: z.string().min(8, "Password must be at least 8 characters"),
+  referralCode: z.string().trim().toUpperCase().optional(),
 });
 
 export const loginSchema = z.object({

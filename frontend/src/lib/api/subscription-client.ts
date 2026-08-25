@@ -1,4 +1,9 @@
-import type { Subscription, SubscriptionAddress, SubscriptionFrequency } from "@/types/subscription";
+import type {
+  Subscription,
+  SubscriptionAddress,
+  SubscriptionFrequency,
+  SubscriptionPlanPrice,
+} from "@/types/subscription";
 import type { ServiceCategoryId } from "@/types/service";
 import { API_BASE_URL } from "@/lib/api/api-base";
 
@@ -32,6 +37,8 @@ export function createSubscriptionRequest(input: {
   equipmentLabel: string;
   address: SubscriptionAddress;
   notes?: string;
+  price?: SubscriptionPlanPrice | null;
+  servicesPerCycle?: number | null;
 }) {
   return send<{ subscription: Subscription }>("/api/subscriptions", "POST", input);
 }

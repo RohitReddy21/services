@@ -44,6 +44,8 @@ export interface Subscription {
   nextVisitDate: string;
   address: SubscriptionAddress;
   notes: string;
+  price: SubscriptionPlanPrice | null;
+  servicesPerCycle: number | null;
   createdAt: string;
   updatedAt: string;
 }

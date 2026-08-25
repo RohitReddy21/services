@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Calendar, Loader2, MapPin, RotateCcw } from "lucide-react";
+import { Calendar, Download, Loader2, MapPin, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   cancelSubscriptionRequest,
   pauseSubscriptionRequest,
   resumeSubscriptionRequest,
 } from "@/lib/api/subscription-client";
+import { API_BASE_URL } from "@/lib/api/api-base";
 import type { Subscription } from "@/types/subscription";
 
 const statusMeta: Record<Subscription["status"], { label: string; bg: string; color: string }> = {
@@ -79,6 +80,18 @@ export default function SubscriptionCard({ subscription }: { subscription: Subsc
           {fullAddress}
         </span>
       </div>
+
+      {subscription.price && (
+        <a
+          href={`${API_BASE_URL}/api/subscriptions/${subscription.id}/invoice`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ags-focus mt-3 inline-flex items-center gap-1.5 rounded-md text-xs font-semibold text-brand-600 hover:text-brand-700"
+        >
+          <Download className="size-3.5" />
+          Download Invoice
+        </a>
+      )}
 
       {subscription.status !== "CANCELLED" && (
         <div className="mt-4 flex flex-wrap gap-2.5 border-t border-slate-100 pt-4">

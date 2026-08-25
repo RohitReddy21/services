@@ -1,5 +1,6 @@
 import type { PublicUser } from "@/types/auth";
 import type { Address, Notification, Review, SupportCategory } from "@/types/account";
+import type { TimeSlot } from "@/types/booking";
 import { API_BASE_URL } from "@/lib/api/api-base";
 import { mapBookingDoc } from "@/lib/api/booking-mapper";
 
@@ -38,9 +39,10 @@ export function cancelBookingRequest(reference: string) {
   );
 }
 
-export function requestRescheduleRequest(reference: string, note: string) {
+export function rescheduleBookingRequest(reference: string, date: string, timeSlot: TimeSlot) {
   return send<Record<string, unknown>>(`/api/bookings/${reference}/reschedule`, "POST", {
-    note,
+    date,
+    timeSlot,
   }).then(mapBookingDoc);
 }
 

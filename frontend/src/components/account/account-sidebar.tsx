@@ -5,13 +5,16 @@ import { usePathname } from "next/navigation";
 import {
   Bell,
   Calendar,
+  Gift,
   LayoutDashboard,
   LifeBuoy,
   MapPin,
   Settings,
   ShieldCheck,
+  Share2,
   Star,
   User,
+  Wrench,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +22,9 @@ const links = [
   { href: "/account", label: "Overview", icon: LayoutDashboard },
   { href: "/account/bookings", label: "My Bookings", icon: Calendar },
   { href: "/account/subscriptions", label: "Care Plans", icon: ShieldCheck },
+  { href: "/account/equipment", label: "My Equipment", icon: Wrench },
+  { href: "/account/rewards", label: "Rewards", icon: Gift },
+  { href: "/account/referrals", label: "Refer a Friend", icon: Share2 },
   { href: "/account/profile", label: "Profile", icon: User },
   { href: "/account/addresses", label: "Addresses", icon: MapPin },
   { href: "/account/notifications", label: "Notifications", icon: Bell },

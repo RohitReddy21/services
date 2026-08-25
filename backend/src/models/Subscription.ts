@@ -23,6 +23,12 @@ const subscriptionSchema = new Schema(
       postcode: { type: String, required: true },
     },
     notes: { type: String, default: "" },
+    price: {
+      amount: { type: Number, default: null },
+      currency: { type: String, default: null },
+      billingCycleMonths: { type: Number, default: null },
+    },
+    servicesPerCycle: { type: Number, default: null },
   },
   { timestamps: true }
 );

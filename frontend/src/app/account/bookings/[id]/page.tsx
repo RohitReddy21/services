@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, UserRound } from "lucide-react";
+import { ChevronLeft, Download, UserRound } from "lucide-react";
 import { getCurrentUser } from "@/lib/server/current-user";
 import { serverFetch } from "@/lib/server/backend-fetch";
 import { mapBookingDoc } from "@/lib/api/booking-mapper";
@@ -11,6 +11,7 @@ import BookingTimeline from "@/components/account/booking-timeline";
 import BookingActions from "@/components/account/booking-actions";
 import { ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
+import { API_BASE_URL } from "@/lib/api/api-base";
 
 export const metadata: Metadata = {
   title: "Booking Details",
@@ -80,11 +81,6 @@ export default async function BookingDetailPage({
             <div className="mt-4">
               <BookingTimeline status={record.status} />
             </div>
-            {record.rescheduleRequested && (
-              <p className="mt-4 rounded-lg bg-amber-50 px-3.5 py-2.5 text-xs font-medium text-amber-800">
-                A reschedule request has been sent to our team.
-              </p>
-            )}
           </section>
 
           <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-navy-900/5">
@@ -121,13 +117,25 @@ export default async function BookingDetailPage({
               <BookingActions
                 bookingReference={record.bookingReference}
                 status={record.status}
-                rescheduleRequested={record.rescheduleRequested}
+                categoryId={data.categoryId ?? ""}
+                equipmentId={data.equipmentId ?? ""}
               />
               {(record.status === "CANCELLED" || record.status === "COMPLETED") && (
                 <p className="text-sm text-slate-400">
                   This booking is {record.status === "CANCELLED" ? "cancelled" : "completed"} and can no
                   longer be changed.
                 </p>
+              )}
+              {record.status === "COMPLETED" && (
+                <a
+                  href={`${API_BASE_URL}/api/bookings/${record.bookingReference}/certificate`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ags-focus mt-3 inline-flex items-center gap-1.5 rounded-md text-sm font-semibold text-brand-600 hover:text-brand-700"
+                >
+                  <Download className="size-4" />
+                  Download Service Certificate
+                </a>
               )}
             </div>
           </section>

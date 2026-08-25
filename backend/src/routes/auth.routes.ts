@@ -12,6 +12,7 @@ import { requireAuth } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
 import { sendEmail } from "../lib/email";
 import { welcomeEmail } from "../emails/welcome";
+import { applyReferralCode, assignReferralCode } from "../lib/referral";
 import { passwordResetEmail } from "../emails/password-reset";
 import { env } from "../config/env";
 import {
@@ -100,13 +101,16 @@ async function issueSession(user: InstanceType<typeof User>, res: Parameters<typ
 }
 
 authRouter.post("/register", credentialLimiter, async (req, res) => {
-  const { name, email, phone, password } = registerSchema.parse(req.body);
+  const { name, email, phone, password, referralCode } = registerSchema.parse(req.body);
 
   const existing = await User.findOne({ email: email.toLowerCase() });
   if (existing) throw new ApiError(409, "An account with this email already exists.");
 
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await User.create({ name, email, phone, passwordHash });
+
+  await assignReferralCode(user);
+  await applyReferralCode(user, referralCode);
 
   await Notification.create({
     userId: user._id,
@@ -244,6 +248,8 @@ authRouter.get("/google/callback", async (req, res) => {
       emailVerified: true,
       profileImage: profile.picture ?? null,
     });
+
+    await assignReferralCode(user);
 
     await Notification.create({
       userId: user._id,

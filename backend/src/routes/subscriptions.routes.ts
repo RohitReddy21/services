@@ -6,6 +6,8 @@ import { ApiError } from "../middleware/errorHandler";
 import { createSubscriptionSchema } from "../validation/subscription";
 import { sendEmail } from "../lib/email";
 import { subscriptionCreatedEmail } from "../emails/subscription-created";
+import { awardLoyaltyPoints } from "../lib/loyalty";
+import { streamSubscriptionInvoice } from "../lib/pdf";
 
 export const subscriptionsRouter = Router();
 subscriptionsRouter.use(requireAuth);
@@ -42,6 +44,13 @@ subscriptionsRouter.post("/", async (req, res) => {
     nextVisitDate,
   });
 
+  void awardLoyaltyPoints({
+    userId: req.userId!,
+    amount: 50,
+    reason: "subscription_created",
+    description: `Subscribed to ${input.planName}`,
+  });
+
   const user = await User.findById(req.userId);
   if (user) {
     const subEmail = subscriptionCreatedEmail({
@@ -65,6 +74,50 @@ async function findOwned(id: string, userId: string) {
   if (!subscription) throw new ApiError(404, "Subscription not found");
   return subscription;
 }
+
+subscriptionsRouter.get("/:id/invoice", async (req, res) => {
+  const subscription = await findOwned(req.params.id, req.userId!);
+  if (!subscription.price?.amount) {
+    throw new ApiError(400, "This plan does not have online billing — pricing is confirmed directly with our team.");
+  }
+
+  const user = await User.findById(req.userId);
+  const months = subscription.price.billingCycleMonths ?? 3;
+  const start = new Date(subscription.startDate);
+  const now = new Date();
+  const monthsSinceStart =
+    (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+  const cycleIndex = Math.max(0, Math.floor(monthsSinceStart / months));
+  const periodStart = new Date(start);
+  periodStart.setMonth(periodStart.getMonth() + cycleIndex * months);
+  const periodEnd = new Date(periodStart);
+  periodEnd.setMonth(periodEnd.getMonth() + months);
+
+  const addressLine = [
+    subscription.address?.houseNumber,
+    subscription.address?.street,
+    subscription.address?.city,
+    subscription.address?.postcode,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  streamSubscriptionInvoice(res, {
+    invoiceNumber: `AGS-INV-${subscription.id.slice(-8).toUpperCase()}-${cycleIndex + 1}`,
+    issuedAt: new Date(),
+    customerName: user?.name ?? "Customer",
+    customerEmail: user?.email ?? "",
+    planName: subscription.planName,
+    billingCycleMonths: months,
+    servicesPerCycle: subscription.servicesPerCycle ?? 0,
+    amount: subscription.price.amount,
+    currency: subscription.price.currency ?? "EUR",
+    periodStart,
+    periodEnd,
+    equipmentLabel: subscription.equipmentLabel,
+    address: addressLine,
+  });
+});
 
 subscriptionsRouter.post("/:id/pause", async (req, res) => {
   const subscription = await findOwned(req.params.id, req.userId!);

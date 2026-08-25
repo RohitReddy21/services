@@ -14,4 +14,13 @@ export const createSubscriptionSchema = z.object({
     postcode: z.string().min(1),
   }),
   notes: z.string().default(""),
+  price: z
+    .object({
+      amount: z.number().positive(),
+      currency: z.literal("EUR"),
+      billingCycleMonths: z.number().int().positive(),
+    })
+    .nullable()
+    .optional(),
+  servicesPerCycle: z.number().int().positive().nullable().optional(),
 });

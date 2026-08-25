@@ -23,6 +23,7 @@ export function registerRequest(input: {
   email: string;
   phone: string;
   password: string;
+  referralCode?: string;
 }) {
   return post<{ user: PublicUser }>("/api/auth/register", input);
 }

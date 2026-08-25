@@ -45,6 +45,7 @@ export default function RegisterForm() {
     ? `/register?redirect=${encodeURIComponent(redirectTo)}`
     : "/register";
   const oauthError = oauthErrorMessage(searchParams.get("error"));
+  const referralCode = searchParams.get("ref")?.trim().toUpperCase() || undefined;
 
   const update = (key: keyof typeof form, value: string) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -66,7 +67,7 @@ export default function RegisterForm() {
 
     setSubmitting(true);
     try {
-      await register(result.data);
+      await register({ ...result.data, referralCode });
       router.push(redirectTo);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Something went wrong.");
@@ -88,6 +89,12 @@ export default function RegisterForm() {
         </>
       }
     >
+      {referralCode && (
+        <p className="mb-4 rounded-lg bg-accent-green-50 px-3.5 py-2.5 text-xs font-semibold text-accent-green-700">
+          You&apos;ve been referred with code {referralCode} — you&apos;ll both earn reward points once you sign up.
+        </p>
+      )}
+
       <GoogleAuthLink href={googleAuthUrl({ redirect: redirectTo, errorRedirect })}>
         Sign up with Google
       </GoogleAuthLink>

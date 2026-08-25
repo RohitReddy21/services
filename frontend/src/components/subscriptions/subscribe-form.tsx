@@ -58,6 +58,8 @@ export default function SubscribeForm({ plan }: { plan: SubscriptionPlan }) {
         equipmentLabel,
         address,
         notes,
+        price: plan.price ?? null,
+        servicesPerCycle: plan.servicesPerCycle ?? null,
       });
       setDone(true);
     } catch (err) {

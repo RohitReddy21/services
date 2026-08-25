@@ -6,9 +6,29 @@ import { attachUser, requireAuth } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
 import { randomBytes } from "crypto";
 import { createBookingSchema, rescheduleSchema } from "../validation/booking";
+import { isSlotAvailable } from "../lib/slots";
 import { sendEmail } from "../lib/email";
 import { bookingReceivedEmail } from "../emails/booking-received";
 import { bookingCancelledEmail } from "../emails/booking-cancelled";
+import { bookingRescheduledEmail } from "../emails/booking-rescheduled";
+import { awardLoyaltyPoints } from "../lib/loyalty";
+import { streamBookingCertificate } from "../lib/pdf";
+
+const REQUIREMENT_LABELS: Record<string, string> = {
+  installation: "Installation",
+  repair: "Repair",
+  servicing: "Servicing",
+  maintenance: "Maintenance",
+  replacement: "Replacement",
+  diagnostics: "Diagnostics",
+  emergency: "Emergency Callout",
+  other: "General Service",
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  "air-conditioning": "Air Conditioning",
+  refrigeration: "Refrigeration",
+};
 
 export const bookingsRouter = Router();
 
@@ -44,6 +64,13 @@ bookingsRouter.post("/", requireAuth, async (req, res) => {
     title: "Booking Request Received",
     message: `We've received your request (${booking.bookingReference}). Our team will confirm your appointment shortly.`,
     href: `/account/bookings/${booking.bookingReference}`,
+  });
+
+  void awardLoyaltyPoints({
+    userId: req.userId!,
+    amount: 10,
+    reason: "booking_created",
+    description: `Booked ${data.equipmentLabel} service (${booking.bookingReference})`,
   });
 
   const addressLine = [data.address.houseNumber, data.address.street, data.address.city, data.address.postcode]
@@ -84,6 +111,40 @@ bookingsRouter.get("/", attachUser, async (req, res) => {
   res.json(booking);
 });
 
+bookingsRouter.get("/:reference/certificate", requireAuth, async (req, res) => {
+  const booking = await Booking.findOne({ bookingReference: req.params.reference });
+  if (!booking || booking.customerId?.toString() !== req.userId) {
+    throw new ApiError(404, "Booking not found");
+  }
+  if (booking.status !== "COMPLETED") {
+    throw new ApiError(400, "A certificate is only available once a booking is completed.");
+  }
+
+  const addressLine = [
+    booking.address?.houseNumber,
+    booking.address?.street,
+    booking.address?.city,
+    booking.address?.postcode,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  const completedEntry = booking.statusHistory.find((h) => h.status === "COMPLETED");
+  const completedDate = (completedEntry?.at ?? booking.updatedAt).toLocaleDateString("en-GB");
+
+  streamBookingCertificate(res, {
+    bookingReference: booking.bookingReference,
+    issuedAt: new Date(),
+    customerName: booking.customer?.fullName ?? "Customer",
+    equipmentLabel: booking.equipmentLabel,
+    categoryLabel: CATEGORY_LABELS[booking.categoryId] ?? booking.categoryId,
+    completedDate,
+    timeSlotLabel: booking.timeSlot.label,
+    address: addressLine,
+    requirementLabel: REQUIREMENT_LABELS[booking.requirement] ?? booking.requirement,
+  });
+});
+
 bookingsRouter.post("/:reference/cancel", requireAuth, async (req, res) => {
   const booking = await Booking.findOne({ bookingReference: req.params.reference });
   if (!booking || booking.customerId?.toString() !== req.userId) {
@@ -111,16 +172,53 @@ bookingsRouter.post("/:reference/cancel", requireAuth, async (req, res) => {
 });
 
 bookingsRouter.post("/:reference/reschedule", requireAuth, async (req, res) => {
-  const { note } = rescheduleSchema.parse(req.body);
+  const { date, timeSlot } = rescheduleSchema.parse(req.body);
 
   const booking = await Booking.findOne({ bookingReference: req.params.reference });
   if (!booking || booking.customerId?.toString() !== req.userId) {
     throw new ApiError(404, "Booking not found");
   }
+  if (booking.status === "CANCELLED" || booking.status === "COMPLETED") {
+    throw new ApiError(400, "This booking can no longer be rescheduled.");
+  }
 
-  booking.rescheduleRequested = true;
-  booking.rescheduleNote = note;
+  const seed = `${booking.categoryId}::${booking.equipmentId}`;
+  const available = await isSlotAvailable(date, timeSlot.id, seed);
+  if (!available) throw new ApiError(409, "That slot is no longer available. Please pick another.");
+
+  const previousDate = booking.date;
+  const previousSlotLabel = booking.timeSlot.label;
+
+  booking.date = date;
+  booking.timeSlot = timeSlot;
+  booking.rescheduleRequested = false;
+  booking.rescheduleNote = null;
   await booking.save();
+
+  await Notification.create({
+    userId: req.userId,
+    type: "status_changed",
+    title: "Booking Rescheduled",
+    message: `${booking.bookingReference} was moved to ${date} (${timeSlot.label}).`,
+    href: `/account/bookings/${booking.bookingReference}`,
+  });
+
+  if (booking.customer?.email) {
+    const rescheduledEmail = bookingRescheduledEmail({
+      bookingReference: booking.bookingReference,
+      equipmentLabel: booking.equipmentLabel,
+      previousDate,
+      previousSlotLabel,
+      newDate: date,
+      newSlotLabel: timeSlot.label,
+    });
+    void sendEmail({
+      to: booking.customer.email,
+      subject: rescheduledEmail.subject,
+      html: rescheduledEmail.html,
+      template: "booking-rescheduled",
+    });
+  }
 
   res.json(booking);
 });
