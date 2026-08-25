@@ -1,5 +1,14 @@
 import type { NextConfig } from "next";
 
+// The backend lives on a different registrable domain in production
+// (onrender.com vs vercel.app), so session cookies it sets can never be
+// visible to this app's own origin no matter how SameSite is configured —
+// cookies are scoped to the domain that set them, full stop. Proxying /api/*
+// through this app's own origin means the browser only ever talks to this
+// site, so cookies set via that response are stored as same-origin and both
+// client-side fetches and server-side rendering can see the session.
+const backendUrl = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000").replace(/\/+$/, "");
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -8,6 +17,14 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${backendUrl}/api/:path*`,
+      },
+    ];
   },
 };
 
