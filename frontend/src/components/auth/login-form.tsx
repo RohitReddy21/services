@@ -24,7 +24,7 @@ function oauthErrorMessage(error: string | null) {
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+  const { login, completeTwoFactorLogin } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,6 +32,8 @@ export default function LoginForm() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [pendingToken, setPendingToken] = useState<string | null>(null);
+  const [twoFactorCode, setTwoFactorCode] = useState("");
   const redirectTo = searchParams.get("redirect") ?? "/account";
   const errorRedirect = searchParams.get("redirect")
     ? `/login?redirect=${encodeURIComponent(redirectTo)}`
@@ -58,7 +60,11 @@ export default function LoginForm() {
 
     setSubmitting(true);
     try {
-      await login(result.data.email, result.data.password);
+      const loginResult = await login(result.data.email, result.data.password);
+      if (loginResult.requiresTwoFactor) {
+        setPendingToken(loginResult.pendingToken);
+        return;
+      }
       router.push(searchParams.get("redirect") ?? "/account");
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Something went wrong.");
@@ -66,6 +72,71 @@ export default function LoginForm() {
       setSubmitting(false);
     }
   };
+
+  const handleTwoFactorSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!pendingToken) return;
+    setFormError(null);
+    setSubmitting(true);
+    try {
+      await completeTwoFactorLogin(pendingToken, twoFactorCode.trim());
+      router.push(searchParams.get("redirect") ?? "/account");
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (pendingToken) {
+    return (
+      <AuthCard
+        title="Two-factor authentication"
+        description="Enter the 6-digit code from your authenticator app, or a backup code."
+      >
+        <form onSubmit={handleTwoFactorSubmit} className="space-y-4" noValidate>
+          <div>
+            <label htmlFor="twofa-code" className="text-sm font-semibold text-navy-800">
+              Verification Code
+            </label>
+            <input
+              id="twofa-code"
+              type="text"
+              inputMode="numeric"
+              autoFocus
+              value={twoFactorCode}
+              onChange={(e) => setTwoFactorCode(e.target.value)}
+              placeholder="123456"
+              className="input-field mt-1.5 text-center text-lg tracking-[0.3em]"
+            />
+          </div>
+
+          {formError && (
+            <p className="rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-600">
+              {formError}
+            </p>
+          )}
+
+          <Button type="submit" size="lg" className="w-full" disabled={submitting || !twoFactorCode}>
+            {submitting && <Loader2 className="size-4 animate-spin" />}
+            Verify
+          </Button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setPendingToken(null);
+              setTwoFactorCode("");
+              setFormError(null);
+            }}
+            className="w-full text-center text-xs font-semibold text-slate-500 hover:text-navy-800"
+          >
+            Back to login
+          </button>
+        </form>
+      </AuthCard>
+    );
+  }
 
   return (
     <AuthCard

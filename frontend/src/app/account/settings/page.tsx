@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ChangePasswordForm from "@/components/account/change-password-form";
+import TwoFactorSettings from "@/components/account/two-factor-settings";
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -19,8 +20,9 @@ export default function SettingsPage() {
         .
       </p>
 
-      <div className="mt-6 max-w-xl">
+      <div className="mt-6 max-w-xl space-y-6">
         <ChangePasswordForm />
+        <TwoFactorSettings />
       </div>
     </div>
   );

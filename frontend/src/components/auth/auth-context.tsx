@@ -15,12 +15,16 @@ import {
   logoutRequest,
   meRequest,
   registerRequest,
+  verifyTwoFactorLoginRequest,
 } from "@/lib/api/auth-client";
+
+type LoginResult = { requiresTwoFactor: true; pendingToken: string } | { requiresTwoFactor: false };
 
 interface AuthContextValue {
   user: PublicUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<LoginResult>;
+  completeTwoFactorLogin: (pendingToken: string, code: string) => Promise<void>;
   register: (input: {
     name: string;
     email: string;
@@ -66,8 +70,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
-    const { user } = await loginRequest({ email, password });
+  const login = useCallback(async (email: string, password: string): Promise<LoginResult> => {
+    const result = await loginRequest({ email, password });
+    if ("requiresTwoFactor" in result) {
+      return { requiresTwoFactor: true, pendingToken: result.pendingToken };
+    }
+    setUser(result.user);
+    return { requiresTwoFactor: false };
+  }, []);
+
+  const completeTwoFactorLogin = useCallback(async (pendingToken: string, code: string) => {
+    const { user } = await verifyTwoFactorLoginRequest(pendingToken, code);
     setUser(user);
   }, []);
 
@@ -91,8 +104,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, loading, login, register, logout, refresh }),
-    [user, loading, login, register, logout, refresh]
+    () => ({ user, loading, login, completeTwoFactorLogin, register, logout, refresh }),
+    [user, loading, login, completeTwoFactorLogin, register, logout, refresh]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

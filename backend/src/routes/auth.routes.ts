@@ -1,11 +1,18 @@
 import { Router } from "express";
+import { z } from "zod";
 import rateLimit from "express-rate-limit";
 import bcrypt from "bcryptjs";
 import { User } from "../models/User";
 import { RefreshToken } from "../models/RefreshToken";
 import { ResetToken } from "../models/ResetToken";
 import { Notification } from "../models/Notification";
-import { signAccessToken, verifyAccessToken } from "../lib/jwt";
+import {
+  signAccessToken,
+  verifyAccessToken,
+  signTwoFactorPendingToken,
+  verifyTwoFactorPendingToken,
+} from "../lib/jwt";
+import { consumeBackupCode, verifyTwoFactorCode } from "../lib/twofa";
 import { generateToken } from "../lib/tokens";
 import { ACCESS_COOKIE, REFRESH_COOKIE, clearAuthCookies, setAuthCookies } from "../lib/cookies";
 import { requireAuth } from "../middleware/auth";
@@ -31,6 +38,8 @@ function toPublicUser(user: InstanceType<typeof User>) {
     passwordHash: _passwordHash,
     googleId: _googleId,
     emailVerified: _emailVerified,
+    twoFactorSecret: _twoFactorSecret,
+    twoFactorBackupCodes: _twoFactorBackupCodes,
     ...rest
   } = obj;
   return rest;
@@ -134,8 +143,44 @@ authRouter.post("/login", credentialLimiter, async (req, res) => {
   const isValid = user ? await bcrypt.compare(password, user.passwordHash) : false;
   if (!user || !isValid) throw new ApiError(401, "Incorrect email or password.");
 
+  if (user.twoFactorEnabled) {
+    return res.json({ requiresTwoFactor: true, pendingToken: signTwoFactorPendingToken(user.id) });
+  }
+
   await issueSession(user, res);
   res.json({ user: toPublicUser(user) });
+});
+
+const twoFactorLoginSchema = z.object({
+  pendingToken: z.string().min(1),
+  code: z.string().trim().min(1),
+});
+
+authRouter.post("/login/2fa", credentialLimiter, async (req, res) => {
+  const { pendingToken, code } = twoFactorLoginSchema.parse(req.body);
+
+  const userId = verifyTwoFactorPendingToken(pendingToken);
+  if (!userId) throw new ApiError(401, "Your session expired. Please log in again.");
+
+  const user = await User.findById(userId);
+  if (!user || !user.twoFactorEnabled || !user.twoFactorSecret) {
+    throw new ApiError(401, "Your session expired. Please log in again.");
+  }
+
+  if (verifyTwoFactorCode(user.twoFactorSecret, code)) {
+    await issueSession(user, res);
+    return res.json({ user: toPublicUser(user) });
+  }
+
+  const backupIndex = await consumeBackupCode(user.twoFactorBackupCodes, code);
+  if (backupIndex >= 0) {
+    user.twoFactorBackupCodes.splice(backupIndex, 1);
+    await user.save();
+    await issueSession(user, res);
+    return res.json({ user: toPublicUser(user) });
+  }
+
+  throw new ApiError(401, "Invalid code. Check your authenticator app or use a backup code.");
 });
 
 authRouter.get("/google", credentialLimiter, (req, res) => {

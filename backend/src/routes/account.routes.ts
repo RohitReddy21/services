@@ -11,7 +11,12 @@ accountRouter.use(requireAuth);
 
 function toPublicUser(user: InstanceType<typeof User>) {
   const obj = user.toJSON() as Record<string, unknown>;
-  const { passwordHash: _passwordHash, ...rest } = obj;
+  const {
+    passwordHash: _passwordHash,
+    twoFactorSecret: _twoFactorSecret,
+    twoFactorBackupCodes: _twoFactorBackupCodes,
+    ...rest
+  } = obj;
   return rest;
 }
 

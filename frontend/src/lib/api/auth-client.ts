@@ -29,7 +29,14 @@ export function registerRequest(input: {
 }
 
 export function loginRequest(input: { email: string; password: string }) {
-  return post<{ user: PublicUser }>("/api/auth/login", input);
+  return post<{ user: PublicUser } | { requiresTwoFactor: true; pendingToken: string }>(
+    "/api/auth/login",
+    input
+  );
+}
+
+export function verifyTwoFactorLoginRequest(pendingToken: string, code: string) {
+  return post<{ user: PublicUser }>("/api/auth/login/2fa", { pendingToken, code });
 }
 
 export function googleAuthUrl({

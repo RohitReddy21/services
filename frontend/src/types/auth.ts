@@ -7,6 +7,7 @@ export interface PublicUser {
   phone: string;
   role: UserRole;
   profileImage: string | null;
+  twoFactorEnabled: boolean;
   notificationPreferences: {
     email: boolean;
     sms: boolean;
