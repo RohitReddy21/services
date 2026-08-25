@@ -23,10 +23,10 @@ export default function StepRequirement() {
               type="button"
               onClick={() => setField("requirement", option.id)}
               className={cn(
-                "ags-focus rounded-xl border-2 px-4 py-3.5 text-left transition-all hover:-translate-y-0.5",
+                "ags-focus rounded-lg border px-4 py-3.5 text-left transition-all hover:-translate-y-0.5",
                 isSelected
-                  ? "border-brand-500 bg-brand-50"
-                  : "border-slate-200 hover:border-brand-200 hover:bg-slate-25"
+                  ? "border-brand-500 bg-brand-50 shadow-sm shadow-brand-100"
+                  : "border-slate-200 hover:border-brand-200 hover:bg-slate-25 hover:shadow-sm"
               )}
             >
               <p
@@ -53,7 +53,7 @@ export default function StepRequirement() {
           value={form.description}
           onChange={(e) => setField("description", e.target.value)}
           placeholder="E.g. the unit is making a loud noise and isn't cooling the room properly..."
-          className="mt-2 w-full rounded-xl border border-slate-200 p-3.5 text-sm text-navy-900 placeholder:text-slate-400 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+          className="mt-2 w-full rounded-lg border border-slate-200 p-3.5 text-sm text-navy-900 placeholder:text-slate-400 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
         />
       </div>
     </StepShell>

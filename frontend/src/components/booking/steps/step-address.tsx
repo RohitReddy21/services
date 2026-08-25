@@ -3,10 +3,11 @@
 import StepShell from "@/components/booking/step-shell";
 import { useBooking } from "@/components/booking/booking-context";
 import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i;
 
-export default function StepAddress() {
+export default function StepAddress({ embedded = false }: { embedded?: boolean }) {
   const { form, setField } = useBooking();
   const { address } = form;
 
@@ -20,12 +21,17 @@ export default function StepAddress() {
   const update = (patch: Partial<typeof address>) =>
     setField("address", { ...address, ...patch });
 
-  return (
-    <StepShell
-      title="Service Address"
-      description="Where should our engineer attend?"
-      canContinue={isValid}
-    >
+  const content = (
+    <>
+      {embedded && (
+        <div className="mb-3">
+          <h3 className="text-xs font-bold text-navy-900">Service Address</h3>
+          <p className="mt-1 text-xs leading-relaxed text-slate-500">
+            Where should our engineer visit?
+          </p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="House / Building">
           <input
@@ -46,8 +52,7 @@ export default function StepAddress() {
           />
           {address.postcode.trim().length > 0 && !isPostcodeValid && (
             <p className="mt-1.5 text-xs text-red-600">
-              Enter a valid UK postcode (e.g. W1U 3BW, SW1A 1AA, M1 4WT). AGS
-              currently only services UK addresses.
+              Enter a valid UK postcode. AGS currently only services UK addresses.
             </p>
           )}
         </Field>
@@ -74,7 +79,7 @@ export default function StepAddress() {
             rows={3}
             value={address.instructions}
             onChange={(e) => update({ instructions: e.target.value })}
-            placeholder="E.g. gate code, parking instructions, which floor..."
+            placeholder="Gate code, parking instructions, which floor..."
             className="input-field"
           />
         </Field>
@@ -93,6 +98,20 @@ export default function StepAddress() {
           disabled={!address.saveAddress}
         />
       </div>
+    </>
+  );
+
+  if (embedded) {
+    return <section>{content}</section>;
+  }
+
+  return (
+    <StepShell
+      title="Service Address"
+      description="Where should our engineer attend?"
+      canContinue={isValid}
+    >
+      {content}
     </StepShell>
   );
 }
@@ -103,12 +122,12 @@ function Field({
   className,
 }: {
   label: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   return (
     <label className={cn("block", className)}>
-      <span className="text-sm font-semibold text-navy-800">{label}</span>
+      <span className="text-xs font-semibold text-navy-800">{label}</span>
       <div className="mt-1.5">{children}</div>
     </label>
   );
@@ -126,7 +145,12 @@ function Checkbox({
   disabled?: boolean;
 }) {
   return (
-    <label className={cn("flex items-center gap-2.5 text-sm text-navy-700", disabled && "opacity-40")}>
+    <label
+      className={cn(
+        "flex items-center gap-2.5 rounded-lg px-1 py-0.5 text-xs text-navy-700",
+        disabled && "opacity-40"
+      )}
+    >
       <input
         type="checkbox"
         checked={checked}

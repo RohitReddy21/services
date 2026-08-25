@@ -83,22 +83,6 @@ body {
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
 
-html.ags-cursor-enabled,
-html.ags-cursor-enabled a,
-html.ags-cursor-enabled button,
-html.ags-cursor-enabled [role="button"],
-html.ags-cursor-enabled summary,
-html.ags-cursor-enabled canvas,
-html.ags-cursor-enabled img {
-  cursor: none !important;
-}
-
-html.ags-cursor-enabled input,
-html.ags-cursor-enabled textarea,
-html.ags-cursor-enabled select {
-  cursor: text !important;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -116,7 +100,7 @@ html.ags-cursor-enabled select {
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
   padding-inline: 0.875rem;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--color-navy-900);
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;

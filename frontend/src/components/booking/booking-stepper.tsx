@@ -1,50 +1,74 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { STEP_LABELS, useBooking } from "@/components/booking/booking-context";
+import {
+  FORM_STEP_COUNT,
+  STEP_LABELS,
+  useBooking,
+} from "@/components/booking/booking-context";
 import { cn } from "@/lib/utils";
 
 export default function BookingStepper() {
-  const { step, goToStep } = useBooking();
+  const { step, goToStep, bookingResult } = useBooking();
+  const activeIndex = bookingResult ? STEP_LABELS.length - 1 : step;
 
   return (
-    <div className="overflow-x-auto pb-1">
-      <ol className="flex min-w-max items-center gap-1.5 sm:gap-2">
+    <nav aria-label="Booking progress" className="overflow-x-auto pb-1">
+      <ol className="flex min-w-[760px] items-start sm:min-w-0">
         {STEP_LABELS.map((label, index) => {
-          const isDone = index < step;
-          const isCurrent = index === step;
+          const isComplete = index < activeIndex;
+          const isActive = index === activeIndex;
+          const canVisit = index < FORM_STEP_COUNT && index <= step && !bookingResult;
+
           return (
-            <li key={label} className="flex items-center gap-1.5 sm:gap-2">
+            <li key={label} className="relative flex flex-1 flex-col items-center text-center">
+              {index > 0 && (
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "absolute left-0 top-4 h-px w-1/2",
+                    index <= activeIndex ? "bg-brand-500" : "bg-slate-200"
+                  )}
+                />
+              )}
+              {index < STEP_LABELS.length - 1 && (
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "absolute right-0 top-4 h-px w-1/2",
+                    index < activeIndex ? "bg-brand-500" : "bg-slate-200"
+                  )}
+                />
+              )}
+
               <button
                 type="button"
-                disabled={index > step}
-                onClick={() => index < step && goToStep(index)}
+                disabled={!canVisit}
+                aria-current={isActive ? "step" : undefined}
+                onClick={() => goToStep(index)}
                 className={cn(
-                  "flex items-center gap-2 rounded-full py-1 pl-1 pr-3 text-xs font-semibold transition-colors sm:text-sm",
-                  isCurrent && "bg-brand-50 text-brand-700",
-                  isDone && "text-accent-green-600",
-                  !isCurrent && !isDone && "text-slate-400"
+                  "ags-focus relative z-10 flex min-w-24 flex-col items-center gap-2 rounded-lg px-2 pb-1 text-xs font-bold transition-colors",
+                  canVisit && !isActive && "text-slate-600 hover:text-brand-700",
+                  isActive && "text-brand-700",
+                  !canVisit && !isActive && "cursor-default text-slate-400"
                 )}
               >
                 <span
                   className={cn(
-                    "flex size-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold sm:size-7",
-                    isCurrent && "bg-brand-600 text-white",
-                    isDone && "bg-accent-green-100 text-accent-green-700",
-                    !isCurrent && !isDone && "bg-slate-100 text-slate-400"
+                    "flex size-8 items-center justify-center rounded-full border bg-white text-xs font-extrabold transition-all",
+                    isActive && "border-brand-600 bg-brand-600 text-white shadow-md shadow-brand-500/25",
+                    isComplete && "border-brand-600 bg-brand-600 text-white",
+                    !isActive && !isComplete && "border-slate-300 text-slate-500"
                   )}
                 >
-                  {isDone ? <Check className="size-3.5" /> : index + 1}
+                  {isComplete ? <Check className="size-4" /> : index + 1}
                 </span>
-                <span className="hidden sm:inline">{label}</span>
+                <span className="leading-tight text-current">{label}</span>
               </button>
-              {index < STEP_LABELS.length - 1 && (
-                <span className="h-px w-3 shrink-0 bg-slate-200 sm:w-6" />
-              )}
             </li>
           );
         })}
       </ol>
-    </div>
+    </nav>
   );
 }

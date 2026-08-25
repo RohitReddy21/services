@@ -9,8 +9,8 @@ import { fetchDaySlots } from "@/lib/api/booking-client";
 import type { SlotGroup, TimeSlot } from "@/types/booking";
 import { cn } from "@/lib/utils";
 
-export default function StepTime() {
-  const { form, setField, reserve, error } = useBooking();
+export default function StepTime({ embedded = false }: { embedded?: boolean }) {
+  const { form, setField, reserve } = useBooking();
   const requestKey = `${form.date ?? ""}:${form.categoryId ?? ""}:${form.equipmentId ?? ""}`;
   const [slotAvailability, setSlotAvailability] = useState<{
     key: string;
@@ -23,10 +23,9 @@ export default function StepTime() {
   useEffect(() => {
     if (!form.date) return;
     let cancelled = false;
-    fetchDaySlots(form.date, form.categoryId ?? "", form.equipmentId ?? "")
-      .then((res) => {
-        if (!cancelled) setSlotAvailability({ key: requestKey, groups: res.groups });
-      });
+    fetchDaySlots(form.date, form.categoryId ?? "", form.equipmentId ?? "").then((res) => {
+      if (!cancelled) setSlotAvailability({ key: requestKey, groups: res.groups });
+    });
     return () => {
       cancelled = true;
     };
@@ -40,7 +39,6 @@ export default function StepTime() {
     if (ok) {
       setField("timeSlot", slot);
     } else {
-      // refresh availability, the slot was likely just taken by someone else
       fetchDaySlots(form.date, form.categoryId ?? "", form.equipmentId ?? "").then((res) =>
         setSlotAvailability({ key: requestKey, groups: res.groups })
       );
@@ -48,26 +46,37 @@ export default function StepTime() {
   };
 
   const formattedDate = form.date
-    ? new Date(form.date + "T00:00:00").toLocaleDateString("en-GB", {
+    ? new Date(`${form.date}T00:00:00`).toLocaleDateString("en-GB", {
         weekday: "long",
         day: "numeric",
         month: "long",
       })
     : "";
 
-  return (
-    <StepShell
-      title="Select a Time Slot"
-      description={formattedDate ? `Available time slots for ${formattedDate}.` : undefined}
-      canContinue={!!form.timeSlot}
-    >
-      {loading ? (
-        <div className="flex h-40 items-center justify-center">
+  const content = (
+    <>
+      {embedded && (
+        <div className="mb-3">
+          <h3 className="text-xs font-bold text-navy-900">Available Time Slots</h3>
+          <p className="mt-1 text-xs leading-relaxed text-slate-500">
+            {formattedDate
+              ? `Every listed time slot is available for ${formattedDate}.`
+              : "Select a date to load appointment windows."}
+          </p>
+        </div>
+      )}
+
+      {!form.date ? (
+        <div className="rounded-lg border border-dashed border-slate-300 bg-slate-25 px-4 py-10 text-center text-xs font-semibold text-slate-500">
+          Choose a date first.
+        </div>
+      ) : loading ? (
+        <div className="flex h-40 items-center justify-center rounded-lg border border-slate-200 bg-white">
           <Loader2 className="size-6 animate-spin text-brand-500" />
         </div>
       ) : (
         <motion.div
-          className="space-y-6"
+          className="space-y-5"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
@@ -77,7 +86,7 @@ export default function StepTime() {
               <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
                 {group.period}
               </p>
-              <div className="mt-2.5 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+              <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
                 {group.slots.map((slot) => {
                   const isSelected = form.timeSlot?.id === slot.id;
                   const isReserving = reserving === slot.id;
@@ -91,10 +100,14 @@ export default function StepTime() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.25, ease: "easeOut" }}
                       className={cn(
-                        "ags-focus flex items-center justify-center gap-2 rounded-xl border-2 px-3 py-3 text-sm font-semibold transition-all",
-                        !slot.available && "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300 line-through",
-                        slot.available && !isSelected && "border-slate-200 text-navy-700 hover:-translate-y-0.5 hover:border-brand-200 hover:bg-sky-50 hover:shadow-sm",
-                        isSelected && "border-brand-500 bg-brand-50 text-brand-800 shadow-md shadow-brand-100"
+                        "ags-focus flex min-h-11 items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-semibold transition-all",
+                        !slot.available &&
+                          "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300 line-through",
+                        slot.available &&
+                          !isSelected &&
+                          "border-slate-200 bg-white text-navy-700 hover:-translate-y-0.5 hover:border-brand-200 hover:bg-sky-50 hover:shadow-sm",
+                        isSelected &&
+                          "border-brand-500 bg-brand-50 text-brand-800 shadow-md shadow-brand-100"
                       )}
                     >
                       {isReserving && <Loader2 className="size-3.5 animate-spin" />}
@@ -105,13 +118,27 @@ export default function StepTime() {
               </div>
             </div>
           ))}
-          {groups && groups.every((g) => g.slots.every((s) => !s.available)) && !error && (
-            <p className="rounded-lg bg-slate-50 px-3.5 py-3 text-sm text-slate-500">
-              No slots available on this date. Please go back and choose a different date.
+          {groups && groups.every((group) => group.slots.every((slot) => !slot.available)) && (
+            <p className="rounded-lg border border-slate-200 bg-slate-25 px-3.5 py-3 text-xs text-slate-500">
+              No slots are available on this date. Choose a different date.
             </p>
           )}
         </motion.div>
       )}
+    </>
+  );
+
+  if (embedded) {
+    return <section>{content}</section>;
+  }
+
+  return (
+    <StepShell
+      title="Select a Time Slot"
+      description={formattedDate ? `Available time slots for ${formattedDate}.` : undefined}
+      canContinue={!!form.timeSlot}
+    >
+      {content}
     </StepShell>
   );
 }

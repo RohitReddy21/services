@@ -20,13 +20,13 @@ export default function ReservationTimer() {
 
   if (remainingMs <= 0) {
     return (
-      <div className="mb-6 flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      <div className="mb-6 flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700">
         <span>Your reserved time slot has expired. Please choose a new time.</span>
         <button
           type="button"
           onClick={() => {
             setField("timeSlot", null);
-            goToStep(5);
+            goToStep(2);
           }}
           className="shrink-0 font-semibold underline"
         >
@@ -42,7 +42,7 @@ export default function ReservationTimer() {
 
   return (
     <div
-      className={`mb-6 flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium ${
+      className={`mb-6 flex items-center gap-2 rounded-lg border px-4 py-2.5 text-xs font-medium ${
         isLow ? "border-red-200 bg-red-50 text-red-700" : "border-accent-gold-400/40 bg-amber-50 text-amber-800"
       }`}
     >
@@ -51,7 +51,7 @@ export default function ReservationTimer() {
       <span className="font-bold tabular-nums">
         {minutes}:{String(seconds).padStart(2, "0")}
       </span>
-      &nbsp;— complete your booking to confirm it.
+      - complete your booking to confirm it.
     </div>
   );
 }

@@ -14,7 +14,7 @@ function toMonthKey(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
-export default function StepDate() {
+export default function StepDate({ embedded = false }: { embedded?: boolean }) {
   const { form, setField } = useBooking();
   const [viewDate, setViewDate] = useState(() => new Date());
   const [availability, setAvailability] = useState<{
@@ -29,46 +29,53 @@ export default function StepDate() {
 
   useEffect(() => {
     let cancelled = false;
-    fetchMonthAvailability(monthKey, form.categoryId ?? "", form.equipmentId ?? "")
-      .then((res) => {
-        if (!cancelled) setAvailability({ monthKey, days: res.days });
-      });
+    fetchMonthAvailability(monthKey, form.categoryId ?? "", form.equipmentId ?? "").then((res) => {
+      if (!cancelled) setAvailability({ monthKey, days: res.days });
+    });
     return () => {
       cancelled = true;
     };
   }, [monthKey, form.categoryId, form.equipmentId]);
 
   const firstOfMonth = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
-  const leadingBlanks = (firstOfMonth.getDay() + 6) % 7; // Monday-first
-
+  const leadingBlanks = (firstOfMonth.getDay() + 6) % 7;
   const monthLabel = viewDate.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
   const canGoToPrevMonth =
     viewDate.getFullYear() > today.getFullYear() ||
     (viewDate.getFullYear() === today.getFullYear() && viewDate.getMonth() > today.getMonth());
 
-  return (
-    <StepShell
-      title="Select a Date"
-      description="Choose a date that works for you — availability updates live."
-      canContinue={!!form.date}
-    >
-      <div className="rounded-2xl border border-brand-100 bg-linear-to-b from-white to-sky-50 p-4 shadow-inner shadow-brand-100 sm:p-5">
+  const content = (
+    <>
+      {embedded && (
+        <div className="mb-3">
+          <h3 className="text-xs font-bold text-navy-900">Select Date</h3>
+          <p className="mt-1 text-xs leading-relaxed text-slate-500">
+            Every future day is open for booking.
+          </p>
+        </div>
+      )}
+
+      <div className="rounded-lg border border-slate-200 bg-linear-to-b from-white to-sky-50 p-4 shadow-inner shadow-brand-100 sm:p-5">
         <div className="flex items-center justify-between">
           <button
             type="button"
             aria-label="Previous month"
             disabled={!canGoToPrevMonth}
-            onClick={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1))}
-            className="flex size-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30"
+            onClick={() =>
+              setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1))
+            }
+            className="ags-focus flex size-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30"
           >
             <ChevronLeft className="size-4" />
           </button>
-          <p className="text-sm font-bold text-navy-900">{monthLabel}</p>
+          <p className="text-xs font-bold text-navy-900">{monthLabel}</p>
           <button
             type="button"
             aria-label="Next month"
-            onClick={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1))}
-            className="flex size-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100"
+            onClick={() =>
+              setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1))
+            }
+            className="ags-focus flex size-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100"
           >
             <ChevronRight className="size-4" />
           </button>
@@ -90,7 +97,7 @@ export default function StepDate() {
               <span key={`blank-${i}`} />
             ))}
             {days?.map((day) => {
-              const dateObj = new Date(day.date + "T00:00:00");
+              const dateObj = new Date(`${day.date}T00:00:00`);
               const isPast = dateObj < today;
               const disabled = isPast || !day.hasAvailability;
               const isSelected = form.date === day.date;
@@ -104,10 +111,13 @@ export default function StepDate() {
                     setField("timeSlot", null);
                   }}
                   className={cn(
-                    "ags-focus relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm font-semibold transition-all",
+                    "ags-focus relative flex aspect-square flex-col items-center justify-center rounded-lg text-xs font-semibold transition-all",
                     disabled && "cursor-not-allowed bg-white/50 text-slate-300",
-                    !disabled && !isSelected && "bg-white text-navy-800 hover:-translate-y-0.5 hover:bg-brand-50 hover:shadow-sm",
-                    isSelected && "bg-brand-100 text-brand-800 ring-2 ring-brand-500 shadow-md shadow-brand-100"
+                    !disabled &&
+                      !isSelected &&
+                      "bg-white text-navy-800 hover:-translate-y-0.5 hover:bg-brand-50 hover:shadow-sm",
+                    isSelected &&
+                      "bg-brand-100 text-brand-800 shadow-md shadow-brand-100 ring-2 ring-brand-500"
                   )}
                 >
                   {dateObj.getDate()}
@@ -129,9 +139,23 @@ export default function StepDate() {
           <span className="size-1.5 rounded-full bg-accent-green-500" /> Available
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="size-1.5 rounded-full bg-slate-300" /> Unavailable
+          <span className="size-1.5 rounded-full bg-slate-300" /> Past date
         </span>
       </div>
+    </>
+  );
+
+  if (embedded) {
+    return <section>{content}</section>;
+  }
+
+  return (
+    <StepShell
+      title="Select a Date"
+      description="Choose any future date that works for you."
+      canContinue={!!form.date}
+    >
+      {content}
     </StepShell>
   );
 }

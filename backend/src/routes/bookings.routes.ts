@@ -18,7 +18,7 @@ function bookingReference() {
   return `AGS-${datePart}-${suffix}`;
 }
 
-bookingsRouter.post("/", attachUser, async (req, res) => {
+bookingsRouter.post("/", requireAuth, async (req, res) => {
   const { reservationId, data } = createBookingSchema.parse(req.body);
 
   const reservation = await SlotReservation.findOneAndDelete({
@@ -32,21 +32,19 @@ bookingsRouter.post("/", attachUser, async (req, res) => {
   const now = new Date();
   const booking = await Booking.create({
     bookingReference: bookingReference(),
-    customerId: req.userId ?? null,
+    customerId: req.userId,
     status: "BOOKING_RECEIVED",
     statusHistory: [{ status: "BOOKING_RECEIVED", at: now }],
     ...data,
   });
 
-  if (req.userId) {
-    await Notification.create({
-      userId: req.userId,
-      type: "booking_received",
-      title: "Booking Request Received",
-      message: `We've received your request (${booking.bookingReference}). Our team will confirm your appointment shortly.`,
-      href: `/account/bookings/${booking.bookingReference}`,
-    });
-  }
+  await Notification.create({
+    userId: req.userId,
+    type: "booking_received",
+    title: "Booking Request Received",
+    message: `We've received your request (${booking.bookingReference}). Our team will confirm your appointment shortly.`,
+    href: `/account/bookings/${booking.bookingReference}`,
+  });
 
   const addressLine = [data.address.houseNumber, data.address.street, data.address.city, data.address.postcode]
     .filter(Boolean)

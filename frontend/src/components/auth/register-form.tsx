@@ -37,6 +37,13 @@ export default function RegisterForm() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const redirectTo = searchParams.get("redirect") ?? "/account";
+  const loginHref = searchParams.get("redirect")
+    ? `/login?redirect=${encodeURIComponent(redirectTo)}`
+    : "/login";
+  const errorRedirect = searchParams.get("redirect")
+    ? `/register?redirect=${encodeURIComponent(redirectTo)}`
+    : "/register";
   const oauthError = oauthErrorMessage(searchParams.get("error"));
 
   const update = (key: keyof typeof form, value: string) =>
@@ -60,7 +67,7 @@ export default function RegisterForm() {
     setSubmitting(true);
     try {
       await register(result.data);
-      router.push("/account");
+      router.push(redirectTo);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
@@ -75,13 +82,13 @@ export default function RegisterForm() {
       footer={
         <>
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-brand-600 hover:text-brand-700">
+          <Link href={loginHref} className="font-semibold text-brand-600 hover:text-brand-700">
             Log in
           </Link>
         </>
       }
     >
-      <GoogleAuthLink href={googleAuthUrl({ redirect: "/account", errorRedirect: "/register" })}>
+      <GoogleAuthLink href={googleAuthUrl({ redirect: redirectTo, errorRedirect })}>
         Sign up with Google
       </GoogleAuthLink>
 

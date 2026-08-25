@@ -21,7 +21,7 @@ function runUpload(
     .catch(() => onUpdate({ status: "error" }));
 }
 
-export default function StepPhotos() {
+export default function StepPhotos({ embedded = false }: { embedded?: boolean }) {
   const { form, addPhotos, updatePhoto, removePhoto } = useBooking();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -37,7 +37,14 @@ export default function StepPhotos() {
       const previewUrl = URL.createObjectURL(file);
       accepted.push({
         file,
-        photo: { id, name: file.name, previewUrl, remoteUrl: null, status: "uploading", progress: 0 },
+        photo: {
+          id,
+          name: file.name,
+          previewUrl,
+          remoteUrl: null,
+          status: "uploading",
+          progress: 0,
+        },
       });
     });
 
@@ -49,24 +56,18 @@ export default function StepPhotos() {
     });
   };
 
-  return (
-    <StepShell
-      title="Upload Photos"
-      description="Photos of the equipment, fault or error code help our engineers prepare (optional)."
-      canContinue
-    >
+  const content = (
+    <>
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={form.photos.length >= MAX_PHOTOS}
-        className="ags-focus flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-25 px-6 py-10 text-center transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-50"
+        className="ags-focus flex w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 bg-white px-5 py-8 text-center transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
       >
         <Upload className="size-6 text-brand-500" />
-        <p className="text-sm font-semibold text-navy-800">
-          Click to upload photos or videos
-        </p>
+        <p className="text-xs font-semibold text-navy-800">Click to upload photos</p>
         <p className="text-xs text-slate-500">
-          JPG, PNG, WEBP up to {MAX_SIZE_MB}MB &middot; up to {MAX_PHOTOS} files
+          JPG, PNG, WEBP or HEIC up to {MAX_SIZE_MB}MB &middot; up to {MAX_PHOTOS} files
         </p>
       </button>
       <input
@@ -86,9 +87,15 @@ export default function StepPhotos() {
           {form.photos.map((photo) => (
             <div
               key={photo.id}
-              className="group relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-slate-100"
+              className="group relative aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100"
             >
-              <FadeInImage src={photo.previewUrl} alt={photo.name} fill className="object-cover" unoptimized />
+              <FadeInImage
+                src={photo.previewUrl}
+                alt={photo.name}
+                fill
+                className="object-cover"
+                unoptimized
+              />
 
               {photo.status === "uploading" && (
                 <div className="absolute inset-x-0 bottom-0 bg-navy-950/70 px-2 py-1.5">
@@ -113,7 +120,7 @@ export default function StepPhotos() {
                 type="button"
                 onClick={() => removePhoto(photo.id)}
                 aria-label="Remove photo"
-                className="absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-full bg-navy-950/70 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                className="absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-md bg-navy-950/70 text-white opacity-0 transition-opacity group-hover:opacity-100"
               >
                 <Trash2 className="size-3.5" />
               </button>
@@ -121,6 +128,20 @@ export default function StepPhotos() {
           ))}
         </div>
       )}
+    </>
+  );
+
+  if (embedded) {
+    return <div>{content}</div>;
+  }
+
+  return (
+    <StepShell
+      title="Upload Photos"
+      description="Photos of the equipment, fault or error code help our engineers prepare (optional)."
+      canContinue
+    >
+      {content}
     </StepShell>
   );
 }
@@ -150,7 +171,7 @@ function RetryButton({
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold hover:bg-white/25"
+        className="flex items-center gap-1 rounded-md bg-white/15 px-2.5 py-1 text-[11px] font-semibold hover:bg-white/25"
       >
         <RotateCcw className="size-3" />
         Retry

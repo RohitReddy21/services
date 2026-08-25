@@ -13,14 +13,52 @@ import { reserveSlot as apiReserveSlot, submitBooking as apiSubmitBooking } from
 
 export const STEP_LABELS = [
   "Service",
-  "Equipment",
-  "Requirement",
-  "Photos",
-  "Date",
-  "Time",
   "Details",
-  "Address",
+  "Date & Time",
+  "Address & Contact",
   "Review",
+  "Confirmation",
+] as const;
+
+export const FORM_STEP_COUNT = STEP_LABELS.length - 1;
+
+export const BOOKING_STAGES = [
+  {
+    label: "Service",
+    description: "Choose service category",
+    start: 0,
+    end: 0,
+  },
+  {
+    label: "Details",
+    description: "Equipment and requirement",
+    start: 1,
+    end: 1,
+  },
+  {
+    label: "Date & Time",
+    description: "Appointment date and slot",
+    start: 2,
+    end: 2,
+  },
+  {
+    label: "Address & Contact",
+    description: "Visit and contact details",
+    start: 3,
+    end: 3,
+  },
+  {
+    label: "Review",
+    description: "Check before submitting",
+    start: 4,
+    end: 4,
+  },
+  {
+    label: "Confirmation",
+    description: "Request received",
+    start: 5,
+    end: 5,
+  },
 ] as const;
 
 interface BookingContextValue {
@@ -54,7 +92,7 @@ export function BookingProvider({
   initial?: Partial<BookingFormData>;
   initialStep?: number;
 }) {
-  const [step, setStep] = useState(initialStep);
+  const [step, setStep] = useState(Math.max(0, Math.min(initialStep, FORM_STEP_COUNT - 1)));
   const [direction, setDirection] = useState<1 | -1>(1);
   const [form, setForm] = useState<BookingFormData>({ ...emptyBookingForm, ...initial });
   const [reservation, setReservation] = useState<{ id: string; expiresAt: number } | null>(null);
@@ -86,15 +124,16 @@ export function BookingProvider({
 
   const goNext = useCallback(() => {
     setDirection(1);
-    setStep((s) => Math.min(s + 1, STEP_LABELS.length - 1));
+    setStep((s) => Math.min(s + 1, FORM_STEP_COUNT - 1));
   }, []);
   const goBack = useCallback(() => {
     setDirection(-1);
     setStep((s) => Math.max(s - 1, 0));
   }, []);
   const goToStep = useCallback((s: number) => {
-    setDirection(s >= step ? 1 : -1);
-    setStep(s);
+    const nextStep = Math.max(0, Math.min(s, FORM_STEP_COUNT - 1));
+    setDirection(nextStep >= step ? 1 : -1);
+    setStep(nextStep);
   }, [step]);
   const clearError = useCallback(() => setError(null), []);
 

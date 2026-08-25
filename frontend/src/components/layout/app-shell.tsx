@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "framer-motion";
 import { PageLoader } from "@/components/ui/loaders";
@@ -103,8 +103,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
         )}
       </AnimatePresence>
 
-      <CustomCursor />
-
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={pathname}
@@ -117,73 +115,5 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </motion.div>
       </AnimatePresence>
     </MotionConfig>
-  );
-}
-
-function CustomCursor() {
-  const reducedMotion = useReducedMotion();
-  const [enabled, setEnabled] = useState(false);
-  const [position, setPosition] = useState({ x: -100, y: -100 });
-  const [active, setActive] = useState(false);
-
-  const interactiveSelector = useMemo(
-    () =>
-      [
-        "a",
-        "button",
-        "summary",
-        "label",
-        "[role='button']",
-        "[data-cursor='interactive']",
-        "canvas",
-        "img",
-      ].join(","),
-    []
-  );
-
-  useEffect(() => {
-    if (reducedMotion) return;
-
-    const finePointer = window.matchMedia("(pointer: fine)").matches;
-    const hoverPointer = window.matchMedia("(hover: hover)").matches;
-    if (!finePointer || !hoverPointer) return;
-
-    const frame = window.requestAnimationFrame(() => setEnabled(true));
-    document.documentElement.classList.add("ags-cursor-enabled");
-
-    const onPointerMove = (event: PointerEvent) => {
-      setPosition({ x: event.clientX, y: event.clientY });
-      const target = event.target as Element | null;
-      setActive(Boolean(target?.closest(interactiveSelector)));
-    };
-
-    const onPointerLeave = () => setPosition({ x: -100, y: -100 });
-
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    document.documentElement.addEventListener("pointerleave", onPointerLeave);
-
-    return () => {
-      window.removeEventListener("pointermove", onPointerMove);
-      document.documentElement.removeEventListener("pointerleave", onPointerLeave);
-      document.documentElement.classList.remove("ags-cursor-enabled");
-      window.cancelAnimationFrame(frame);
-    };
-  }, [interactiveSelector, reducedMotion]);
-
-  if (!enabled) return null;
-
-  return (
-    <motion.div
-      aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 z-[120] rounded-full border border-brand-200 bg-brand-600/80 shadow-lg shadow-brand-500/20 mix-blend-multiply"
-      animate={{
-        x: position.x - (active ? 14 : 4),
-        y: position.y - (active ? 14 : 4),
-        width: active ? 28 : 8,
-        height: active ? 28 : 8,
-        opacity: position.x < 0 ? 0 : active ? 0.35 : 0.75,
-      }}
-      transition={{ type: "spring", stiffness: 520, damping: 34, mass: 0.35 }}
-    />
   );
 }

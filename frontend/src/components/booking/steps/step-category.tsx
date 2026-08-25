@@ -1,6 +1,6 @@
 "use client";
 
-import { Refrigerator, Snowflake } from "lucide-react";
+import { Check, Refrigerator, Snowflake } from "lucide-react";
 import StepShell from "@/components/booking/step-shell";
 import { useBooking } from "@/components/booking/booking-context";
 import { serviceCategories } from "@/lib/data/services";
@@ -17,7 +17,7 @@ export default function StepCategory() {
       description="Please choose the category that best matches your requirement."
       canContinue={!!form.categoryId}
     >
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {serviceCategories.map((category) => {
           const Icon = icons[category.icon];
           const isSelected = form.categoryId === category.id;
@@ -31,23 +31,25 @@ export default function StepCategory() {
                 setField("equipmentLabel", null);
               }}
               className={cn(
-                "ags-focus relative rounded-2xl border-2 p-6 text-left transition-all",
+                "ags-focus relative rounded-lg border p-5 text-left transition-all",
                 isSelected
-                  ? "border-brand-500 bg-brand-50"
-                  : "border-slate-200 hover:border-brand-200 hover:bg-slate-25"
+                  ? "border-brand-500 bg-brand-50 shadow-sm shadow-brand-100"
+                  : "border-slate-200 hover:-translate-y-0.5 hover:border-brand-200 hover:bg-slate-25 hover:shadow-sm"
               )}
             >
               <span
                 className={cn(
-                  "absolute right-4 top-4 flex size-5 items-center justify-center rounded-full border-2",
-                  isSelected ? "border-brand-600 bg-brand-600" : "border-slate-300"
+                  "absolute right-4 top-4 flex size-6 items-center justify-center rounded-lg border",
+                  isSelected
+                    ? "border-brand-600 bg-brand-600 text-white"
+                    : "border-slate-200 bg-white text-transparent"
                 )}
               >
-                {isSelected && <span className="size-2 rounded-full bg-white" />}
+                <Check className="size-3.5" />
               </span>
               <div
                 className={cn(
-                  "flex size-11 items-center justify-center rounded-xl",
+                  "flex size-11 items-center justify-center rounded-lg",
                   isSelected ? "bg-brand-100 text-brand-700" : "bg-slate-100 text-slate-500"
                 )}
               >

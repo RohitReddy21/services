@@ -4,6 +4,7 @@ import { getDayAvailability, getSlotsForDate, isSlotAvailable } from "../lib/slo
 import { SlotReservation } from "../models/SlotReservation";
 import { generateToken } from "../lib/tokens";
 import { ApiError } from "../middleware/errorHandler";
+import { requireAuth } from "../middleware/auth";
 import { reserveSlotSchema } from "../validation/booking";
 
 export const availabilityRouter = Router();
@@ -45,7 +46,7 @@ availabilityRouter.get("/slots", async (req, res) => {
 
 export const slotsRouter = Router();
 
-slotsRouter.post("/reserve", async (req, res) => {
+slotsRouter.post("/reserve", requireAuth, async (req, res) => {
   const { date, slotId, category, equipment } = reserveSlotSchema.parse(req.body);
   const seed = `${category}::${equipment}`;
 

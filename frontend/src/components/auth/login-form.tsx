@@ -36,6 +36,9 @@ export default function LoginForm() {
   const errorRedirect = searchParams.get("redirect")
     ? `/login?redirect=${encodeURIComponent(redirectTo)}`
     : "/login";
+  const registerHref = searchParams.get("redirect")
+    ? `/register?redirect=${encodeURIComponent(redirectTo)}`
+    : "/register";
   const oauthError = oauthErrorMessage(searchParams.get("error"));
 
   const handleSubmit = async (e: FormEvent) => {
@@ -71,7 +74,7 @@ export default function LoginForm() {
       footer={
         <>
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="font-semibold text-brand-600 hover:text-brand-700">
+          <Link href={registerHref} className="font-semibold text-brand-600 hover:text-brand-700">
             Sign up
           </Link>
         </>
