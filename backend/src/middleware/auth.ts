@@ -8,6 +8,7 @@ declare global {
   namespace Express {
     interface Request {
       userId?: string;
+      isAdmin?: boolean;
     }
   }
 }
@@ -31,5 +32,22 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   if (!user) {
     return res.status(401).json({ error: "Not authenticated" });
   }
+  next();
+}
+
+/**
+ * Blocks with 404 (never 401/403) unless the caller is an authenticated ADMIN —
+ * deliberately indistinguishable from a non-existent route for everyone else,
+ * so the admin surface stays undiscoverable rather than just "access denied".
+ */
+export async function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  if (!req.userId) {
+    return res.status(404).json({ error: "Not found" });
+  }
+  const user = await User.findById(req.userId);
+  if (!user || user.role !== "ADMIN") {
+    return res.status(404).json({ error: "Not found" });
+  }
+  req.isAdmin = true;
   next();
 }

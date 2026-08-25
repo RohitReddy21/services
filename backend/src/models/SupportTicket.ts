@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { withJsonId } from "../lib/schema-plugin";
 
 const SUPPORT_CATEGORIES = [
   "booking_help",
@@ -20,5 +21,7 @@ const supportTicketSchema = new Schema(
   },
   { timestamps: true }
 );
+
+withJsonId(supportTicketSchema);
 
 export const SupportTicket = model("SupportTicket", supportTicketSchema);

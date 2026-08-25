@@ -15,6 +15,8 @@ export function mapBookingDoc(doc: Record<string, unknown>): BookingRecord {
     statusHistory: (doc.statusHistory as BookingRecord["statusHistory"]) ?? [],
     rescheduleRequested: !!doc.rescheduleRequested,
     rescheduleNote: (doc.rescheduleNote as string | null) ?? null,
+    technicianName: (doc.technicianName as string | null) ?? null,
+    technicianPhone: (doc.technicianPhone as string | null) ?? null,
     createdAt: doc.createdAt as string,
     updatedAt: doc.updatedAt as string,
     data: {

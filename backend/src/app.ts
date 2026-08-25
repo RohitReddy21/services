@@ -19,6 +19,7 @@ import { uploadsRouter } from "./routes/uploads.routes";
 import { equipmentRouter } from "./routes/equipment.routes";
 import { loyaltyRouter } from "./routes/loyalty.routes";
 import { referralsRouter } from "./routes/referrals.routes";
+import { adminRouter } from "./routes/admin.routes";
 
 export function createApp() {
   const app = express();
@@ -66,6 +67,7 @@ export function createApp() {
   app.use("/api/equipment", equipmentRouter);
   app.use("/api/loyalty", loyaltyRouter);
   app.use("/api/referrals", referralsRouter);
+  app.use("/api/admin", adminRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

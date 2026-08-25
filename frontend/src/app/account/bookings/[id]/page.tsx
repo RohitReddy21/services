@@ -148,7 +148,16 @@ export default async function BookingDetailPage({
               <span className="flex size-9 items-center justify-center rounded-full bg-slate-200 text-slate-500">
                 <UserRound className="size-4" />
               </span>
-              <p className="text-xs text-slate-500">Not yet assigned</p>
+              {record.technicianName ? (
+                <div>
+                  <p className="text-xs font-semibold text-navy-800">{record.technicianName}</p>
+                  {record.technicianPhone && (
+                    <p className="text-xs text-slate-500">{record.technicianPhone}</p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-xs text-slate-500">Not yet assigned</p>
+              )}
             </div>
           </div>
 

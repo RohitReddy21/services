@@ -71,6 +71,8 @@ const bookingSchema = new Schema(
     rescheduleNote: { type: String, default: null },
 
     technicianId: { type: Schema.Types.ObjectId, ref: "User", default: null },
+    technicianName: { type: String, default: null },
+    technicianPhone: { type: String, default: null },
   },
   { timestamps: true }
 );

@@ -85,6 +85,8 @@ export interface BookingRecord {
   statusHistory: StatusHistoryEntry[];
   rescheduleRequested: boolean;
   rescheduleNote: string | null;
+  technicianName: string | null;
+  technicianPhone: string | null;
   createdAt: string;
   updatedAt: string;
 }
