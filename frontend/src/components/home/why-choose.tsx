@@ -68,7 +68,7 @@ export default function WhyChoose() {
                 sizes="(min-width: 1024px) 54vw, 92vw"
                 className="object-cover ags-image-reveal"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-navy-950/55 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-ink-950/55 via-transparent to-transparent" />
             </div>
             <div className="absolute -bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/90 p-4 shadow-xl shadow-navy-900/10 backdrop-blur">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">

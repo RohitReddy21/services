@@ -72,7 +72,7 @@ export default function ChatWidget() {
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="mb-3 flex h-[28rem] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-brand-100 bg-white shadow-2xl shadow-navy-900/20"
           >
-            <div className="flex items-center justify-between bg-navy-900 px-4 py-3.5 text-white">
+            <div className="flex items-center justify-between bg-ink-900 px-4 py-3.5 text-white">
               <div>
                 <p className="text-sm font-bold">AGS Assistant</p>
                 <p className="text-[11px] text-brand-200">Usually replies instantly</p>

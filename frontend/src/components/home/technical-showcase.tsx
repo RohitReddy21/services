@@ -84,7 +84,7 @@ export default function TechnicalShowcase() {
                 sizes="90vw"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-navy-950/45 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-ink-950/45 to-transparent" />
             </div>
           </div>
           <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/90 p-4 shadow-xl shadow-navy-900/10 backdrop-blur">

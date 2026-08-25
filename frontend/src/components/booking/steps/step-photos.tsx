@@ -98,7 +98,7 @@ export default function StepPhotos({ embedded = false }: { embedded?: boolean })
               />
 
               {photo.status === "uploading" && (
-                <div className="absolute inset-x-0 bottom-0 bg-navy-950/70 px-2 py-1.5">
+                <div className="absolute inset-x-0 bottom-0 bg-ink-950/70 px-2 py-1.5">
                   <div className="h-1 w-full overflow-hidden rounded-full bg-white/25">
                     <div
                       className="h-full rounded-full bg-brand-400 transition-all"
@@ -109,7 +109,7 @@ export default function StepPhotos({ embedded = false }: { embedded?: boolean })
               )}
 
               {photo.status === "error" && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-navy-950/75 text-white">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-ink-950/75 text-white">
                   <AlertCircle className="size-5 text-red-300" />
                   <span className="text-[11px] font-medium">Upload failed</span>
                   <RetryButton photoId={photo.id} onUpdate={updatePhoto} />
@@ -120,7 +120,7 @@ export default function StepPhotos({ embedded = false }: { embedded?: boolean })
                 type="button"
                 onClick={() => removePhoto(photo.id)}
                 aria-label="Remove photo"
-                className="absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-md bg-navy-950/70 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                className="absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-md bg-ink-950/70 text-white opacity-0 transition-opacity group-hover:opacity-100"
               >
                 <Trash2 className="size-3.5" />
               </button>

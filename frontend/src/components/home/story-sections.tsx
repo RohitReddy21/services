@@ -36,7 +36,7 @@ export function TechnicianSection() {
               sizes="(min-width: 1024px) 42vw, 92vw"
               className="object-cover ags-image-reveal"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-navy-950/45 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-ink-950/45 via-transparent to-transparent" />
           </div>
 
           <div className="absolute left-4 top-4 rounded-2xl border border-white/70 bg-white/90 px-4 py-3 shadow-xl shadow-navy-900/10 backdrop-blur">
@@ -134,7 +134,7 @@ export function RefrigerationStory() {
                 sizes="(min-width: 1024px) 58vw, 92vw"
                 className="object-cover ags-image-reveal"
               />
-              <div className="absolute inset-0 bg-linear-to-r from-navy-950/55 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-r from-ink-950/55 via-transparent to-transparent" />
             </div>
             <div className="absolute -bottom-6 left-5 right-5 grid gap-3 rounded-2xl border border-white/70 bg-white/90 p-4 shadow-xl shadow-navy-900/10 backdrop-blur sm:grid-cols-3">
               {["Cold room", "Display fridge", "Walk-in freezer"].map((item) => (
@@ -233,7 +233,7 @@ export function BookingCtaSection() {
   return (
     <section className="bg-linear-to-b from-white to-sky-50 py-16 lg:py-24">
       <div className="container-ags">
-        <div className="relative overflow-hidden rounded-[2rem] bg-navy-950 p-8 text-white shadow-2xl shadow-navy-900/20 sm:p-10 lg:p-12">
+        <div className="relative overflow-hidden rounded-[2rem] bg-ink-950 p-8 text-white shadow-2xl shadow-navy-900/20 sm:p-10 lg:p-12">
           <div className="absolute inset-0 opacity-28">
             <FadeInImage
               src="/images/services/ac-installation.png"
@@ -243,7 +243,7 @@ export function BookingCtaSection() {
               className="object-cover"
             />
           </div>
-          <div className="absolute inset-0 bg-linear-to-r from-navy-950 via-navy-950/90 to-navy-950/35" />
+          <div className="absolute inset-0 bg-linear-to-r from-ink-950 via-ink-950/90 to-ink-950/35" />
           <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-100">

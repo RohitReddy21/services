@@ -99,7 +99,7 @@ export function ServiceDetailLoader() {
           <div className="h-3 w-64 max-w-full rounded-full bg-slate-200 ags-shimmer" />
         </div>
       </div>
-      <div className="bg-navy-950">
+      <div className="bg-ink-950">
         <div className="container-ags grid gap-10 py-16 lg:grid-cols-[1fr_360px] lg:items-end lg:py-24">
           <div>
             <div className="h-6 w-40 rounded-full bg-white/15 ags-shimmer" />

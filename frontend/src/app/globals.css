@@ -36,6 +36,14 @@
   --color-accent-gold-600: #b0842a;
 
   --color-slate-25: #f8fafc;
+
+  /* Fixed "always dark" tokens for decorative sections/scrims (hero, footer,
+     photo overlays, chat header) that must stay dark in both themes — kept
+     separate from navy-900/950 so those can act as invertible text-ink
+     tokens without breaking the sections that are dark by design. */
+  --color-ink-800: #122a4d;
+  --color-ink-900: #0b1b33;
+  --color-ink-950: #071224;
 }
 
 @theme inline {
@@ -75,6 +83,10 @@
   --color-accent-gold-600: var(--color-accent-gold-600);
 
   --color-slate-25: var(--color-slate-25);
+
+  --color-ink-800: var(--color-ink-800);
+  --color-ink-900: var(--color-ink-900);
+  --color-ink-950: var(--color-ink-950);
 }
 
 body {

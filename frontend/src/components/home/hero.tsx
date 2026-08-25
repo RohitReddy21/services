@@ -26,7 +26,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-[760px] overflow-hidden bg-navy-950 text-white sm:min-h-[720px]">
+    <section className="relative min-h-[760px] overflow-hidden bg-ink-950 text-white sm:min-h-[720px]">
       <div className="absolute inset-0">
         <FadeInImage
           src="/images/services/hvac-repair-technician.png"
@@ -146,7 +146,7 @@ export default function Hero() {
                 sizes="430px"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-navy-950/70 via-navy-950/10 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-ink-950/70 via-ink-950/10 to-transparent" />
             </div>
             <div className="absolute bottom-8 left-8 right-8 rounded-2xl border border-white/30 bg-white/90 p-4 text-navy-900 shadow-xl backdrop-blur">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">

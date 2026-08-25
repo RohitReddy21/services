@@ -59,7 +59,7 @@ export default async function ServicesPage({
               sizes="420px"
               className="object-cover ags-image-reveal"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-navy-950/45 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-ink-950/45 to-transparent" />
           </div>
         </div>
 

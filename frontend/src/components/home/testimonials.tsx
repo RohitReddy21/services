@@ -43,7 +43,7 @@ export default function Testimonials() {
               sizes="(min-width: 1024px) 40vw, 92vw"
               className="object-cover ags-image-reveal"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-navy-950/55 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-ink-950/55 via-transparent to-transparent" />
           </div>
         </motion.div>
 

@@ -40,7 +40,7 @@ const helpLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-navy-950 text-slate-300">
+    <footer className="relative overflow-hidden bg-ink-950 text-slate-300">
       <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-brand-300/70 to-transparent" />
       <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-brand-500/10 blur-3xl" />
       <motion.div
