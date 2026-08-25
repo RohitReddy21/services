@@ -42,11 +42,11 @@ export default function Hero() {
             muted
             loop
             playsInline
-            poster="/images/services/wall-mounted-ac.png"
+            poster="/images/services/outdoor-condenser-units.png"
             className="absolute inset-0 size-full object-cover"
             aria-hidden="true"
           >
-            <source src="/videos/hero-ac-unit.mp4" type="video/mp4" />
+            <source src="/videos/hero-skyline.mp4" type="video/mp4" />
           </video>
         )}
         <motion.div
