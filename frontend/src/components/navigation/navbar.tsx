@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Calendar, ChevronDown, LogOut, Menu, User, X } from "lucide-react";
+import { Calendar, ChevronDown, LogOut, Menu, Search, User, X } from "lucide-react";
 import Logo from "@/components/navigation/logo";
+import NavSearch from "@/components/navigation/nav-search";
 import { ButtonLink } from "@/components/ui/button";
 import { useAuth } from "@/components/auth/auth-context";
 import { cn } from "@/lib/utils";
@@ -146,6 +147,7 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-2">
+          <NavSearch />
           {!loading && !user && (
             <>
               <Link
@@ -240,6 +242,7 @@ export default function Navbar() {
             className="overflow-hidden border-t border-slate-200 bg-white/95 backdrop-blur-xl lg:hidden"
           >
             <div className="container-ags flex flex-col gap-1 py-4">
+              <MobileSearch onNavigate={() => setMobileOpen(false)} />
               {navLinks.map((link) => (
                   <Link
                     key={link.label}
@@ -311,5 +314,32 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </header>
+  );
+}
+
+function MobileSearch({ onNavigate }: { onNavigate: () => void }) {
+  const [query, setQuery] = useState("");
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    router.push(`/services?q=${encodeURIComponent(trimmed)}`);
+    onNavigate();
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="relative mb-2">
+      <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        type="text"
+        placeholder="Search services..."
+        aria-label="Search services"
+        className="h-11 w-full rounded-lg border border-slate-200 bg-slate-25 pl-9 pr-3 text-sm text-navy-900 placeholder:text-slate-400 outline-none focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
+      />
+    </form>
   );
 }

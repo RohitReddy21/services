@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Refrigerator, Snowflake } from "lucide-react";
-import ServiceGrid from "@/components/services/service-grid";
+import { ArrowRight } from "lucide-react";
+import ServicesExplorer from "@/components/services/services-explorer";
 import FadeInImage from "@/components/ui/fade-in-image";
-import { getServicesByCategory, serviceCategories } from "@/lib/data/services";
+import { services, serviceCategories } from "@/lib/data/services";
 import type { ServiceCategoryId } from "@/types/service";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Our Services",
   description:
     "Browse all AGS air conditioning and refrigeration services — installation, repairs, servicing and maintenance for homes and businesses across the UK.",
 };
-
-const categoryIcon = { snowflake: Snowflake, fridge: Refrigerator } as const;
 
 export default async function ServicesPage({
   searchParams,
@@ -22,8 +19,7 @@ export default async function ServicesPage({
   const requested = Array.isArray(params.category) ? params.category[0] : params.category;
   const activeCategory: ServiceCategoryId =
     requested === "refrigeration" ? "refrigeration" : "air-conditioning";
-
-  const activeServices = getServicesByCategory(activeCategory);
+  const requestedQuery = Array.isArray(params.q) ? params.q[0] : params.q;
 
   return (
     <div className="bg-white">
@@ -67,33 +63,14 @@ export default async function ServicesPage({
           </div>
         </div>
 
-        <div className="mt-8 inline-flex rounded-xl border border-slate-200 bg-slate-25 p-1">
-          {serviceCategories.map((category) => {
-            const Icon = categoryIcon[category.icon];
-            const isActive = category.id === activeCategory;
-            return (
-              <Link
-                key={category.id}
-                href={`/services?category=${category.id}`}
-                className={cn(
-                  "flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors",
-                  isActive
-                    ? "bg-white text-brand-600 shadow-sm"
-                    : "text-slate-500 hover:text-navy-800"
-                )}
-              >
-                <Icon className="size-4" />
-                {category.name}
-              </Link>
-            );
-          })}
+        <div className="mt-8">
+          <ServicesExplorer
+            allServices={services}
+            categories={serviceCategories}
+            initialCategory={activeCategory}
+            initialQuery={requestedQuery ?? ""}
+          />
         </div>
-
-        <p className="mt-5 max-w-2xl text-sm text-slate-500">
-          {serviceCategories.find((c) => c.id === activeCategory)?.shortDescription}
-        </p>
-
-        <ServiceGrid services={activeServices} className="mt-8" />
 
         <div className="mt-14 rounded-2xl border border-brand-100 bg-sky-50 p-8 text-center shadow-sm shadow-brand-100 sm:p-10">
           <h2 className="font-display text-xl font-bold text-navy-900">
