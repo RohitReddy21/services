@@ -4,6 +4,7 @@ import Navbar from "@/components/navigation/navbar";
 import Footer from "@/components/navigation/footer";
 import { AuthProvider } from "@/components/auth/auth-context";
 import AppShell from "@/components/layout/app-shell";
+import ChatWidget from "@/components/chat/chat-widget";
 import "./globals.css";
 
 const inter = Inter({
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <AppShell>{children}</AppShell>
           </main>
           <Footer />
+          <ChatWidget />
         </AuthProvider>
       </body>
     </html>

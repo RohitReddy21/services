@@ -32,7 +32,9 @@ function header(doc: PDFKit.PDFDocument, title: string, subtitle: string) {
 }
 
 function footer(doc: PDFKit.PDFDocument) {
-  const y = doc.page.height - 70;
+  // Leave enough clearance above the bottom margin for two wrapped lines —
+  // too close to the edge and PDFKit silently starts a blank second page.
+  const y = doc.page.height - 110;
   doc
     .moveTo(50, y)
     .lineTo(doc.page.width - 50, y)

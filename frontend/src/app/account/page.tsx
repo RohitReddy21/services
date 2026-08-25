@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Bell, Calendar, CheckCircle2, MapPin, Wrench } from "lucide-react";
+import { Bell, Calendar, CheckCircle2, MapPin, Sparkles, Wrench } from "lucide-react";
 import { getCurrentUser } from "@/lib/server/current-user";
 import { serverFetchJson } from "@/lib/server/backend-fetch";
 import { mapBookingDoc } from "@/lib/api/booking-mapper";
@@ -17,9 +17,10 @@ export default async function AccountOverviewPage() {
   const user = await getCurrentUser();
   if (!user) return null; // guarded by layout
 
-  const [bookingsRes, notificationsRes] = await Promise.all([
+  const [bookingsRes, notificationsRes, loyaltyRes] = await Promise.all([
     serverFetchJson<{ bookings: Record<string, unknown>[] }>("/api/bookings?mine=true"),
     serverFetchJson<{ notifications: Notification[] }>("/api/account/notifications"),
+    serverFetchJson<{ balance: number }>("/api/loyalty"),
   ]);
 
   const bookings = (bookingsRes?.bookings ?? []).map(mapBookingDoc);
@@ -27,6 +28,7 @@ export default async function AccountOverviewPage() {
   const completed = bookings.filter((b) => b.status === "COMPLETED");
   const notifications = notificationsRes?.notifications ?? [];
   const unread = notifications.filter((n) => !n.read);
+  const points = loyaltyRes?.balance ?? 0;
 
   return (
     <div>
@@ -37,16 +39,18 @@ export default async function AccountOverviewPage() {
         Here&apos;s an overview of your account.
       </p>
 
-      <div className="mt-6 grid grid-cols-3 gap-3 sm:gap-4">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
         <StatCard icon={Calendar} value={upcoming.length} label="Upcoming Bookings" />
         <StatCard icon={CheckCircle2} value={completed.length} label="Completed" />
         <StatCard icon={Bell} value={unread.length} label="Unread" />
+        <StatCard icon={Sparkles} value={points} label="Reward Points" />
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
         <QuickAction href="/book" icon={Wrench} label="Book a Service" />
         <QuickAction href="/account/bookings" icon={Calendar} label="View Bookings" />
         <QuickAction href="/account/addresses" icon={MapPin} label="Manage Addresses" />
+        <QuickAction href="/account/rewards" icon={Sparkles} label="Rewards" />
         <QuickAction href="/account/support" icon={Bell} label="Contact Support" />
       </div>
 

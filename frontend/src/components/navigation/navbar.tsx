@@ -30,6 +30,7 @@ const navLinks = [
       { label: "About Us", href: "/about" },
       { label: "How It Works", href: "/how-it-works" },
       { label: "Service Areas", href: "/service-areas" },
+      { label: "Help Center", href: "/help" },
     ],
   },
   { label: "Contact", href: "/contact" },
