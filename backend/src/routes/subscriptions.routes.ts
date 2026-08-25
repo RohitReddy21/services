@@ -8,6 +8,7 @@ import { sendEmail } from "../lib/email";
 import { subscriptionCreatedEmail } from "../emails/subscription-created";
 import { awardLoyaltyPoints } from "../lib/loyalty";
 import { streamSubscriptionInvoice } from "../lib/pdf";
+import { applyDiscount, findValidCoupon } from "../lib/coupons";
 
 export const subscriptionsRouter = Router();
 subscriptionsRouter.use(requireAuth);
@@ -31,13 +32,32 @@ subscriptionsRouter.get("/", async (req, res) => {
 });
 
 subscriptionsRouter.post("/", async (req, res) => {
-  const input = createSubscriptionSchema.parse(req.body);
+  const { couponCode, ...input } = createSubscriptionSchema.parse(req.body);
 
   const startDate = new Date();
   const nextVisitDate = computeNextVisitDate(input.frequency, startDate);
 
+  let price = input.price ?? null;
+  let originalAmount: number | null = null;
+  let appliedCouponCode: string | null = null;
+
+  if (couponCode && price?.amount) {
+    const result = await findValidCoupon(couponCode);
+    if ("error" in result) throw new ApiError(400, result.error ?? "Invalid coupon code.");
+
+    originalAmount = price.amount;
+    price = { ...price, amount: applyDiscount(price.amount, result.coupon) };
+    appliedCouponCode = result.coupon.code;
+
+    result.coupon.timesRedeemed += 1;
+    await result.coupon.save();
+  }
+
   const subscription = await Subscription.create({
     ...input,
+    price,
+    originalAmount,
+    couponCode: appliedCouponCode,
     userId: req.userId,
     status: "ACTIVE",
     startDate,
@@ -116,6 +136,8 @@ subscriptionsRouter.get("/:id/invoice", async (req, res) => {
     periodEnd,
     equipmentLabel: subscription.equipmentLabel,
     address: addressLine,
+    originalAmount: subscription.originalAmount,
+    couponCode: subscription.couponCode,
   });
 });
 

@@ -29,6 +29,8 @@ const subscriptionSchema = new Schema(
       billingCycleMonths: { type: Number, default: null },
     },
     servicesPerCycle: { type: Number, default: null },
+    couponCode: { type: String, default: null },
+    originalAmount: { type: Number, default: null },
   },
   { timestamps: true }
 );

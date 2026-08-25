@@ -78,6 +78,8 @@ export function streamSubscriptionInvoice(
     periodEnd: Date;
     equipmentLabel: string;
     address: string;
+    originalAmount?: number | null;
+    couponCode?: string | null;
   }
 ) {
   const doc = new PDFDocument({ size: "A4", margin: 50 });
@@ -145,7 +147,29 @@ export function streamSubscriptionInvoice(
     .fillColor(NAVY)
     .text(formatMoney(input.amount, input.currency), 0, rowY, { align: "right", width: doc.page.width - 50 });
 
-  doc.moveDown(3);
+  doc.moveDown(1.2);
+  if (input.originalAmount != null && input.couponCode) {
+    const savedRowY = doc.y;
+    doc
+      .font("Helvetica")
+      .fontSize(9)
+      .fillColor(SLATE)
+      .text(`Coupon applied: ${input.couponCode}`, 50, savedRowY, { width: 200 });
+    doc
+      .font("Helvetica")
+      .fontSize(9)
+      .fillColor(SLATE)
+      .text(
+        `Original price: ${formatMoney(input.originalAmount, input.currency)}`,
+        0,
+        savedRowY,
+        { align: "right", width: doc.page.width - 50 }
+      );
+    doc.moveDown(1.4);
+  } else {
+    doc.moveDown(1.6);
+  }
+
   doc
     .moveTo(300, doc.y)
     .lineTo(doc.page.width - 50, doc.y)

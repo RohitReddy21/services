@@ -46,6 +46,8 @@ export interface Subscription {
   notes: string;
   price: SubscriptionPlanPrice | null;
   servicesPerCycle: number | null;
+  couponCode?: string | null;
+  originalAmount?: number | null;
   createdAt: string;
   updatedAt: string;
 }

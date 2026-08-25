@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Check, Loader2, Refrigerator, Snowflake } from "lucide-react";
+import { Check, Loader2, Refrigerator, Snowflake, Tag, X } from "lucide-react";
 import { useAuth } from "@/components/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import { serviceCategories } from "@/lib/data/services";
 import { equipmentOptions } from "@/lib/data/booking-options";
 import { createSubscriptionRequest } from "@/lib/api/subscription-client";
+import { validateCouponRequest, type CouponValidationResult } from "@/lib/api/coupon-client";
 import type { SubscriptionPlan } from "@/types/subscription";
 import type { ServiceCategoryId } from "@/types/service";
 import { cn } from "@/lib/utils";
@@ -28,6 +29,11 @@ export default function SubscribeForm({ plan }: { plan: SubscriptionPlan }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+
+  const [couponInput, setCouponInput] = useState("");
+  const [coupon, setCoupon] = useState<CouponValidationResult | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [validatingCoupon, setValidatingCoupon] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -60,6 +66,7 @@ export default function SubscribeForm({ plan }: { plan: SubscriptionPlan }) {
         notes,
         price: plan.price ?? null,
         servicesPerCycle: plan.servicesPerCycle ?? null,
+        couponCode: coupon?.code ?? null,
       });
       setDone(true);
     } catch (err) {
@@ -67,6 +74,27 @@ export default function SubscribeForm({ plan }: { plan: SubscriptionPlan }) {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim() || !plan.price) return;
+    setCouponError(null);
+    setValidatingCoupon(true);
+    try {
+      const result = await validateCouponRequest(couponInput.trim(), plan.price.amount);
+      setCoupon(result);
+    } catch (err) {
+      setCoupon(null);
+      setCouponError(err instanceof Error ? err.message : "Invalid coupon code.");
+    } finally {
+      setValidatingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCoupon(null);
+    setCouponInput("");
+    setCouponError(null);
   };
 
   if (authLoading || !user) {
@@ -253,10 +281,52 @@ export default function SubscribeForm({ plan }: { plan: SubscriptionPlan }) {
         <h3 className="font-display text-base font-bold text-navy-900">{plan.name}</h3>
         <p className="mt-1 text-sm text-slate-600">{plan.tagline}</p>
         {plan.price ? (
-          <p className="mt-3 text-sm font-semibold text-brand-700">
-            &euro;{plan.price.amount} / {plan.price.billingCycleMonths} months &middot;{" "}
-            {plan.servicesPerCycle} services included
-          </p>
+          <>
+            <p className="mt-3 text-sm font-semibold text-brand-700">
+              {coupon ? (
+                <>
+                  <span className="mr-1.5 text-slate-400 line-through">&euro;{coupon.originalAmount}</span>
+                  &euro;{coupon.discountedAmount}
+                </>
+              ) : (
+                <>&euro;{plan.price.amount}</>
+              )}{" "}
+              / {plan.price.billingCycleMonths} months &middot; {plan.servicesPerCycle} services included
+            </p>
+
+            <div className="mt-3">
+              {coupon ? (
+                <div className="flex items-center justify-between rounded-lg bg-accent-green-50 px-3 py-2 text-xs font-semibold text-accent-green-700">
+                  <span className="flex items-center gap-1.5">
+                    <Tag className="size-3.5" />
+                    {coupon.code} applied
+                  </span>
+                  <button type="button" onClick={handleRemoveCoupon} aria-label="Remove coupon">
+                    <X className="size-3.5" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-1.5">
+                  <input
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                    placeholder="Coupon code"
+                    className="input-field h-9 flex-1 text-xs"
+                  />
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={validatingCoupon || !couponInput.trim()}
+                    onClick={handleApplyCoupon}
+                  >
+                    {validatingCoupon && <Loader2 className="size-3.5 animate-spin" />}
+                    Apply
+                  </Button>
+                </div>
+              )}
+              {couponError && <p className="mt-1.5 text-xs font-medium text-red-600">{couponError}</p>}
+            </div>
+          </>
         ) : (
           <p className="mt-3 text-sm font-semibold text-brand-700">
             {plan.visitsPerYear} visit{plan.visitsPerYear > 1 ? "s" : ""} / year

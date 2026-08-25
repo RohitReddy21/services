@@ -23,4 +23,5 @@ export const createSubscriptionSchema = z.object({
     .nullable()
     .optional(),
   servicesPerCycle: z.number().int().positive().nullable().optional(),
+  couponCode: z.string().trim().nullable().optional(),
 });

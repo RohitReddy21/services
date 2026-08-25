@@ -21,6 +21,7 @@ import { loyaltyRouter } from "./routes/loyalty.routes";
 import { referralsRouter } from "./routes/referrals.routes";
 import { adminRouter } from "./routes/admin.routes";
 import { twoFactorRouter } from "./routes/twofa.routes";
+import { couponsRouter } from "./routes/coupons.routes";
 
 export function createApp() {
   const app = express();
@@ -84,6 +85,7 @@ export function createApp() {
   app.use("/api/referrals", referralsRouter);
   app.use("/api/admin", adminRouter);
   app.use("/api/2fa", twoFactorRouter);
+  app.use("/api/coupons", couponsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

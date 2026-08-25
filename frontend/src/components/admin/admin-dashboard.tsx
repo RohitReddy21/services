@@ -14,11 +14,27 @@ import type { BookingRecord } from "@/types/booking";
 import type { SupportTicket } from "@/types/account";
 import type { BookingStatus } from "@/types/service";
 import { cn } from "@/lib/utils";
+import UsersPanel from "@/components/admin/users-panel";
+import SubscriptionsPanel from "@/components/admin/subscriptions-panel";
+import ReviewsPanel from "@/components/admin/reviews-panel";
+import CouponsPanel from "@/components/admin/coupons-panel";
 
 const STATUS_OPTIONS = Object.keys(statusMeta) as BookingStatus[];
 
+const TABS = ["bookings", "support", "subscriptions", "users", "reviews", "coupons"] as const;
+type Tab = (typeof TABS)[number];
+
+const TAB_LABELS: Record<Tab, string> = {
+  bookings: "Bookings",
+  support: "Support Tickets",
+  subscriptions: "Care Plans",
+  users: "Users",
+  reviews: "Reviews",
+  coupons: "Coupons",
+};
+
 export default function AdminDashboard({ adminName }: { adminName: string }) {
-  const [tab, setTab] = useState<"bookings" | "support">("bookings");
+  const [tab, setTab] = useState<Tab>("bookings");
 
   return (
     <div className="min-h-screen bg-slate-100 p-6">
@@ -35,8 +51,8 @@ export default function AdminDashboard({ adminName }: { adminName: string }) {
           <p className="text-sm text-slate-500">Signed in as {adminName}</p>
         </div>
 
-        <div className="mt-6 inline-flex rounded-xl border border-slate-200 bg-white p-1">
-          {(["bookings", "support"] as const).map((t) => (
+        <div className="mt-6 inline-flex flex-wrap rounded-xl border border-slate-200 bg-white p-1">
+          {TABS.map((t) => (
             <button
               key={t}
               type="button"
@@ -46,12 +62,19 @@ export default function AdminDashboard({ adminName }: { adminName: string }) {
                 tab === t ? "bg-brand-600 text-white" : "text-slate-500 hover:text-navy-800"
               )}
             >
-              {t === "bookings" ? "Bookings" : "Support Tickets"}
+              {TAB_LABELS[t]}
             </button>
           ))}
         </div>
 
-        <div className="mt-6">{tab === "bookings" ? <BookingsPanel /> : <SupportPanel />}</div>
+        <div className="mt-6">
+          {tab === "bookings" && <BookingsPanel />}
+          {tab === "support" && <SupportPanel />}
+          {tab === "subscriptions" && <SubscriptionsPanel />}
+          {tab === "users" && <UsersPanel />}
+          {tab === "reviews" && <ReviewsPanel />}
+          {tab === "coupons" && <CouponsPanel />}
+        </div>
       </div>
     </div>
   );

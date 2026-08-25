@@ -1,5 +1,7 @@
-import type { SupportTicket } from "@/types/account";
+import type { Review, SupportTicket } from "@/types/account";
 import type { BookingStatus } from "@/types/service";
+import type { Subscription } from "@/types/subscription";
+import type { AdminUserSummary, Coupon, DiscountType } from "@/types/coupon";
 import { API_BASE_URL } from "@/lib/api/api-base";
 import { mapBookingDoc } from "@/lib/api/booking-mapper";
 
@@ -53,4 +55,41 @@ export function fetchAdminSupportTickets(status?: string) {
 
 export function resolveSupportTicketRequest(id: string) {
   return send<{ ticket: SupportTicket }>(`/api/admin/support-tickets/${id}/resolve`, "PATCH");
+}
+
+export function fetchAdminUsers(search?: string) {
+  const qs = search ? `?search=${encodeURIComponent(search)}` : "";
+  return get<{ users: AdminUserSummary[] }>(`/api/admin/users${qs}`);
+}
+
+export function fetchAdminSubscriptions(status?: string) {
+  const qs = status ? `?status=${encodeURIComponent(status)}` : "";
+  return get<{ subscriptions: Subscription[] }>(`/api/admin/subscriptions${qs}`);
+}
+
+export function fetchAdminReviews() {
+  return get<{ reviews: Review[] }>("/api/admin/reviews");
+}
+
+export function fetchAdminCoupons() {
+  return get<{ coupons: Coupon[] }>("/api/admin/coupons");
+}
+
+export function createCouponRequest(input: {
+  code: string;
+  description: string;
+  discountType: DiscountType;
+  discountValue: number;
+  expiresAt: string | null;
+  maxRedemptions: number | null;
+}) {
+  return send<{ coupon: Coupon }>("/api/admin/coupons", "POST", input);
+}
+
+export function updateCouponRequest(id: string, patch: Partial<{ active: boolean }>) {
+  return send<{ coupon: Coupon }>(`/api/admin/coupons/${id}`, "PATCH", patch);
+}
+
+export function deleteCouponRequest(id: string) {
+  return send<{ ok: boolean }>(`/api/admin/coupons/${id}`, "DELETE");
 }

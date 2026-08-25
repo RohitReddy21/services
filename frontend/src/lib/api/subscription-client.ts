@@ -39,6 +39,7 @@ export function createSubscriptionRequest(input: {
   notes?: string;
   price?: SubscriptionPlanPrice | null;
   servicesPerCycle?: number | null;
+  couponCode?: string | null;
 }) {
   return send<{ subscription: Subscription }>("/api/subscriptions", "POST", input);
 }
