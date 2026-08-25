@@ -8,12 +8,14 @@ import { cn } from "@/lib/utils";
 export default function HelpCenterExplorer({
   faqs,
   topics,
+  initialTopic = null,
 }: {
   faqs: HelpFaq[];
   topics: string[];
+  initialTopic?: string | null;
 }) {
   const [query, setQuery] = useState("");
-  const [topic, setTopic] = useState<string | null>(null);
+  const [topic, setTopic] = useState<string | null>(initialTopic);
 
   const trimmedQuery = query.trim().toLowerCase();
 

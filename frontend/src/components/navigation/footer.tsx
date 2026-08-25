@@ -31,9 +31,9 @@ const refrigerationLinks = [
 ];
 
 const helpLinks = [
-  { label: "FAQ", href: "/support/faq" },
+  { label: "FAQ", href: "/help" },
   { label: "Support", href: "/account/support" },
-  { label: "Booking Help", href: "/support/faq#booking" },
+  { label: "Booking Help", href: "/help?topic=Bookings" },
   { label: "Terms & Conditions", href: "/legal/terms" },
   { label: "Privacy Policy", href: "/legal/privacy" },
 ];

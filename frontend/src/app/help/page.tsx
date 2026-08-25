@@ -10,7 +10,11 @@ export const metadata: Metadata = {
     "Answers to common questions about bookings, Care Plans, rewards, referrals and more — search the AGS Help Center.",
 };
 
-export default function HelpCenterPage() {
+export default async function HelpCenterPage({ searchParams }: PageProps<"/help">) {
+  const params = await searchParams;
+  const requestedTopic = Array.isArray(params.topic) ? params.topic[0] : params.topic;
+  const initialTopic = helpCenterTopics.includes(requestedTopic ?? "") ? requestedTopic! : null;
+
   return (
     <div className="bg-white">
       <div className="border-b border-slate-200 bg-sky-50">
@@ -36,7 +40,11 @@ export default function HelpCenterPage() {
         </div>
 
         <div className="mt-10">
-          <HelpCenterExplorer faqs={helpCenterFaqs} topics={helpCenterTopics} />
+          <HelpCenterExplorer
+            faqs={helpCenterFaqs}
+            topics={helpCenterTopics}
+            initialTopic={initialTopic}
+          />
         </div>
 
         <div className="mx-auto mt-14 max-w-xl rounded-2xl border border-brand-100 bg-sky-50 p-8 text-center shadow-sm shadow-brand-100">

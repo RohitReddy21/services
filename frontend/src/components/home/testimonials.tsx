@@ -93,7 +93,7 @@ export default function Testimonials() {
             ))}
           </div>
 
-          <ButtonLink href="/support/faq#reviews" variant="secondary" size="md" className="mt-6">
+          <ButtonLink href="/services" variant="secondary" size="md" className="mt-6">
             View All Reviews
           </ButtonLink>
         </motion.div>
