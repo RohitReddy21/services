@@ -12,6 +12,7 @@ subscriptionsRouter.use(requireAuth);
 
 const MONTHS_PER_VISIT: Record<string, number> = {
   quarterly: 3,
+  "quarterly-bundle": 3,
   "bi-annual": 6,
   annual: 12,
 };

@@ -1,7 +1,13 @@
 import type { ServiceCategoryId } from "@/types/service";
 
-export type SubscriptionFrequency = "annual" | "bi-annual" | "quarterly";
+export type SubscriptionFrequency = "annual" | "bi-annual" | "quarterly" | "quarterly-bundle";
 export type SubscriptionStatus = "ACTIVE" | "PAUSED" | "CANCELLED";
+
+export interface SubscriptionPlanPrice {
+  amount: number;
+  currency: "EUR";
+  billingCycleMonths: number;
+}
 
 export interface SubscriptionPlan {
   id: string;
@@ -11,6 +17,10 @@ export interface SubscriptionPlan {
   tagline: string;
   features: string[];
   recommendedFor: string;
+  /** Only set for fixed-price package plans; other plans confirm pricing with the customer directly. */
+  price?: SubscriptionPlanPrice;
+  servicesPerCycle?: number;
+  rolloverPolicy?: string;
 }
 
 export interface SubscriptionAddress {

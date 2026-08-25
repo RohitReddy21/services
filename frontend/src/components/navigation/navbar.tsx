@@ -22,16 +22,23 @@ const navLinks = [
       { label: "Refrigeration", href: "/services?category=refrigeration" },
     ],
   },
-  { label: "Care Plans", href: "/subscriptions" },
-  { label: "About Us", href: "/about" },
-  { label: "How It Works", href: "/how-it-works" },
-  { label: "Service Areas", href: "/service-areas" },
+  {
+    label: "Company",
+    href: "/about",
+    children: [
+      { label: "Care Plans", href: "/subscriptions" },
+      { label: "About Us", href: "/about" },
+      { label: "How It Works", href: "/how-it-works" },
+      { label: "Service Areas", href: "/service-areas" },
+    ],
+  },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [accountOpen, setAccountOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -54,6 +61,9 @@ export default function Navbar() {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href.split("?")[0]);
   };
+
+  const isLinkActive = (link: (typeof navLinks)[number]) =>
+    link.children ? link.children.some((child) => isActive(child.href)) : isActive(link.href);
 
   return (
     <header
@@ -78,14 +88,14 @@ export default function Navbar() {
               <div
                 key={link.label}
                 className="relative"
-                onMouseEnter={() => setServicesOpen(true)}
-                onMouseLeave={() => setServicesOpen(false)}
+                onMouseEnter={() => setOpenDropdown(link.label)}
+                onMouseLeave={() => setOpenDropdown(null)}
               >
                 <Link
                   href={link.href}
                   className={cn(
                     "ags-focus group relative flex items-center gap-1 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors",
-                    isActive(link.href)
+                    isLinkActive(link)
                       ? "text-brand-700"
                       : "text-navy-800 hover:text-brand-600"
                   )}
@@ -95,12 +105,12 @@ export default function Navbar() {
                   <span
                     className={cn(
                       "absolute inset-x-3 -bottom-0.5 h-0.5 origin-left rounded-full bg-brand-500 transition-transform",
-                      isActive(link.href) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                      isLinkActive(link) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                     )}
                   />
                 </Link>
                 <AnimatePresence>
-                  {servicesOpen && (
+                  {openDropdown === link.label && (
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -129,7 +139,7 @@ export default function Navbar() {
                 href={link.href}
                 className={cn(
                   "ags-focus group relative rounded-lg px-3.5 py-2 text-sm font-medium transition-colors",
-                  isActive(link.href)
+                  isLinkActive(link)
                     ? "text-brand-700"
                     : "text-navy-800 hover:text-brand-600"
                 )}
@@ -138,7 +148,7 @@ export default function Navbar() {
                 <span
                   className={cn(
                     "absolute inset-x-3 -bottom-0.5 h-0.5 origin-left rounded-full bg-brand-500 transition-transform",
-                    isActive(link.href) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    isLinkActive(link) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                   )}
                 />
               </Link>
@@ -243,7 +253,29 @@ export default function Navbar() {
           >
             <div className="container-ags flex flex-col gap-1 py-4">
               <MobileSearch onNavigate={() => setMobileOpen(false)} />
-              {navLinks.map((link) => (
+              {navLinks.map((link) =>
+                link.children ? (
+                  <div key={link.label} className="mb-1">
+                    <p className="px-3 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                      {link.label}
+                    </p>
+                    {link.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        onClick={() => setMobileOpen(false)}
+                        className={cn(
+                          "ags-focus block rounded-lg px-3 py-2.5 text-sm font-medium",
+                          isActive(child.href)
+                            ? "bg-brand-50 text-brand-700"
+                            : "text-navy-800 hover:bg-slate-100"
+                        )}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
                   <Link
                     key={link.label}
                     href={link.href}
@@ -257,7 +289,8 @@ export default function Navbar() {
                   >
                     {link.label}
                   </Link>
-                ))}
+                )
+              )}
               {!loading && !user && (
                 <>
                   <Link

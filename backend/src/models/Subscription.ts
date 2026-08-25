@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { withJsonId } from "../lib/schema-plugin";
 
 const SUBSCRIPTION_STATUSES = ["ACTIVE", "PAUSED", "CANCELLED"] as const;
-const FREQUENCIES = ["annual", "bi-annual", "quarterly"] as const;
+const FREQUENCIES = ["annual", "bi-annual", "quarterly", "quarterly-bundle"] as const;
 
 const subscriptionSchema = new Schema(
   {

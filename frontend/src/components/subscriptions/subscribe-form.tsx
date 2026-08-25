@@ -250,9 +250,16 @@ export default function SubscribeForm({ plan }: { plan: SubscriptionPlan }) {
       <aside className="h-fit rounded-2xl border border-slate-200 bg-sky-50 p-6">
         <h3 className="font-display text-base font-bold text-navy-900">{plan.name}</h3>
         <p className="mt-1 text-sm text-slate-600">{plan.tagline}</p>
-        <p className="mt-3 text-sm font-semibold text-brand-700">
-          {plan.visitsPerYear} visit{plan.visitsPerYear > 1 ? "s" : ""} / year
-        </p>
+        {plan.price ? (
+          <p className="mt-3 text-sm font-semibold text-brand-700">
+            &euro;{plan.price.amount} / {plan.price.billingCycleMonths} months &middot;{" "}
+            {plan.servicesPerCycle} services included
+          </p>
+        ) : (
+          <p className="mt-3 text-sm font-semibold text-brand-700">
+            {plan.visitsPerYear} visit{plan.visitsPerYear > 1 ? "s" : ""} / year
+          </p>
+        )}
         <ul className="mt-4 space-y-2">
           {plan.features.map((f) => (
             <li key={f} className="flex items-start gap-2 text-xs text-slate-600">
@@ -261,6 +268,11 @@ export default function SubscribeForm({ plan }: { plan: SubscriptionPlan }) {
             </li>
           ))}
         </ul>
+        {plan.rolloverPolicy && (
+          <p className="mt-4 rounded-lg bg-white px-3 py-2.5 text-xs leading-relaxed text-slate-500">
+            {plan.rolloverPolicy}
+          </p>
+        )}
         <p className="mt-4 text-xs text-slate-400">
           Not the right plan?{" "}
           <Link href="/subscriptions" className="font-semibold text-brand-600 hover:text-brand-700">

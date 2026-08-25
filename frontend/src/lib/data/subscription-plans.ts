@@ -46,6 +46,25 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     ],
     recommendedFor: "Restaurants, retail, and multi-unit commercial sites",
   },
+  {
+    id: "premium-care",
+    name: "Premium Care",
+    frequency: "quarterly-bundle",
+    visitsPerYear: 12,
+    price: { amount: 500, currency: "EUR", billingCycleMonths: 3 },
+    servicesPerCycle: 3,
+    rolloverPolicy:
+      "Any of the 3 services not used within the 3-month period automatically roll over and are added to your next 3-month subscription cycle — you never lose a paid-for visit.",
+    tagline: "3 services every 3 months for €500, with unused visits rolled over automatically.",
+    features: [
+      "3 services included every 3-month cycle",
+      "Unused services automatically roll over to the next cycle",
+      "Everything in Complete Care",
+      "Fixed package price: €500 per 3 months",
+      "Dedicated account contact",
+    ],
+    recommendedFor: "High-usage commercial sites that want predictable, bundled pricing",
+  },
 ];
 
 export function getPlanById(id: string) {

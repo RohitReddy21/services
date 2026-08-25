@@ -1,6 +1,13 @@
 import { detailRow, detailTable, emailLayout } from "../lib/email-layout";
 import { env } from "../config/env";
 
+const FREQUENCY_LABELS: Record<string, string> = {
+  annual: "Annual",
+  "bi-annual": "Bi-Annual",
+  quarterly: "Quarterly",
+  "quarterly-bundle": "3-Month Bundle",
+};
+
 export function subscriptionCreatedEmail(input: {
   planName: string;
   frequency: string;
@@ -15,7 +22,7 @@ export function subscriptionCreatedEmail(input: {
       ${detailTable(
         [
           detailRow("Plan", input.planName),
-          detailRow("Frequency", input.frequency),
+          detailRow("Frequency", FREQUENCY_LABELS[input.frequency] ?? input.frequency),
           detailRow("Equipment", input.equipmentLabel),
         ].join("")
       )}

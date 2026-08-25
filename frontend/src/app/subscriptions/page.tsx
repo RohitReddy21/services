@@ -37,7 +37,7 @@ export default function SubscriptionsPage() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-3">
+        <div className="mt-12 grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
           {subscriptionPlans.map((plan, index) => (
             <div
               key={plan.id}
@@ -55,12 +55,21 @@ export default function SubscriptionsPage() {
               <h2 className="font-display text-xl font-bold text-navy-900">{plan.name}</h2>
               <p className="mt-1 text-sm text-slate-500">{plan.tagline}</p>
 
-              <p className="mt-4 font-display text-2xl font-extrabold text-brand-600">
-                {plan.visitsPerYear}
-                <span className="ml-1.5 text-sm font-semibold text-slate-500">
-                  visit{plan.visitsPerYear > 1 ? "s" : ""} / year
-                </span>
-              </p>
+              {plan.price ? (
+                <p className="mt-4 font-display text-2xl font-extrabold text-brand-600">
+                  &euro;{plan.price.amount}
+                  <span className="ml-1.5 text-sm font-semibold text-slate-500">
+                    / {plan.price.billingCycleMonths} months
+                  </span>
+                </p>
+              ) : (
+                <p className="mt-4 font-display text-2xl font-extrabold text-brand-600">
+                  {plan.visitsPerYear}
+                  <span className="ml-1.5 text-sm font-semibold text-slate-500">
+                    visit{plan.visitsPerYear > 1 ? "s" : ""} / year
+                  </span>
+                </p>
+              )}
 
               <ul className="mt-5 flex-1 space-y-2.5">
                 {plan.features.map((feature) => (
@@ -70,6 +79,12 @@ export default function SubscriptionsPage() {
                   </li>
                 ))}
               </ul>
+
+              {plan.rolloverPolicy && (
+                <p className="mt-4 rounded-lg bg-sky-50 px-3 py-2.5 text-xs leading-relaxed text-slate-600">
+                  {plan.rolloverPolicy}
+                </p>
+              )}
 
               <p className="mt-5 text-xs text-slate-400">
                 Recommended for: {plan.recommendedFor}
@@ -83,8 +98,9 @@ export default function SubscriptionsPage() {
         </div>
 
         <p className="mx-auto mt-10 max-w-xl rounded-xl bg-sky-50 px-5 py-4 text-center text-sm text-slate-600">
-          No pricing is shown online — our team will confirm your plan
-          details and any applicable charges once you subscribe.
+          Pricing is only shown for fixed-package plans like Premium Care.
+          For all other plans, our team will confirm your plan details and
+          any applicable charges once you subscribe.
         </p>
       </div>
     </div>
