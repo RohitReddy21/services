@@ -28,6 +28,7 @@ const REQUIREMENT_LABELS: Record<string, string> = {
 const CATEGORY_LABELS: Record<string, string> = {
   "air-conditioning": "Air Conditioning",
   refrigeration: "Refrigeration",
+  electrical: "Electrical",
 };
 
 export const bookingsRouter = Router();

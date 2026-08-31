@@ -2,6 +2,7 @@ import { detailRow, detailTable, emailLayout } from "../lib/email-layout";
 import { env } from "../config/env";
 
 const FREQUENCY_LABELS: Record<string, string> = {
+  monthly: "Monthly",
   annual: "Annual",
   "bi-annual": "Bi-Annual",
   quarterly: "Quarterly",

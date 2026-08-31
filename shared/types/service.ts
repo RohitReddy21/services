@@ -1,11 +1,11 @@
-export type ServiceCategoryId = "air-conditioning" | "refrigeration";
+export type ServiceCategoryId = "air-conditioning" | "refrigeration" | "electrical";
 
 export interface ServiceCategory {
   id: ServiceCategoryId;
   name: string;
   slug: ServiceCategoryId;
   shortDescription: string;
-  icon: "snowflake" | "fridge";
+  icon: "snowflake" | "fridge" | "bolt";
 }
 
 export interface ServiceSummary {

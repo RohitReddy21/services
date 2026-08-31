@@ -105,6 +105,11 @@ const categoryFaqs: HelpFaq[] = [
     topic: "Refrigeration",
     ...f,
   })),
+  ...categoryContent.electrical.faqs.map((f, i) => ({
+    id: `elec-${i}`,
+    topic: "Electrical",
+    ...f,
+  })),
 ];
 
 export const helpCenterFaqs: HelpFaq[] = [...generalFaqs, ...categoryFaqs];

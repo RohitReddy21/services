@@ -2,12 +2,12 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Refrigerator, Search, Snowflake, X } from "lucide-react";
+import { Refrigerator, Search, Snowflake, X, Zap } from "lucide-react";
 import ServiceGrid from "@/components/services/service-grid";
 import type { ServiceCategoryId, ServiceCategory, ServiceSummary } from "@/types/service";
 import { cn } from "@/lib/utils";
 
-const categoryIcon = { snowflake: Snowflake, fridge: Refrigerator } as const;
+const categoryIcon = { snowflake: Snowflake, fridge: Refrigerator, bolt: Zap } as const;
 
 function matchesQuery(service: ServiceSummary, query: string) {
   const haystack = `${service.name} ${service.shortDescription}`.toLowerCase();

@@ -20,6 +20,7 @@ const navLinks = [
       { label: "All Services", href: "/services" },
       { label: "Air Conditioning", href: "/services?category=air-conditioning" },
       { label: "Refrigeration", href: "/services?category=refrigeration" },
+      { label: "Electrical", href: "/services?category=electrical" },
     ],
   },
   {
@@ -40,7 +41,13 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
   const [accountOpen, setAccountOpen] = useState(false);
+
+  const closeMobileMenu = () => {
+    setMobileOpen(false);
+    setMobileDropdown(null);
+  };
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading, logout } = useAuth();
@@ -237,9 +244,33 @@ export default function Navbar() {
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen((v) => !v)}
-          className="ags-focus lg:hidden inline-flex size-10 items-center justify-center rounded-lg text-navy-800 hover:bg-slate-100"
+          className="ags-focus relative lg:hidden inline-flex size-10 items-center justify-center rounded-full text-navy-800 transition-colors hover:bg-slate-100 active:scale-95"
         >
-          {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          <AnimatePresence mode="wait" initial={false}>
+            {mobileOpen ? (
+              <motion.span
+                key="close"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.16 }}
+                className="flex"
+              >
+                <X className="size-6" />
+              </motion.span>
+            ) : (
+              <motion.span
+                key="menu"
+                initial={{ rotate: 90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -90, opacity: 0 }}
+                transition={{ duration: 0.16 }}
+                className="flex"
+              >
+                <Menu className="size-6" />
+              </motion.span>
+            )}
+          </AnimatePresence>
         </button>
       </div>
 
@@ -250,39 +281,72 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.24, ease: "easeOut" }}
-            className="overflow-hidden border-t border-slate-200 bg-white/95 backdrop-blur-xl lg:hidden"
+            className="overflow-hidden border-t border-slate-200 bg-white/95 shadow-lg shadow-navy-900/5 backdrop-blur-xl lg:hidden"
           >
-            <div className="container-ags flex flex-col gap-1 py-4">
-              <MobileSearch onNavigate={() => setMobileOpen(false)} />
+            <div className="container-ags flex max-h-[calc(100dvh-4rem)] flex-col gap-1 overflow-y-auto py-4">
+              <MobileSearch onNavigate={closeMobileMenu} />
+
               {navLinks.map((link) =>
                 link.children ? (
-                  <div key={link.label} className="mb-1">
-                    <p className="px-3 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                  <div key={link.label} className="mb-0.5">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setMobileDropdown((prev) => (prev === link.label ? null : link.label))
+                      }
+                      aria-expanded={mobileDropdown === link.label}
+                      className={cn(
+                        "ags-focus flex w-full items-center justify-between rounded-lg px-3 py-3 text-[15px] font-medium transition-colors",
+                        isLinkActive(link)
+                          ? "text-brand-700"
+                          : "text-navy-800 hover:bg-slate-100"
+                      )}
+                    >
                       {link.label}
-                    </p>
-                    {link.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        onClick={() => setMobileOpen(false)}
+                      <ChevronDown
                         className={cn(
-                          "ags-focus block rounded-lg px-3 py-2.5 text-sm font-medium",
-                          isActive(child.href)
-                            ? "bg-brand-50 text-brand-700"
-                            : "text-navy-800 hover:bg-slate-100"
+                          "size-4 text-slate-400 transition-transform duration-200",
+                          mobileDropdown === link.label && "rotate-180 text-brand-600"
                         )}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
+                      />
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {mobileDropdown === link.label && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="mb-1 ml-2 space-y-0.5 rounded-xl border border-brand-100 bg-slate-25 p-2">
+                            {link.children.map((child) => (
+                              <Link
+                                key={child.href}
+                                href={child.href}
+                                onClick={closeMobileMenu}
+                                className={cn(
+                                  "ags-focus block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                                  isActive(child.href)
+                                    ? "bg-brand-50 text-brand-700"
+                                    : "text-navy-700 hover:bg-white hover:text-brand-600"
+                                )}
+                              >
+                                {child.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 ) : (
                   <Link
                     key={link.label}
                     href={link.href}
-                    onClick={() => setMobileOpen(false)}
+                    onClick={closeMobileMenu}
                     className={cn(
-                      "ags-focus rounded-lg px-3 py-2.5 text-sm font-medium",
+                      "ags-focus rounded-lg px-3 py-3 text-[15px] font-medium transition-colors",
                       isActive(link.href)
                         ? "bg-brand-50 text-brand-700"
                         : "text-navy-800 hover:bg-slate-100"
@@ -292,45 +356,66 @@ export default function Navbar() {
                   </Link>
                 )
               )}
+
+              <div className="my-2 h-px bg-slate-200" />
+
+              {!loading && user && (
+                <div className="mb-1 flex items-center gap-3 rounded-xl bg-slate-50 px-3 py-3">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+                    {user.name.charAt(0).toUpperCase()}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-navy-900">{user.name}</p>
+                    <p className="truncate text-xs text-slate-500">{user.email}</p>
+                  </div>
+                </div>
+              )}
+
               {!loading && !user && (
-                <>
+                <div className="flex gap-2">
                   <Link
                     href="/login"
-                    onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2.5 text-sm font-medium text-navy-800 rounded-lg hover:bg-slate-100"
+                    onClick={closeMobileMenu}
+                    className="ags-focus flex-1 rounded-lg px-3 py-2.5 text-center text-sm font-medium text-navy-800 transition-colors hover:bg-slate-100"
                   >
                     Log In
                   </Link>
                   <Link
                     href="/register"
-                    onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2.5 text-sm font-medium text-navy-800 rounded-lg hover:bg-slate-100"
+                    onClick={closeMobileMenu}
+                    className="ags-focus flex-1 rounded-lg border border-slate-200 px-3 py-2.5 text-center text-sm font-medium text-navy-800 transition-colors hover:bg-slate-100"
                   >
                     Sign Up
                   </Link>
-                </>
+                </div>
               )}
               {!loading && user && (
                 <>
                   <Link
                     href="/account"
-                    onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2.5 text-sm font-medium text-navy-800 rounded-lg hover:bg-slate-100"
+                    onClick={closeMobileMenu}
+                    className="ags-focus flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-navy-800 transition-colors hover:bg-slate-100"
                   >
+                    <User className="size-4 text-slate-400" />
                     My Account
                   </Link>
                   <Link
                     href="/account/bookings"
-                    onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2.5 text-sm font-medium text-navy-800 rounded-lg hover:bg-slate-100"
+                    onClick={closeMobileMenu}
+                    className="ags-focus flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-navy-800 transition-colors hover:bg-slate-100"
                   >
+                    <Calendar className="size-4 text-slate-400" />
                     My Bookings
                   </Link>
                   <button
                     type="button"
-                    onClick={handleLogout}
-                    className="px-3 py-2.5 text-left text-sm font-medium text-red-600 rounded-lg hover:bg-red-50"
+                    onClick={() => {
+                      closeMobileMenu();
+                      handleLogout();
+                    }}
+                    className="ags-focus flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
                   >
+                    <LogOut className="size-4" />
                     Log Out
                   </button>
                 </>
@@ -339,7 +424,7 @@ export default function Navbar() {
                 href="/book"
                 size="md"
                 className="mt-2 w-full"
-                onClick={() => setMobileOpen(false)}
+                onClick={closeMobileMenu}
               >
                 Book a Service
               </ButtonLink>

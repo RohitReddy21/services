@@ -1,16 +1,17 @@
 "use client";
 
-import { Refrigerator, Snowflake } from "lucide-react";
+import { Refrigerator, Snowflake, Zap } from "lucide-react";
 import StepShell from "@/components/booking/step-shell";
 import { useBooking } from "@/components/booking/booking-context";
 import FadeInImage from "@/components/ui/fade-in-image";
 import { serviceCategories } from "@/lib/data/services";
 import { cn } from "@/lib/utils";
 
-const icons = { snowflake: Snowflake, fridge: Refrigerator } as const;
+const icons = { snowflake: Snowflake, fridge: Refrigerator, bolt: Zap } as const;
 const categoryImages = {
   "air-conditioning": "/images/services/wall-mounted-ac.png",
   refrigeration: "/images/services/commercial-refrigeration.png",
+  electrical: "/images/services/electrical-installation.png",
 } as const;
 
 export default function StageService() {

@@ -19,6 +19,7 @@ const statusMeta: Record<Subscription["status"], { label: string; bg: string; co
 };
 
 const frequencyLabel: Record<Subscription["frequency"], string> = {
+  monthly: "Monthly",
   quarterly: "Quarterly",
   "quarterly-bundle": "3-Month Bundle",
   "bi-annual": "Bi-Annual",

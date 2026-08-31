@@ -3,11 +3,15 @@ import Link from "next/link";
 import { Award, HardHat, ShieldCheck, Users } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
+import Reveal, { RevealStagger, RevealItem } from "@/components/ui/reveal";
+import Parallax from "@/components/ui/parallax";
 
 export const metadata: Metadata = {
   title: "About Us",
   description:
     "AGS - Advanced Gas Solutions is a UK air conditioning and refrigeration specialist, delivering certified installation, servicing and repair for homes and businesses.",
+  alternates: { canonical: "/about" },
+  openGraph: { url: "/about", title: "About Us" },
 };
 
 const values = [
@@ -49,7 +53,7 @@ export default function AboutPage() {
       </div>
 
       <section className="container-ags grid gap-10 py-12 lg:grid-cols-2 lg:items-center lg:py-20">
-        <div>
+        <Reveal variant="up">
           <span className="inline-flex items-center rounded-full bg-brand-100 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-700">
             About AGS
           </span>
@@ -75,30 +79,39 @@ export default function AboutPage() {
             <Stat value="500+" label="Projects Completed" />
             <Stat value="1000+" label="Happy Customers" />
           </div>
-        </div>
+        </Reveal>
 
-        <div className="relative aspect-4/5 overflow-hidden rounded-3xl shadow-xl shadow-navy-900/10 sm:aspect-5/4">
-          <FadeInImage
-            src="/images/services/hvac-repair-technician.png"
-            alt="AGS engineer working on HVAC equipment"
-            fill
-            sizes="(min-width: 1024px) 45vw, 90vw"
-            className="object-cover"
-          />
-        </div>
+        <Reveal
+          variant="right"
+          delay={0.1}
+          className="relative aspect-4/5 overflow-hidden rounded-3xl shadow-xl shadow-navy-900/10 sm:aspect-5/4"
+        >
+          <Parallax amount={28} className="absolute inset-0">
+            <FadeInImage
+              src="/images/services/hvac-repair-technician.png"
+              alt="AGS engineer working on HVAC equipment"
+              fill
+              sizes="(min-width: 1024px) 45vw, 90vw"
+              className="scale-110 object-cover"
+            />
+          </Parallax>
+        </Reveal>
       </section>
 
       <section className="bg-sky-50 py-14 lg:py-20">
         <div className="container-ags">
-          <div className="mx-auto max-w-xl text-center">
+          <Reveal className="mx-auto max-w-xl text-center">
             <h2 className="font-display text-2xl font-extrabold text-navy-900 sm:text-3xl">
               What We Stand For
             </h2>
-          </div>
+          </Reveal>
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <RevealStagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {values.map((value) => (
-              <div key={value.title} className="rounded-2xl border border-slate-200 bg-white p-6">
+              <RevealItem
+                key={value.title}
+                className="rounded-2xl border border-slate-200 bg-white p-6"
+              >
                 <div className="flex size-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                   <value.icon className="size-5" />
                 </div>
@@ -106,14 +119,14 @@ export default function AboutPage() {
                   {value.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-600">{value.description}</p>
-              </div>
+              </RevealItem>
             ))}
-          </div>
+          </RevealStagger>
         </div>
       </section>
 
       <section className="container-ags py-14 lg:py-20">
-        <div className="mx-auto max-w-xl text-center">
+        <Reveal className="mx-auto max-w-xl text-center">
           <h2 className="font-display text-2xl font-extrabold text-navy-900 sm:text-3xl">
             Our Engineers
           </h2>
@@ -123,9 +136,13 @@ export default function AboutPage() {
             qualified work whether it&apos;s a single home visit or an
             ongoing commercial contract.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="mx-auto mt-8 max-w-lg rounded-2xl border border-slate-200 bg-slate-25 p-6 text-center">
+        <Reveal
+          variant="scale"
+          delay={0.05}
+          className="mx-auto mt-8 max-w-lg rounded-2xl border border-slate-200 bg-slate-25 p-6 text-center"
+        >
           <p className="text-sm text-slate-600">
             Ready to work with us?
           </p>
@@ -133,7 +150,7 @@ export default function AboutPage() {
             <ButtonLink href="/book" size="lg">Book a Service</ButtonLink>
             <ButtonLink href="/contact" variant="secondary" size="lg">Contact Us</ButtonLink>
           </div>
-        </div>
+        </Reveal>
       </section>
     </div>
   );

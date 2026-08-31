@@ -24,6 +24,17 @@ export const equipmentOptions: Record<ServiceCategoryId, EquipmentOption[]> = {
     { id: "commercial-refrigeration", label: "Commercial Refrigeration" },
     { id: "other", label: "Other" },
   ],
+  electrical: [
+    { id: "consumer-unit", label: "Consumer Unit / Fuseboard" },
+    { id: "lighting", label: "Lighting" },
+    { id: "sockets-power", label: "Sockets & Power" },
+    { id: "ev-charger", label: "EV Charger" },
+    { id: "rewiring", label: "Rewiring" },
+    { id: "eicr-testing", label: "EICR / Testing" },
+    { id: "wiring-circuit", label: "Wiring / Circuit" },
+    { id: "commercial-electrical", label: "Commercial Electrical" },
+    { id: "other", label: "Other" },
+  ],
 };
 
 export const requirementOptions: RequirementOption[] = [

@@ -2,12 +2,22 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, LifeBuoy } from "lucide-react";
 import HelpCenterExplorer from "@/components/help/help-center-explorer";
+import JsonLd from "@/components/seo/json-ld";
+import Reveal from "@/components/ui/reveal";
+import { breadcrumbSchema, faqSchema } from "@/lib/seo";
 import { helpCenterFaqs, helpCenterTopics } from "@/lib/data/help-center";
 
 export const metadata: Metadata = {
   title: "Help Center",
   description:
     "Answers to common questions about bookings, Care Plans, rewards, referrals and more — search the AGS Help Center.",
+  alternates: { canonical: "/help" },
+  openGraph: {
+    url: "/help",
+    title: "Help Center",
+    description:
+      "Answers to common questions about bookings, Care Plans, rewards and referrals.",
+  },
 };
 
 export default async function HelpCenterPage({ searchParams }: PageProps<"/help">) {
@@ -17,6 +27,14 @@ export default async function HelpCenterPage({ searchParams }: PageProps<"/help"
 
   return (
     <div className="bg-white">
+      <JsonLd id="ld-faq" data={faqSchema(helpCenterFaqs)} />
+      <JsonLd
+        id="ld-breadcrumb"
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Help Center", path: "/help" },
+        ])}
+      />
       <div className="border-b border-slate-200 bg-sky-50">
         <div className="container-ags py-4 text-xs font-medium text-slate-500">
           <Link href="/" className="hover:text-brand-600">Home</Link>
@@ -26,7 +44,7 @@ export default async function HelpCenterPage({ searchParams }: PageProps<"/help"
       </div>
 
       <div className="container-ags py-10 lg:py-14">
-        <div className="mx-auto max-w-2xl text-center">
+        <Reveal className="mx-auto max-w-2xl text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-700">
             <LifeBuoy className="size-3.5" />
             Help Center
@@ -37,17 +55,20 @@ export default async function HelpCenterPage({ searchParams }: PageProps<"/help"
           <p className="mt-3 text-slate-600">
             Search common questions about bookings, Care Plans, rewards and more.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="mt-10">
+        <Reveal delay={0.08} className="mt-10">
           <HelpCenterExplorer
             faqs={helpCenterFaqs}
             topics={helpCenterTopics}
             initialTopic={initialTopic}
           />
-        </div>
+        </Reveal>
 
-        <div className="mx-auto mt-14 max-w-xl rounded-2xl border border-brand-100 bg-sky-50 p-8 text-center shadow-sm shadow-brand-100">
+        <Reveal
+          variant="scale"
+          className="mx-auto mt-14 max-w-xl rounded-2xl border border-brand-100 bg-sky-50 p-8 text-center shadow-sm shadow-brand-100"
+        >
           <h2 className="font-display text-lg font-bold text-navy-900">Still need help?</h2>
           <p className="mt-2 text-sm text-slate-600">
             Our team is happy to help with anything not covered here.
@@ -59,7 +80,7 @@ export default async function HelpCenterPage({ searchParams }: PageProps<"/help"
             Contact Us
             <ArrowRight className="size-4" />
           </Link>
-        </div>
+        </Reveal>
       </div>
     </div>
   );

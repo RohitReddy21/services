@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none" role="img" aria-label="12-Month Care plan">
+  <defs>
+    <linearGradient id="bg12" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#050f20"/>
+      <stop offset="1" stop-color="#142f6b"/>
+    </linearGradient>
+    <radialGradient id="glow12" cx="0.5" cy="0.47" r="0.6">
+      <stop offset="0" stop-color="#2b6bf0" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#2b6bf0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg12)"/>
+  <g stroke="#8ab5ff" stroke-opacity="0.12">
+    <path d="M0 150H800M0 300H800M0 450H800M200 0V600M400 0V600M600 0V600"/>
+  </g>
+  <circle cx="400" cy="288" r="260" fill="url(#glow12)"/>
+  <circle cx="400" cy="288" r="165" stroke="#5390ff" stroke-width="2.5" stroke-opacity="0.6"/>
+  <circle cx="400" cy="288" r="200" stroke="#8ab5ff" stroke-width="1.5" stroke-opacity="0.28" stroke-dasharray="2 12"/>
+  <g fill="#8ab5ff">
+    <circle cx="482.5" cy="145.1" r="9"/>
+    <circle cx="542.9" cy="205.5" r="9"/>
+    <circle cx="565" cy="288" r="9"/>
+    <circle cx="542.9" cy="370.5" r="9"/>
+    <circle cx="482.5" cy="430.9" r="9"/>
+    <circle cx="400" cy="453" r="9"/>
+    <circle cx="317.5" cy="430.9" r="9"/>
+    <circle cx="257.1" cy="370.5" r="9"/>
+    <circle cx="235" cy="288" r="9"/>
+    <circle cx="257.1" cy="205.5" r="9"/>
+    <circle cx="317.5" cy="145.1" r="9"/>
+  </g>
+  <circle cx="400" cy="123" r="15" fill="#e8c46a"/>
+  <circle cx="400" cy="123" r="26" stroke="#e8c46a" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="400" y="333" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="150" font-weight="800" fill="#ffffff">12</text>
+  <text x="400" y="392" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="6" fill="#dce9ff">SERVICES</text>
+  <text x="400" y="524" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#ffffff">12&#8211;MONTH CARE</text>
+</svg>

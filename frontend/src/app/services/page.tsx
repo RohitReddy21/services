@@ -3,13 +3,23 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import ServicesExplorer from "@/components/services/services-explorer";
 import FadeInImage from "@/components/ui/fade-in-image";
+import JsonLd from "@/components/seo/json-ld";
+import Reveal from "@/components/ui/reveal";
+import { breadcrumbSchema } from "@/lib/seo";
 import { services, serviceCategories } from "@/lib/data/services";
 import type { ServiceCategoryId } from "@/types/service";
 
 export const metadata: Metadata = {
   title: "Our Services",
   description:
-    "Browse all AGS air conditioning and refrigeration services — installation, repairs, servicing and maintenance for homes and businesses across the UK.",
+    "Browse all AGS air conditioning, refrigeration and electrical services — installation, repairs, servicing and maintenance for homes and businesses across the UK.",
+  alternates: { canonical: "/services" },
+  openGraph: {
+    url: "/services",
+    title: "Our Services",
+    description:
+      "Air conditioning, refrigeration and electrical services — installation, repairs, servicing and maintenance across the UK.",
+  },
 };
 
 export default async function ServicesPage({
@@ -18,11 +28,20 @@ export default async function ServicesPage({
   const params = await searchParams;
   const requested = Array.isArray(params.category) ? params.category[0] : params.category;
   const activeCategory: ServiceCategoryId =
-    requested === "refrigeration" ? "refrigeration" : "air-conditioning";
+    requested === "refrigeration" || requested === "electrical"
+      ? requested
+      : "air-conditioning";
   const requestedQuery = Array.isArray(params.q) ? params.q[0] : params.q;
 
   return (
     <div className="bg-white">
+      <JsonLd
+        id="ld-breadcrumb"
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+        ])}
+      />
       <div className="border-b border-slate-200 bg-sky-50">
         <div className="container-ags py-4 text-xs font-medium text-slate-500">
           <Link href="/" className="hover:text-brand-600">Home</Link>
@@ -33,7 +52,7 @@ export default async function ServicesPage({
 
       <div className="container-ags py-10 lg:py-14">
         <div className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-end">
-          <div className="max-w-2xl">
+          <Reveal className="max-w-2xl">
             <span className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
               AGS services
             </span>
@@ -41,18 +60,18 @@ export default async function ServicesPage({
               Our Services
             </h1>
             <p className="mt-3 text-slate-600">
-              Professional air conditioning and refrigeration services tailored
-              to your needs. No prices are shown online; AGS confirms scope and
-              requirements before work begins.
+              Professional air conditioning, refrigeration and electrical
+              services tailored to your needs. No prices are shown online; AGS
+              confirms scope and requirements before work begins.
             </p>
-          </div>
-          <div className="relative hidden aspect-16/10 overflow-hidden rounded-2xl shadow-xl shadow-navy-900/10 lg:block">
+          </Reveal>
+          <Reveal
+            variant="right"
+            delay={0.1}
+            className="relative hidden aspect-16/10 overflow-hidden rounded-2xl shadow-xl shadow-navy-900/10 lg:block"
+          >
             <FadeInImage
-              src={
-                activeCategory === "air-conditioning"
-                  ? "/images/services/outdoor-condenser-units.png"
-                  : "/images/services/commercial-refrigeration.png"
-              }
+              src={categoryHeroImage(activeCategory)}
               alt={`${categoryMeta(activeCategory)} service equipment`}
               fill
               priority
@@ -60,19 +79,22 @@ export default async function ServicesPage({
               className="object-cover ags-image-reveal"
             />
             <div className="absolute inset-0 bg-linear-to-t from-ink-950/45 to-transparent" />
-          </div>
+          </Reveal>
         </div>
 
-        <div className="mt-8">
+        <Reveal delay={0.05} className="mt-8">
           <ServicesExplorer
             allServices={services}
             categories={serviceCategories}
             initialCategory={activeCategory}
             initialQuery={requestedQuery ?? ""}
           />
-        </div>
+        </Reveal>
 
-        <div className="mt-14 rounded-2xl border border-brand-100 bg-sky-50 p-8 text-center shadow-sm shadow-brand-100 sm:p-10">
+        <Reveal
+          variant="scale"
+          className="mt-14 rounded-2xl border border-brand-100 bg-sky-50 p-8 text-center shadow-sm shadow-brand-100 sm:p-10"
+        >
           <h2 className="font-display text-xl font-bold text-navy-900">
             Can&apos;t find what you need?
           </h2>
@@ -89,12 +111,20 @@ export default async function ServicesPage({
               <ArrowRight className="size-4" />
             </Link>
           </div>
-        </div>
+        </Reveal>
       </div>
     </div>
   );
 }
 
 function categoryMeta(categoryId: ServiceCategoryId) {
-  return categoryId === "air-conditioning" ? "Air conditioning" : "Refrigeration";
+  if (categoryId === "refrigeration") return "Refrigeration";
+  if (categoryId === "electrical") return "Electrical";
+  return "Air conditioning";
+}
+
+function categoryHeroImage(categoryId: ServiceCategoryId) {
+  if (categoryId === "refrigeration") return "/images/services/commercial-refrigeration.png";
+  if (categoryId === "electrical") return "/images/services/electrical-installation.png";
+  return "/images/services/outdoor-condenser-units.png";
 }

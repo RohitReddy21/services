@@ -4,6 +4,7 @@ import { env } from "../config/env";
 const CATEGORY_LABEL: Record<string, string> = {
   "air-conditioning": "Air Conditioning",
   refrigeration: "Refrigeration",
+  electrical: "Electrical",
 };
 
 export function bookingReceivedEmail(input: {

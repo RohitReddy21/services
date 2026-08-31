@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Pencil, Plus, Refrigerator, ShieldCheck, Snowflake, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Plus, Refrigerator, ShieldCheck, Snowflake, Trash2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   createEquipmentRequest,
@@ -15,7 +15,7 @@ import type { Equipment } from "@/types/equipment";
 import type { ServiceCategoryId } from "@/types/service";
 import { cn } from "@/lib/utils";
 
-const categoryIcon = { snowflake: Snowflake, fridge: Refrigerator } as const;
+const categoryIcon = { snowflake: Snowflake, fridge: Refrigerator, bolt: Zap } as const;
 
 const emptyForm = {
   categoryId: "air-conditioning" as ServiceCategoryId,

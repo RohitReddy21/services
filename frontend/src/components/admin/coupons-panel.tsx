@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Loader2, Plus, Tag, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { Loader2, Pencil, Plus, Tag, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { StatusBadge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
+import { SkeletonRows, PanelHeader } from "@/components/admin/panel-shell";
 import {
   createCouponRequest,
   deleteCouponRequest,
@@ -10,7 +14,6 @@ import {
   updateCouponRequest,
 } from "@/lib/api/admin-client";
 import type { Coupon, DiscountType } from "@/types/coupon";
-import { cn } from "@/lib/utils";
 
 const emptyForm = {
   code: "",
@@ -21,19 +24,34 @@ const emptyForm = {
   maxRedemptions: "",
 };
 
+type EditDraft = {
+  description: string;
+  discountValue: string;
+  expiresAt: string;
+  maxRedemptions: string;
+};
+
 export default function CouponsPanel() {
   const [coupons, setCoupons] = useState<Coupon[] | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState<EditDraft | null>(null);
 
-  const load = () => fetchAdminCoupons().then((res) => setCoupons(res.coupons));
+  const load = useCallback(() => fetchAdminCoupons().then((res) => setCoupons(res.coupons)), []);
+
+  const refresh = useCallback(() => {
+    setRefreshing(true);
+    load().finally(() => setRefreshing(false));
+  }, [load]);
 
   useEffect(() => {
     load();
-  }, []);
+  }, [load]);
 
   const handleCreate = async () => {
     if (!form.code.trim() || !form.discountValue) {
@@ -61,6 +79,34 @@ export default function CouponsPanel() {
     }
   };
 
+  const startEdit = (c: Coupon) => {
+    setEditId(c.id);
+    setEditDraft({
+      description: c.description,
+      discountValue: String(c.discountValue),
+      expiresAt: c.expiresAt ? c.expiresAt.slice(0, 10) : "",
+      maxRedemptions: c.maxRedemptions ? String(c.maxRedemptions) : "",
+    });
+  };
+
+  const saveEdit = async (id: string) => {
+    if (!editDraft) return;
+    setBusyId(id);
+    try {
+      await updateCouponRequest(id, {
+        description: editDraft.description.trim(),
+        discountValue: Number(editDraft.discountValue),
+        expiresAt: editDraft.expiresAt || null,
+        maxRedemptions: editDraft.maxRedemptions ? Number(editDraft.maxRedemptions) : null,
+      });
+      await load();
+      setEditId(null);
+      setEditDraft(null);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   const handleToggleActive = async (coupon: Coupon) => {
     setBusyId(coupon.id);
     try {
@@ -82,17 +128,24 @@ export default function CouponsPanel() {
   };
 
   return (
-    <div>
-      <div className="flex justify-end">
-        <Button size="sm" onClick={() => setShowForm((v) => !v)}>
-          <Plus className="size-4" />
-          New Coupon
-        </Button>
-      </div>
+    <div className="space-y-4">
+      <PanelHeader
+        title="Coupons"
+        subtitle="Discount codes and redemption limits"
+        count={coupons?.length}
+        onRefresh={refresh}
+        refreshing={refreshing}
+        actions={
+          <Button size="sm" onClick={() => setShowForm((v) => !v)}>
+            <Plus className="size-4" />
+            New Coupon
+          </Button>
+        }
+      />
 
       {showForm && (
-        <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
-          <h3 className="font-display text-base font-bold text-navy-900">Create Coupon</h3>
+        <Card variant="resting" padding="md">
+          <h3 className="font-display text-base font-bold text-navy-900">Create coupon</h3>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="text-xs font-semibold text-navy-700">Code</span>
@@ -116,16 +169,18 @@ export default function CouponsPanel() {
               <span className="text-xs font-semibold text-navy-700">Discount type</span>
               <select
                 value={form.discountType}
-                onChange={(e) => setForm((f) => ({ ...f, discountType: e.target.value as DiscountType }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, discountType: e.target.value as DiscountType }))
+                }
                 className="input-field mt-1"
               >
                 <option value="PERCENT">Percentage off</option>
-                <option value="FIXED">Fixed amount off (€)</option>
+                <option value="FIXED">Fixed amount off (£)</option>
               </select>
             </label>
             <label className="block">
               <span className="text-xs font-semibold text-navy-700">
-                Discount value {form.discountType === "PERCENT" ? "(%)" : "(€)"}
+                Discount value {form.discountType === "PERCENT" ? "(%)" : "(£)"}
               </span>
               <input
                 type="number"
@@ -166,68 +221,150 @@ export default function CouponsPanel() {
             </Button>
             <Button size="sm" onClick={handleCreate} disabled={saving}>
               {saving && <Loader2 className="size-3.5 animate-spin" />}
-              Create Coupon
+              Create coupon
             </Button>
           </div>
-        </div>
+        </Card>
       )}
 
       {!coupons ? (
-        <div className="mt-6 flex h-40 items-center justify-center">
-          <Loader2 className="size-6 animate-spin text-brand-500" />
-        </div>
+        <SkeletonRows />
       ) : coupons.length === 0 ? (
-        <p className="mt-6 text-sm text-slate-500">No coupons yet — create one above.</p>
+        <EmptyState message="No coupons yet — create one above." variant="card" />
       ) : (
-        <div className="mt-4 space-y-3">
-          {coupons.map((c) => (
-            <div key={c.id} className="rounded-2xl border border-slate-200 bg-white p-4">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Tag className="size-4 text-brand-600" />
-                    <span className="font-mono text-sm font-bold text-navy-900">{c.code}</span>
-                    <span
-                      className={cn(
-                        "rounded-full px-2 py-0.5 text-[11px] font-semibold",
-                        c.active ? "bg-accent-green-50 text-accent-green-700" : "bg-slate-100 text-slate-500"
-                      )}
-                    >
-                      {c.active ? "Active" : "Inactive"}
-                    </span>
+        <div className="space-y-3">
+          {coupons.map((c) => {
+            const usedPct = c.maxRedemptions
+              ? Math.min(100, (c.timesRedeemed / c.maxRedemptions) * 100)
+              : 0;
+            return (
+              <div
+                key={c.id}
+                className="rounded-2xl border border-slate-200 bg-white p-4 ags-depth-sm"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <Tag className="size-4 text-brand-600" />
+                      <span className="font-mono text-sm font-bold text-navy-900">{c.code}</span>
+                      <StatusBadge tone={c.active ? "success" : "neutral"} size="sm">
+                        {c.active ? "Active" : "Inactive"}
+                      </StatusBadge>
+                    </div>
+                    {c.description && (
+                      <p className="mt-1 text-xs text-slate-500">{c.description}</p>
+                    )}
+                    <p className="mt-1 text-xs font-semibold text-brand-700">
+                      {c.discountType === "PERCENT"
+                        ? `${c.discountValue}% off`
+                        : `£${c.discountValue} off`}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-400">
+                      Used {c.timesRedeemed}
+                      {c.maxRedemptions ? ` / ${c.maxRedemptions}` : ""} times
+                      {c.expiresAt
+                        ? ` · Expires ${new Date(c.expiresAt).toLocaleDateString("en-GB")}`
+                        : ""}
+                    </p>
+                    {c.maxRedemptions ? (
+                      <div className="mt-1.5 h-1.5 w-40 overflow-hidden rounded-full bg-slate-100">
+                        <div
+                          className="h-full rounded-full bg-brand-500"
+                          style={{ width: `${usedPct}%` }}
+                        />
+                      </div>
+                    ) : null}
                   </div>
-                  {c.description && <p className="mt-1 text-xs text-slate-500">{c.description}</p>}
-                  <p className="mt-1 text-xs font-semibold text-brand-700">
-                    {c.discountType === "PERCENT" ? `${c.discountValue}% off` : `€${c.discountValue} off`}
-                  </p>
-                  <p className="mt-1 text-xs text-slate-400">
-                    Used {c.timesRedeemed}
-                    {c.maxRedemptions ? ` / ${c.maxRedemptions}` : ""} times
-                    {c.expiresAt ? ` · Expires ${new Date(c.expiresAt).toLocaleDateString("en-GB")}` : ""}
-                  </p>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => (editId === c.id ? setEditId(null) : startEdit(c))}
+                      className="ags-focus flex size-9 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100"
+                      aria-label="Edit coupon"
+                    >
+                      {editId === c.id ? <X className="size-4" /> : <Pencil className="size-4" />}
+                    </button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      disabled={busyId === c.id}
+                      onClick={() => handleToggleActive(c)}
+                    >
+                      {c.active ? "Deactivate" : "Activate"}
+                    </Button>
+                    <button
+                      type="button"
+                      disabled={busyId === c.id}
+                      onClick={() => handleDelete(c.id)}
+                      className="ags-focus flex size-9 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 disabled:opacity-50"
+                      aria-label="Delete coupon"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    disabled={busyId === c.id}
-                    onClick={() => handleToggleActive(c)}
-                  >
-                    {c.active ? "Deactivate" : "Activate"}
-                  </Button>
-                  <button
-                    type="button"
-                    disabled={busyId === c.id}
-                    onClick={() => handleDelete(c.id)}
-                    className="flex size-9 items-center justify-center rounded-lg text-red-500 hover:bg-red-50"
-                    aria-label="Delete coupon"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
-                </div>
+
+                {editId === c.id && editDraft && (
+                  <div className="mt-3 grid grid-cols-1 gap-3 border-t border-slate-100 pt-3 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="text-xs font-semibold text-navy-700">Description</span>
+                      <input
+                        value={editDraft.description}
+                        onChange={(e) =>
+                          setEditDraft((d) => (d ? { ...d, description: e.target.value } : d))
+                        }
+                        className="input-field mt-1 text-sm"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-xs font-semibold text-navy-700">
+                        Discount value {c.discountType === "PERCENT" ? "(%)" : "(£)"}
+                      </span>
+                      <input
+                        type="number"
+                        min="0"
+                        value={editDraft.discountValue}
+                        onChange={(e) =>
+                          setEditDraft((d) => (d ? { ...d, discountValue: e.target.value } : d))
+                        }
+                        className="input-field mt-1 text-sm"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-xs font-semibold text-navy-700">Expires</span>
+                      <input
+                        type="date"
+                        value={editDraft.expiresAt}
+                        onChange={(e) =>
+                          setEditDraft((d) => (d ? { ...d, expiresAt: e.target.value } : d))
+                        }
+                        className="input-field mt-1 text-sm"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-xs font-semibold text-navy-700">Max redemptions</span>
+                      <input
+                        type="number"
+                        min="1"
+                        value={editDraft.maxRedemptions}
+                        onChange={(e) =>
+                          setEditDraft((d) => (d ? { ...d, maxRedemptions: e.target.value } : d))
+                        }
+                        placeholder="Unlimited"
+                        className="input-field mt-1 text-sm"
+                      />
+                    </label>
+                    <div className="sm:col-span-2">
+                      <Button size="sm" disabled={busyId === c.id} onClick={() => saveEdit(c.id)}>
+                        {busyId === c.id && <Loader2 className="size-3.5 animate-spin" />}
+                        Save changes
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

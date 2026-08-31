@@ -24,3 +24,32 @@ export interface AdminUserSummary {
   referralCode: string;
   createdAt: string;
 }
+
+export interface AdminRecentBooking {
+  id: string;
+  bookingReference: string;
+  status: string;
+  equipmentLabel: string;
+  date: string;
+  createdAt: string;
+  customer?: { fullName?: string; email?: string };
+}
+
+export interface AdminOpenTicket {
+  id: string;
+  subject: string;
+  category: string;
+  email: string;
+  createdAt: string;
+}
+
+export interface AdminStats {
+  bookings: { total: number; byStatus: Record<string, number> };
+  subscriptions: { active: number; paused: number; cancelled: number; monthlyRevenue: number };
+  tickets: { open: number; total: number };
+  users: { total: number; admins: number };
+  reviews: { count: number; avgRating: number };
+  coupons: { active: number; total: number };
+  recentBookings: AdminRecentBooking[];
+  openTickets: AdminOpenTicket[];
+}

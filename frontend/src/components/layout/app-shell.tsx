@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "framer-motion";
 import { PageLoader } from "@/components/ui/loaders";
+import ScrollProgress from "@/components/ui/scroll-progress";
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -62,6 +63,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <MotionConfig reducedMotion="user">
+      {!booting && <ScrollProgress />}
+
       <AnimatePresence>
         {booting && (
           <motion.div

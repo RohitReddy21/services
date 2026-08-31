@@ -14,20 +14,26 @@ export default function StatsBar() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="container-ags relative z-10 -mt-8 pb-6">
+    <section className="container-ags relative z-10 -mt-10 pb-6">
       <motion.div
-        className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-brand-100 bg-brand-100 shadow-xl shadow-navy-900/10 sm:grid-cols-4"
-        initial={reducedMotion ? false : { opacity: 0, y: 18 }}
+        className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/70 bg-brand-100/70 ags-depth-lg backdrop-blur sm:grid-cols-4"
+        initial={reducedMotion ? false : { opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.48, ease: "easeOut" }}
       >
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-white/95 px-6 py-7 text-center backdrop-blur">
-            <AnimatedValue {...stat} />
-            <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:text-sm">
-              {stat.label}
-            </p>
+          <div
+            key={stat.label}
+            className="group relative bg-white/95 px-6 py-7 text-center backdrop-blur transition-colors duration-300 hover:bg-brand-50/90"
+          >
+            <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white to-transparent" />
+            <div className="transition-transform duration-300 group-hover:-translate-y-1">
+              <AnimatedValue {...stat} />
+              <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:text-sm">
+                {stat.label}
+              </p>
+            </div>
           </div>
         ))}
       </motion.div>

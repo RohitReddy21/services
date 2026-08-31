@@ -42,7 +42,7 @@ const bookingSchema = new Schema(
       },
     ],
 
-    categoryId: { type: String, enum: ["air-conditioning", "refrigeration"], required: true },
+    categoryId: { type: String, enum: ["air-conditioning", "refrigeration", "electrical"], required: true },
     equipmentId: { type: String, required: true },
     equipmentLabel: { type: String, required: true },
     requirement: { type: String, required: true },

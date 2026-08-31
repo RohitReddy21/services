@@ -1,12 +1,12 @@
 "use client";
 
-import { Check, Refrigerator, Snowflake } from "lucide-react";
+import { Check, Refrigerator, Snowflake, Zap } from "lucide-react";
 import StepShell from "@/components/booking/step-shell";
 import { useBooking } from "@/components/booking/booking-context";
 import { serviceCategories } from "@/lib/data/services";
 import { cn } from "@/lib/utils";
 
-const icons = { snowflake: Snowflake, fridge: Refrigerator } as const;
+const icons = { snowflake: Snowflake, fridge: Refrigerator, bolt: Zap } as const;
 
 export default function StepCategory() {
   const { form, setField } = useBooking();

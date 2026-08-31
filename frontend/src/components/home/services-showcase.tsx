@@ -1,17 +1,19 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Refrigerator, Snowflake } from "lucide-react";
-import type { ComponentType } from "react";
+import { ArrowRight, Refrigerator, Snowflake, Zap } from "lucide-react";
+import type { ComponentType, CSSProperties } from "react";
 import ServiceGrid from "@/components/services/service-grid";
 import { ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
+import TiltCard from "@/components/ui/tilt-card";
 import { getServicesByCategory } from "@/lib/data/services";
 
 export default function ServicesShowcase() {
   const reducedMotion = useReducedMotion();
   const airConditioning = getServicesByCategory("air-conditioning").slice(0, 8);
   const refrigeration = getServicesByCategory("refrigeration").slice(0, 8);
+  const electrical = getServicesByCategory("electrical").slice(0, 8);
 
   return (
     <section className="bg-white py-16 lg:py-24">
@@ -27,7 +29,8 @@ export default function ServicesShowcase() {
             Service marketplace
           </span>
           <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
-            Air conditioning and refrigeration support without online prices.
+            Air conditioning, refrigeration and electrical support without online
+            prices.
           </h2>
           <p className="mt-3 text-slate-600">
             Choose the service area, tell us the equipment and AGS will confirm
@@ -57,6 +60,18 @@ export default function ServicesShowcase() {
           services={refrigeration}
           href="/services?category=refrigeration"
           reverse
+        />
+
+        <ServiceChapter
+          eyebrow="Electrical"
+          title="Certified electrical work, tested and signed off."
+          description="Consumer units, lighting and power circuits, EV chargers, rewiring, EICR testing, fault finding and emergency callouts for homes and businesses."
+          image="/images/services/electrical-installation.png"
+          imageAlt="Electrician working on a consumer unit"
+          icon={Zap}
+          services={electrical}
+          href="/services?category=electrical"
+          reverse={false}
         />
       </div>
     </section>
@@ -123,7 +138,11 @@ function ServiceChapter({
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <div className="relative aspect-16/10 overflow-hidden rounded-[2rem] shadow-2xl shadow-navy-900/15">
+          <TiltCard
+            max={8}
+            glare
+            bodyClassName="relative aspect-16/10 overflow-hidden rounded-[2rem] ags-depth-xl"
+          >
             <FadeInImage
               src={image}
               alt={imageAlt}
@@ -132,15 +151,18 @@ function ServiceChapter({
               className="object-cover ags-image-reveal"
             />
             <div className="absolute inset-0 bg-linear-to-t from-ink-950/45 via-transparent to-transparent" />
-          </div>
-          <div className="absolute -bottom-5 left-5 rounded-2xl border border-white/70 bg-white/90 px-4 py-3 shadow-xl shadow-navy-900/10 backdrop-blur">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">
-              AGS specification
-            </p>
-            <p className="mt-1 text-sm font-semibold text-navy-900">
-              Survey, install, maintain and repair.
-            </p>
-          </div>
+            <div
+              className="ags-tilt-layer absolute bottom-5 left-5 rounded-2xl border border-white/70 bg-white/90 px-4 py-3 ags-depth-md backdrop-blur"
+              style={{ "--ags-z": "70px" } as CSSProperties}
+            >
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">
+                AGS specification
+              </p>
+              <p className="mt-1 text-sm font-semibold text-navy-900">
+                Survey, install, maintain and repair.
+              </p>
+            </div>
+          </TiltCard>
         </motion.div>
       </div>
 

@@ -18,14 +18,24 @@ export async function sendEmail({
   subject,
   html,
   template,
+  attachments,
 }: {
   to: string;
   subject: string;
   html: string;
   template: string;
+  /** Optional file attachments, e.g. a generated invoice PDF. */
+  attachments?: { filename: string; content: Buffer }[];
 }) {
   if (!resend) {
     console.log(`\n[email:logged] template="${template}" to="${to}" subject="${subject}"`);
+    if (attachments?.length) {
+      console.log(
+        `[email:logged] with ${attachments.length} attachment(s): ${attachments
+          .map((a) => a.filename)
+          .join(", ")}`
+      );
+    }
     console.log(`[email:logged] (RESEND_API_KEY not set — email not actually sent)\n`);
     await EmailEvent.create({ to, subject, template, status: "logged" });
     return { status: "logged" as const };
@@ -37,6 +47,9 @@ export async function sendEmail({
       to,
       subject,
       html,
+      ...(attachments?.length
+        ? { attachments: attachments.map((a) => ({ filename: a.filename, content: a.content })) }
+        : {}),
     });
 
     if (result.error) throw new Error(result.error.message);

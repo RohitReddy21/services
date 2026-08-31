@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { withJsonId } from "../lib/schema-plugin";
 
 const SUBSCRIPTION_STATUSES = ["ACTIVE", "PAUSED", "CANCELLED"] as const;
-const FREQUENCIES = ["annual", "bi-annual", "quarterly", "quarterly-bundle"] as const;
+const FREQUENCIES = ["monthly", "annual", "bi-annual", "quarterly", "quarterly-bundle"] as const;
 
 const subscriptionSchema = new Schema(
   {
@@ -10,7 +10,7 @@ const subscriptionSchema = new Schema(
     planId: { type: String, required: true },
     planName: { type: String, required: true },
     frequency: { type: String, enum: FREQUENCIES, required: true },
-    categoryId: { type: String, enum: ["air-conditioning", "refrigeration"], required: true },
+    categoryId: { type: String, enum: ["air-conditioning", "refrigeration", "electrical"], required: true },
     equipmentId: { type: String, required: true },
     equipmentLabel: { type: String, required: true },
     status: { type: String, enum: SUBSCRIPTION_STATUSES, default: "ACTIVE" },

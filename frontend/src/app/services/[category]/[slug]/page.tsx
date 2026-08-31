@@ -18,6 +18,10 @@ import {
 } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
+import JsonLd from "@/components/seo/json-ld";
+import Reveal from "@/components/ui/reveal";
+import Parallax from "@/components/ui/parallax";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
 import {
   categoryContent,
   getServiceBySlug,
@@ -47,9 +51,24 @@ export async function generateMetadata({
   const { category, slug } = await params;
   const service = getServiceBySlug(category as ServiceCategoryId, slug);
   if (!service) return {};
+  const path = `/services/${service.categoryId}/${service.slug}`;
   return {
     title: service.name,
     description: service.shortDescription,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "article",
+      url: path,
+      title: service.name,
+      description: service.shortDescription,
+      images: [{ url: service.heroImage, alt: service.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: service.name,
+      description: service.shortDescription,
+      images: [service.heroImage],
+    },
   };
 }
 
@@ -64,9 +83,31 @@ export default async function ServiceDetailPage({
   if (!service || !categoryMeta) notFound();
 
   const content = categoryContent[categoryId];
+  const path = `/services/${categoryId}/${service.slug}`;
 
   return (
     <div className="bg-white">
+      <JsonLd
+        id="ld-service"
+        data={serviceSchema({
+          name: service.name,
+          description: service.shortDescription,
+          path,
+          category: categoryMeta.name,
+          image: service.heroImage,
+        })}
+      />
+      <JsonLd
+        id="ld-breadcrumb"
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: categoryMeta.name, path: `/services?category=${categoryId}` },
+          { name: service.name, path },
+        ])}
+      />
+      {content.faqs.length > 0 && (
+        <JsonLd id="ld-faq" data={faqSchema(content.faqs)} />
+      )}
       <div className="border-b border-slate-200 bg-sky-50">
         <div className="container-ags flex flex-wrap items-center gap-1.5 py-4 text-xs font-medium text-slate-500">
           <Link href="/" className="hover:text-brand-600">Home</Link>
@@ -80,19 +121,21 @@ export default async function ServiceDetailPage({
       </div>
 
       <section className="relative overflow-hidden bg-ink-950 text-white">
-        <FadeInImage
-          src={service.heroImage}
-          alt={service.name}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover opacity-65"
-        />
+        <Parallax amount={50} className="absolute inset-0">
+          <FadeInImage
+            src={service.heroImage}
+            alt={service.name}
+            fill
+            priority
+            sizes="100vw"
+            className="scale-110 object-cover opacity-65"
+          />
+        </Parallax>
         <div className="absolute inset-0 bg-linear-to-r from-ink-950 via-ink-950/80 to-ink-950/30" />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-white to-transparent" />
 
         <div className="container-ags relative grid gap-10 py-16 lg:grid-cols-[1fr_360px] lg:items-end lg:py-24">
-          <div className="max-w-3xl">
+          <Reveal className="max-w-3xl">
             <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-100 backdrop-blur">
               {categoryMeta.name}
             </span>
@@ -113,9 +156,13 @@ export default async function ServiceDetailPage({
                 Contact AGS
               </ButtonLink>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="rounded-2xl border border-white/20 bg-white/10 p-5 shadow-2xl shadow-navy-950/30 backdrop-blur">
+          <Reveal
+            variant="right"
+            delay={0.12}
+            className="rounded-2xl border border-white/20 bg-white/10 p-5 shadow-2xl shadow-navy-950/30 backdrop-blur"
+          >
             <div className="flex items-center gap-3">
               <span className="flex size-11 items-center justify-center rounded-xl bg-white text-brand-600">
                 <Gauge className="size-5" />
@@ -135,7 +182,7 @@ export default async function ServiceDetailPage({
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -304,9 +351,12 @@ export default async function ServiceDetailPage({
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="mt-10 border-t border-slate-200 pt-8 first:mt-0 first:border-t-0 first:pt-0">
+    <Reveal
+      as="section"
+      className="mt-10 border-t border-slate-200 pt-8 first:mt-0 first:border-t-0 first:pt-0"
+    >
       <h2 className="font-display text-lg font-bold text-navy-900">{title}</h2>
       <div className="mt-4">{children}</div>
-    </section>
+    </Reveal>
   );
 }

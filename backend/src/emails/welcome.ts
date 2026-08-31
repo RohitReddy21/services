@@ -6,7 +6,7 @@ export function welcomeEmail(name: string) {
   const html = emailLayout({
     preheader: "Your AGS account is ready.",
     heading: `Welcome, ${name.split(" ")[0]}`,
-    bodyHtml: `<p>Thanks for creating an AGS account. You're all set to book air conditioning or refrigeration services, or subscribe to a recurring Care Plan.</p>`,
+    bodyHtml: `<p>Thanks for creating an AGS account. You're all set to book air conditioning, refrigeration or electrical services, or subscribe to a recurring Care Plan.</p>`,
     ctaLabel: "Book a Service",
     ctaUrl: `${env.frontendUrl}/book`,
   });

@@ -8,6 +8,8 @@ const GOLD = "#cf9f3d";
 
 function header(doc: PDFKit.PDFDocument, title: string, subtitle: string) {
   doc.rect(0, 0, doc.page.width, 96).fill(NAVY);
+  // Gold accent rule along the base of the header band.
+  doc.rect(0, 96, doc.page.width, 3).fill(GOLD);
   doc
     .fillColor("#ffffff")
     .font("Helvetica-Bold")
@@ -62,32 +64,36 @@ function detailRow(doc: PDFKit.PDFDocument, label: string, value: string, x: num
   doc.moveDown(0.9);
 }
 
-export function streamSubscriptionInvoice(
-  res: Response,
-  input: {
-    invoiceNumber: string;
-    issuedAt: Date;
-    customerName: string;
-    customerEmail: string;
-    planName: string;
-    billingCycleMonths: number;
-    servicesPerCycle: number;
-    amount: number;
-    currency: string;
-    periodStart: Date;
-    periodEnd: Date;
-    equipmentLabel: string;
-    address: string;
-    originalAmount?: number | null;
-    couponCode?: string | null;
-  }
-) {
-  const doc = new PDFDocument({ size: "A4", margin: 50 });
-  res.setHeader("Content-Type", "application/pdf");
-  res.setHeader("Content-Disposition", `inline; filename="${input.invoiceNumber}.pdf"`);
-  doc.pipe(res);
+export interface SubscriptionInvoiceInput {
+  invoiceNumber: string;
+  issuedAt: Date;
+  customerName: string;
+  customerEmail: string;
+  planName: string;
+  billingCycleMonths: number;
+  servicesPerCycle: number;
+  amount: number;
+  currency: string;
+  periodStart: Date;
+  periodEnd: Date;
+  equipmentLabel: string;
+  address: string;
+  originalAmount?: number | null;
+  couponCode?: string | null;
+}
 
+const gbDate = (d: Date) => d.toLocaleDateString("en-GB");
+
+function drawSubscriptionInvoice(doc: PDFKit.PDFDocument, input: SubscriptionInvoiceInput) {
   header(doc, "INVOICE", input.invoiceNumber);
+
+  // Status chip — Care Plans are paid up front, so the invoice is a receipt.
+  doc
+    .fillColor(GOLD)
+    .font("Helvetica-Bold")
+    .fontSize(10)
+    .text("PAID IN FULL", 50, doc.y, { characterSpacing: 1.5 });
+  doc.moveDown(1.1);
 
   const colWidth = (doc.page.width - 100 - 20) / 2;
   const leftX = 50;
@@ -96,14 +102,14 @@ export function streamSubscriptionInvoice(
 
   detailRow(doc, "Billed to", input.customerName, leftX, colWidth);
   doc.y = topY;
-  detailRow(doc, "Invoice date", input.issuedAt.toLocaleDateString("en-IE"), rightX, colWidth);
+  detailRow(doc, "Invoice date", gbDate(input.issuedAt), rightX, colWidth);
 
   detailRow(doc, "Email", input.customerEmail, leftX, colWidth);
   doc.y = topY + 40;
   detailRow(
     doc,
     "Billing period",
-    `${input.periodStart.toLocaleDateString("en-IE")} - ${input.periodEnd.toLocaleDateString("en-IE")}`,
+    `${gbDate(input.periodStart)} - ${gbDate(input.periodEnd)}`,
     rightX,
     colWidth
   );
@@ -170,29 +176,52 @@ export function streamSubscriptionInvoice(
     doc.moveDown(1.6);
   }
 
+  // Themed total band.
+  const totalY = doc.y;
+  const bandX = 300;
+  doc.roundedRect(bandX, totalY - 4, doc.page.width - 50 - bandX, 28, 5).fill("#eef4ff");
   doc
-    .moveTo(300, doc.y)
-    .lineTo(doc.page.width - 50, doc.y)
-    .strokeColor("#e2e8f0")
-    .stroke();
-  doc.moveDown(0.8);
-
-  doc.font("Helvetica-Bold").fontSize(12).fillColor(SLATE).text("Total", 300, doc.y, { width: 130 });
+    .font("Helvetica-Bold")
+    .fontSize(12)
+    .fillColor(SLATE)
+    .text("Total paid", bandX + 12, totalY + 4, { width: 120 });
   doc
     .font("Helvetica-Bold")
     .fontSize(14)
     .fillColor(BRAND)
-    .text(formatMoney(input.amount, input.currency), 0, doc.y - 16, {
+    .text(formatMoney(input.amount, input.currency), 0, totalY + 3, {
       align: "right",
-      width: doc.page.width - 50,
+      width: doc.page.width - 62,
     });
+  doc.y = totalY + 28;
 
-  doc.moveDown(2.5);
+  doc.moveDown(2.2);
   doc.font("Helvetica").fontSize(9).fillColor(SLATE).text("Service address", 50, doc.y);
   doc.font("Helvetica-Bold").fontSize(10).fillColor(NAVY).text(input.address, 50, doc.y + 2, { width: 300 });
 
   footer(doc);
+}
+
+export function streamSubscriptionInvoice(res: Response, input: SubscriptionInvoiceInput) {
+  const doc = new PDFDocument({ size: "A4", margin: 50 });
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("Content-Disposition", `inline; filename="${input.invoiceNumber}.pdf"`);
+  doc.pipe(res);
+  drawSubscriptionInvoice(doc, input);
   doc.end();
+}
+
+/** Same invoice, returned as a Buffer so it can be attached to an email. */
+export function renderSubscriptionInvoice(input: SubscriptionInvoiceInput): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({ size: "A4", margin: 50 });
+    const chunks: Buffer[] = [];
+    doc.on("data", (chunk: Buffer) => chunks.push(chunk));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+    drawSubscriptionInvoice(doc, input);
+    doc.end();
+  });
 }
 
 export function streamBookingCertificate(

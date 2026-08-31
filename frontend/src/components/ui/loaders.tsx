@@ -1,5 +1,19 @@
+import { Loader2 } from "lucide-react";
 import Logo from "@/components/navigation/logo";
+import { cardVariantClasses } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+
+export function InlineLoader({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn("flex h-40 items-center justify-center", className)}
+      role="status"
+      aria-label="Loading"
+    >
+      <Loader2 className="size-6 animate-spin text-brand-500" />
+    </div>
+  );
+}
 
 export function PageLoader({
   compact = false,
@@ -46,10 +60,7 @@ export function PageRouteLoader({ label = "Loading page" }: { label?: string }) 
 export function SectionLoader({ className }: { className?: string }) {
   return (
     <div
-      className={cn(
-        "rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-navy-900/5",
-        className
-      )}
+      className={cn(cardVariantClasses.resting, "p-6", className)}
       role="status"
       aria-label="Loading section"
     >
@@ -151,10 +162,7 @@ export function ImageSkeleton({ className }: { className?: string }) {
 export function CardSkeleton({ className }: { className?: string }) {
   return (
     <div
-      className={cn(
-        "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-navy-900/5",
-        className
-      )}
+      className={cn(cardVariantClasses.resting, "p-4", className)}
       role="status"
       aria-label="Loading card"
     >

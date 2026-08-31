@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none" role="img" aria-label="6-Month Care plan">
+  <defs>
+    <linearGradient id="bg6" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#08152b"/>
+      <stop offset="1" stop-color="#163fa8"/>
+    </linearGradient>
+    <radialGradient id="glow6" cx="0.5" cy="0.46" r="0.55">
+      <stop offset="0" stop-color="#e8c46a" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#e8c46a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg6)"/>
+  <g stroke="#8ab5ff" stroke-opacity="0.12">
+    <path d="M0 150H800M0 300H800M0 450H800M200 0V600M400 0V600M600 0V600"/>
+  </g>
+  <circle cx="400" cy="288" r="250" fill="url(#glow6)"/>
+  <polygon points="400,133 534,210 534,364 400,441 266,364 266,210" stroke="#5390ff" stroke-width="3" stroke-opacity="0.7" stroke-linejoin="round"/>
+  <g fill="#e8c46a">
+    <circle cx="400" cy="133" r="13"/>
+    <circle cx="534" cy="210" r="13"/>
+    <circle cx="534" cy="364" r="13"/>
+    <circle cx="400" cy="441" r="13"/>
+    <circle cx="266" cy="364" r="13"/>
+    <circle cx="266" cy="210" r="13"/>
+  </g>
+  <text x="400" y="333" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="185" font-weight="800" fill="#ffffff">6</text>
+  <text x="400" y="395" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="6" fill="#dce9ff">SERVICES</text>
+  <text x="400" y="523" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#ffffff">6&#8211;MONTH CARE</text>
+</svg>

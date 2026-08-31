@@ -22,6 +22,14 @@ export const serviceCategories: ServiceCategory[] = [
       "Commercial and industrial refrigeration for kitchens, retail and cold storage.",
     icon: "fridge",
   },
+  {
+    id: "electrical",
+    name: "Electrical",
+    slug: "electrical",
+    shortDescription:
+      "Certified electricians for installation, testing, repairs and emergency callouts.",
+    icon: "bolt",
+  },
 ];
 
 const serviceImage = (name: string) => `/images/services/${name}.png`;
@@ -63,6 +71,20 @@ const img = {
   refEmergency: serviceImage("ref-emergency-retail"),
   coldRoomMaintenance: serviceImage("ref-cold-room-maintenance-produce"),
   displayCabinet: serviceImage("ref-display-cabinet-bakery"),
+
+  // Electrical
+  elecConsumerUnit: serviceImage("electrical-consumer-unit"),
+  elecLighting: serviceImage("electrical-lighting"),
+  elecSockets: serviceImage("electrical-sockets"),
+  elecEvCharger: serviceImage("electrical-ev-charger"),
+  elecRewiring: serviceImage("electrical-rewiring"),
+  elecEicr: serviceImage("electrical-eicr"),
+  elecInstall: serviceImage("electrical-installation"),
+  elecRepairs: serviceImage("electrical-repairs"),
+  elecDiagnostics: serviceImage("electrical-diagnostics"),
+  elecMaintenance: serviceImage("electrical-maintenance"),
+  elecEmergency: serviceImage("electrical-emergency"),
+  elecCommercial: serviceImage("electrical-commercial"),
 };
 
 export const services: ServiceDetail[] = [
@@ -499,6 +521,176 @@ export const services: ServiceDetail[] = [
     applications: ["Bakeries & delis", "Supermarkets", "Convenience retail", "Cafes"],
     commonProblems: ["Misted or fogged glass", "Uneven shelf temperatures", "LED lighting faults", "Fan or thermostat issues"],
   },
+
+  // ---------------- ELECTRICAL ----------------
+  {
+    id: "elec-consumer-units",
+    categoryId: "electrical",
+    name: "Consumer Units & Fuseboards",
+    slug: "consumer-units",
+    shortDescription:
+      "Supply, upgrade and replacement of consumer units to current wiring regulations.",
+    image: img.elecConsumerUnit,
+    heroImage: img.elecConsumerUnit,
+    description:
+      "An outdated fuseboard can leave a property without modern protection against faults, shocks and fire. Our registered electricians replace and upgrade consumer units with RCBO protection and full certification.",
+    applications: ["Older properties with rewireable fuses", "Landlord & rental compliance", "Pre-sale electrical upgrades", "Extensions & added circuits"],
+    commonProblems: ["Breakers tripping with no obvious cause", "No RCD protection fitted", "Scorching or buzzing at the board", "Not enough ways for new circuits"],
+  },
+  {
+    id: "elec-lighting",
+    categoryId: "electrical",
+    name: "Lighting Circuits",
+    slug: "lighting",
+    shortDescription:
+      "Interior, exterior and emergency lighting design, installation and repair.",
+    image: img.elecLighting,
+    heroImage: img.elecLighting,
+    description:
+      "From replacing failed downlights to designing full lighting schemes, we install and repair lighting circuits for homes and commercial premises, including LED upgrades and emergency lighting.",
+    applications: ["Kitchen & living space lighting", "Office & retail lighting schemes", "Outdoor & security lighting", "Emergency & escape-route lighting"],
+    commonProblems: ["Lights flickering or buzzing", "Circuits tripping when switched on", "Dead sockets on a lighting ring", "Failed transformers or drivers"],
+  },
+  {
+    id: "elec-sockets",
+    categoryId: "electrical",
+    name: "Sockets & Power Circuits",
+    slug: "sockets-power",
+    shortDescription:
+      "Additional sockets, dedicated circuits and ring-main repairs.",
+    image: img.elecSockets,
+    heroImage: img.elecSockets,
+    description:
+      "We add, move and repair socket outlets and power circuits, including dedicated supplies for appliances, workshops and IT equipment, with testing and certification on completion.",
+    applications: ["Extra sockets for home offices", "Kitchen & utility appliance circuits", "Workshop & garage power", "Commercial floor-box & desk power"],
+    commonProblems: ["Dead or intermittent sockets", "Scorched or loose outlets", "Overloaded extension leads in use", "Circuit tripping under load"],
+  },
+  {
+    id: "elec-ev-chargers",
+    categoryId: "electrical",
+    name: "EV Charger Installation",
+    slug: "ev-chargers",
+    shortDescription:
+      "Home and workplace electric vehicle charge point installation.",
+    image: img.elecEvCharger,
+    heroImage: img.elecEvCharger,
+    description:
+      "Our electricians install domestic and commercial EV charge points, including load assessment, dedicated circuits, earthing arrangements and smart-charger setup, all to current EV installation standards.",
+    applications: ["Home driveway & garage charging", "Workplace & fleet charging", "Landlord & new-build provision", "Multi-bay commercial car parks"],
+    commonProblems: ["Existing supply not rated for a charger", "No dedicated circuit available", "Charger faulting or going offline", "Earthing arrangement non-compliant"],
+  },
+  {
+    id: "elec-rewiring",
+    categoryId: "electrical",
+    name: "Rewiring",
+    slug: "rewiring",
+    shortDescription:
+      "Full and partial rewires for ageing or unsafe electrical installations.",
+    image: img.elecRewiring,
+    heroImage: img.elecRewiring,
+    description:
+      "Where wiring has reached the end of its safe life, we carry out full or partial rewires with minimal disruption, replacing cabling, accessories and the consumer unit and issuing an Electrical Installation Certificate.",
+    applications: ["Properties over 30 years old", "Homes with rubber or fabric wiring", "Renovations & refurbishments", "Post-survey remedial work"],
+    commonProblems: ["Old rubber/lead-sheathed cabling", "Frequent faults across the installation", "Insufficient sockets throughout", "Failed or unsatisfactory EICR"],
+  },
+  {
+    id: "elec-eicr",
+    categoryId: "electrical",
+    name: "EICR & Electrical Testing",
+    slug: "eicr-testing",
+    shortDescription:
+      "Electrical Installation Condition Reports and periodic inspection & testing.",
+    image: img.elecEicr,
+    heroImage: img.elecEicr,
+    description:
+      "We carry out Electrical Installation Condition Reports (EICR) for landlords, businesses and homeowners, identifying deterioration, damage and non-compliance, with a clear schedule of any remedial work needed.",
+    applications: ["Landlord 5-year rental checks", "Commercial & office compliance", "Pre-purchase property checks", "Insurance-required inspections"],
+    commonProblems: ["Report needed for tenancy or sale", "Previous EICR marked unsatisfactory", "Unknown condition of older wiring", "No records of prior testing"],
+  },
+  {
+    id: "elec-installation",
+    categoryId: "electrical",
+    name: "Electrical Installation",
+    slug: "installation",
+    shortDescription:
+      "New circuits, supplies and full installations, designed, fitted and certified.",
+    image: img.elecInstall,
+    heroImage: img.elecInstall,
+    description:
+      "Our registered electricians design and install new electrical work — from a single circuit to a complete installation — with proper design, containment, testing and Building Regulations notification.",
+    applications: ["Extensions & loft conversions", "Garden rooms & outbuildings", "Commercial fit-outs", "New-build & self-build projects"],
+    commonProblems: ["Existing supply near capacity", "No clear circuit design or drawings", "Notifiable work needing certification", "Poorly executed previous installs"],
+  },
+  {
+    id: "elec-repairs",
+    categoryId: "electrical",
+    name: "Electrical Repairs",
+    slug: "repairs",
+    shortDescription:
+      "Fast, safe repair of faults, damage and failed accessories.",
+    image: img.elecRepairs,
+    heroImage: img.elecRepairs,
+    description:
+      "From tripping circuits to damaged sockets and switches, our electricians diagnose and repair faults quickly, making the installation safe and issuing a Minor Works Certificate where applicable.",
+    applications: ["Breakdown & fault callouts", "Damaged or scorched accessories", "Post-DIY remedial work", "Insurance & claim-related repairs"],
+    commonProblems: ["Circuit repeatedly tripping", "Burning smell from an outlet", "Sockets or switches not working", "Intermittent loss of power"],
+  },
+  {
+    id: "elec-fault-finding",
+    categoryId: "electrical",
+    name: "Fault Finding & Diagnostics",
+    slug: "fault-finding",
+    shortDescription:
+      "Structured diagnostics to trace intermittent and hard-to-find faults.",
+    image: img.elecDiagnostics,
+    heroImage: img.elecDiagnostics,
+    description:
+      "Some electrical faults are elusive. Our electricians use systematic testing — insulation resistance, continuity and RCD testing — to isolate the root cause rather than replacing parts by guesswork.",
+    applications: ["Intermittent tripping investigations", "Earth-fault & RCD nuisance tripping", "Fault present after other work", "Second-opinion assessments"],
+    commonProblems: ["RCD trips only in wet weather", "Fault appears then clears randomly", "Multiple circuits affected at once", "Previous electrician couldn't locate it"],
+  },
+  {
+    id: "elec-maintenance",
+    categoryId: "electrical",
+    name: "Electrical Maintenance",
+    slug: "maintenance",
+    shortDescription:
+      "Planned preventative maintenance for commercial and rental electrical systems.",
+    image: img.elecMaintenance,
+    heroImage: img.elecMaintenance,
+    description:
+      "A planned electrical maintenance programme keeps installations safe and compliant, combining periodic inspection, thermal checks on distribution boards and prompt attention to minor defects.",
+    applications: ["Multi-site commercial contracts", "Retail & hospitality estates", "Rental & managed property portfolios", "Industrial & warehouse units"],
+    commonProblems: ["No maintenance history on record", "Recurring minor electrical faults", "Hot spots on distribution boards", "Overdue periodic inspection"],
+  },
+  {
+    id: "elec-emergency",
+    categoryId: "electrical",
+    name: "Emergency Electrician",
+    slug: "emergency",
+    shortDescription:
+      "Rapid-response cover for power loss, unsafe wiring and electrical hazards.",
+    image: img.elecEmergency,
+    heroImage: img.elecEmergency,
+    description:
+      "Loss of power or exposed live wiring is a safety risk that can't wait. Our emergency electricians prioritise making the situation safe, restoring supply and advising on any follow-up work.",
+    applications: ["Total or partial loss of power", "Burning smells & scorching", "Exposed or damaged live cables", "Out-of-hours electrical faults"],
+    commonProblems: ["Whole property has no power", "Sparks or smoke from a fitting", "Water ingress into electrics", "Consumer unit won't reset"],
+  },
+  {
+    id: "elec-commercial",
+    categoryId: "electrical",
+    name: "Commercial Electrical",
+    slug: "commercial",
+    shortDescription:
+      "Three-phase, distribution and fit-out electrical work for business premises.",
+    image: img.elecCommercial,
+    heroImage: img.elecCommercial,
+    description:
+      "We deliver commercial electrical services including three-phase supplies, distribution boards, containment, data and power fit-outs, and ongoing testing to keep business premises safe and compliant.",
+    applications: ["Office & retail fit-outs", "Restaurants & commercial kitchens", "Warehouses & light industrial", "Landlord common-area systems"],
+    commonProblems: ["Three-phase supply imbalance or faults", "Distribution board at capacity", "Non-compliant containment or cabling", "No current EICR for the premises"],
+  },
 ];
 
 export const categoryContent: Record<ServiceCategoryId, CategoryContent> = {
@@ -570,6 +762,41 @@ export const categoryContent: Record<ServiceCategoryId, CategoryContent> = {
     reviews: [
       { id: "rev-ref-1", author: "Sarah J.", location: "Bristol", rating: 5, text: "AGS provided an excellent service. Our cold room is working perfectly and the engineer was very professional.", date: "2026-06-10" },
       { id: "rev-ref-2", author: "Tom W.", location: "Leeds", rating: 5, text: "Reliable maintenance contract for our three restaurant sites. Always on time.", date: "2026-04-28" },
+    ],
+  },
+  electrical: {
+    whatWeProvide: [
+      "Registered, certified electricians",
+      "Full testing & certification",
+      "Building Regulations notification",
+      "EICR & remedial work",
+      "Emergency callout cover",
+      "Domestic & commercial work",
+    ],
+    idealFor: [
+      { label: "Homes", icon: "home" },
+      { label: "Landlords", icon: "briefcase" },
+      { label: "Offices", icon: "building" },
+      { label: "Shops", icon: "store" },
+      { label: "Restaurants", icon: "utensils" },
+    ],
+    process: [
+      { step: 1, title: "Enquiry & Assessment", description: "Tell us what you need — our team reviews your request and the property details." },
+      { step: 2, title: "Survey & Testing", description: "An electrician assesses the installation and carries out testing where needed." },
+      { step: 3, title: "Service Confirmation", description: "We confirm scope, scheduling and any details ahead of your appointment." },
+      { step: 4, title: "Certified Work", description: "Our registered electricians carry out the work to BS 7671 wiring regulations." },
+      { step: 5, title: "Test & Certify", description: "We test the installation and issue the appropriate electrical certificate." },
+      { step: 6, title: "Aftercare", description: "You receive your certification and any recommendations for further work." },
+    ],
+    faqs: [
+      { question: "Are your electricians registered?", answer: "Yes, our electricians are registered with a government-approved competent person scheme and work to BS 7671 wiring regulations." },
+      { question: "Do you provide electrical certificates?", answer: "Yes, we issue the appropriate certificate for the work — an EICR, Electrical Installation Certificate or Minor Works Certificate." },
+      { question: "Can you carry out an EICR for my rental property?", answer: "Yes, we carry out landlord EICRs and can complete any remedial work identified to bring the installation up to standard." },
+      { question: "Will I get a price before work starts?", answer: "Our team will confirm service details and any applicable charges with you directly before work begins." },
+    ],
+    reviews: [
+      { id: "rev-elec-1", author: "Daniel K.", location: "Birmingham", rating: 5, text: "Replaced our old fuseboard and sorted a tripping fault the same day. Tidy work and full certificate provided.", date: "2026-06-18" },
+      { id: "rev-elec-2", author: "Priya S.", location: "London", rating: 5, text: "Booked an EICR for our rental flat — clear report and the remedial work was done quickly.", date: "2026-05-22" },
     ],
   },
 };

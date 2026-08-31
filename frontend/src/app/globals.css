@@ -275,3 +275,377 @@ textarea.input-field {
     animation: none !important;
   }
 }
+
+/* ============================================================
+   3D DEPTH SYSTEM
+   Layered shadows, perspective tilt, extruded controls and
+   floating accents that give the UI real dimensionality.
+   ============================================================ */
+
+/* Layered shadows — a soft ambient wash, a directional key shadow
+   and a tight contact shadow, so surfaces read as lifted off the page. */
+.ags-depth-sm {
+  box-shadow:
+    0 1px 1px rgba(11, 27, 51, 0.04),
+    0 3px 6px rgba(11, 27, 51, 0.06),
+    0 8px 16px rgba(11, 27, 51, 0.06);
+}
+
+.ags-depth-md {
+  box-shadow:
+    0 1px 1px rgba(11, 27, 51, 0.05),
+    0 4px 10px rgba(11, 27, 51, 0.07),
+    0 14px 28px rgba(11, 27, 51, 0.09),
+    0 28px 50px rgba(11, 27, 51, 0.08);
+}
+
+.ags-depth-lg {
+  box-shadow:
+    0 2px 4px rgba(11, 27, 51, 0.06),
+    0 8px 18px rgba(11, 27, 51, 0.09),
+    0 22px 44px rgba(11, 27, 51, 0.12),
+    0 44px 80px rgba(11, 27, 51, 0.12);
+}
+
+.ags-depth-xl {
+  box-shadow:
+    0 2px 6px rgba(11, 27, 51, 0.08),
+    0 12px 28px rgba(11, 27, 51, 0.12),
+    0 34px 64px rgba(11, 27, 51, 0.16),
+    0 64px 110px rgba(11, 27, 51, 0.18);
+}
+
+/* Hover lift — pairs a translate with a jump to a deeper shadow tier. */
+.ags-lift {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.ags-lift:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 2px 6px rgba(11, 27, 51, 0.08),
+    0 12px 28px rgba(11, 27, 51, 0.12),
+    0 34px 64px rgba(11, 27, 51, 0.16),
+    0 64px 110px rgba(11, 27, 51, 0.18);
+}
+
+.ags-lift-sm {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.ags-lift-sm:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 1px 1px rgba(11, 27, 51, 0.05),
+    0 4px 10px rgba(11, 27, 51, 0.07),
+    0 14px 28px rgba(11, 27, 51, 0.09),
+    0 28px 50px rgba(11, 27, 51, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ags-lift:hover,
+  .ags-lift-sm:hover {
+    transform: none;
+  }
+}
+
+/* Perspective host + tilting body. TiltCard writes --ags-rx / --ags-ry
+   (degrees) and --ags-mx / --ags-my (0-100%) for the glare position. */
+.ags-tilt {
+  perspective: 1100px;
+}
+
+.ags-tilt__body {
+  --ags-rx: 0deg;
+  --ags-ry: 0deg;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--ags-rx)) rotateY(var(--ags-ry));
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.ags-tilt__body[data-active="true"] {
+  transition: transform 0.08s linear;
+}
+
+/* Push a child forward on the Z axis inside a tilting body. */
+.ags-tilt-layer {
+  transform: translateZ(var(--ags-z, 40px));
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Moving specular highlight for tilt surfaces. */
+.ags-glare {
+  --ags-mx: 50%;
+  --ags-my: 50%;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    circle at var(--ags-mx) var(--ags-my),
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0) 45%
+  );
+  mix-blend-mode: soft-light;
+}
+
+.ags-tilt__body[data-active="true"] .ags-glare {
+  opacity: 1;
+}
+
+/* Extruded control — a solid coloured edge plus a cast shadow so the
+   element looks like a physical key that depresses when pressed. */
+.ags-extrude {
+  box-shadow:
+    0 2px 0 rgba(20, 47, 133, 0.55),
+    0 4px 6px rgba(11, 27, 51, 0.18),
+    0 10px 22px rgba(26, 79, 209, 0.28);
+  transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.16s ease;
+}
+
+.ags-extrude:hover {
+  box-shadow:
+    0 3px 0 rgba(20, 47, 133, 0.55),
+    0 8px 12px rgba(11, 27, 51, 0.2),
+    0 16px 34px rgba(26, 79, 209, 0.32);
+}
+
+.ags-extrude:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 rgba(20, 47, 133, 0.55),
+    0 2px 4px rgba(11, 27, 51, 0.2),
+    0 4px 10px rgba(26, 79, 209, 0.24);
+}
+
+.ags-extrude-gold {
+  box-shadow:
+    0 2px 0 rgba(176, 132, 42, 0.7),
+    0 4px 6px rgba(11, 27, 51, 0.16),
+    0 10px 22px rgba(207, 159, 61, 0.3);
+}
+
+.ags-extrude-gold:hover {
+  box-shadow:
+    0 3px 0 rgba(176, 132, 42, 0.7),
+    0 8px 12px rgba(11, 27, 51, 0.18),
+    0 16px 34px rgba(207, 159, 61, 0.34);
+}
+
+.ags-extrude-gold:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 rgba(176, 132, 42, 0.7),
+    0 2px 4px rgba(11, 27, 51, 0.18),
+    0 4px 10px rgba(207, 159, 61, 0.26);
+}
+
+/* Gentle idle motion for floating accents. */
+.ags-float {
+  animation: ags-float 7s ease-in-out infinite;
+}
+
+.ags-float-slow {
+  animation: ags-float 11s ease-in-out infinite;
+}
+
+.ags-float-delayed {
+  animation: ags-float 9s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+/* Receding perspective grid — a "floor" for dark sections. */
+.ags-perspective-grid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ags-perspective-grid::before {
+  content: "";
+  position: absolute;
+  left: -25%;
+  right: -25%;
+  bottom: -30%;
+  height: 85%;
+  background-image:
+    linear-gradient(rgba(138, 181, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(138, 181, 255, 0.22) 1px, transparent 1px);
+  background-size: 46px 46px;
+  transform: perspective(520px) rotateX(64deg);
+  transform-origin: bottom center;
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent 72%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent 72%);
+  animation: ags-grid-drift 12s linear infinite;
+}
+
+.ags-parallax {
+  will-change: transform;
+}
+
+@keyframes ags-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0) rotate(1.4deg);
+  }
+}
+
+@keyframes ags-grid-drift {
+  from {
+    background-position: 0 0, 0 0;
+  }
+  to {
+    background-position: 0 46px, 46px 0;
+  }
+}
+
+/* Care-plans hero motion background */
+.ags-flow {
+  stroke-dasharray: 14 26;
+  animation: ags-flow 2.4s linear infinite;
+}
+
+.ags-flow-slow {
+  stroke-dasharray: 10 30;
+  animation: ags-flow 5s linear infinite;
+}
+
+.ags-flow-rev {
+  stroke-dasharray: 12 28;
+  animation: ags-flow 3.4s linear infinite reverse;
+}
+
+.ags-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ags-spin 6s linear infinite;
+}
+
+.ags-twinkle {
+  animation: ags-twinkle 3.6s ease-in-out infinite;
+}
+
+@keyframes ags-flow {
+  to {
+    stroke-dashoffset: -160;
+  }
+}
+
+@keyframes ags-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ags-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Hero: a very slow, near-imperceptible push-in on the background photo —
+   cinematic "alive but calm" motion, nothing bouncy. */
+.ags-ken-burns {
+  animation: ags-ken-burns 32s ease-in-out infinite alternate;
+  transform-origin: 60% 40%;
+  will-change: transform;
+}
+
+/* Hero: a single specular light bar drifting across, once every cycle. */
+.ags-hero-sweep {
+  overflow: hidden;
+}
+
+.ags-hero-sweep::after {
+  content: "";
+  position: absolute;
+  inset: -40% -60%;
+  background: linear-gradient(
+    68deg,
+    transparent 42%,
+    rgba(138, 181, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.16) 52%,
+    rgba(138, 181, 255, 0.1) 54%,
+    transparent 62%
+  );
+  transform: translateX(-30%);
+  animation: ags-hero-sweep 11s cubic-bezier(0.5, 0, 0.2, 1) infinite;
+}
+
+@keyframes ags-ken-burns {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.11) translate3d(-1.4%, -1.6%, 0);
+  }
+}
+
+@keyframes ags-hero-sweep {
+  0%,
+  16% {
+    transform: translateX(-38%);
+    opacity: 0;
+  }
+  28% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    transform: translateX(38%);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ags-flow,
+  .ags-flow-slow,
+  .ags-flow-rev,
+  .ags-spin,
+  .ags-twinkle,
+  .ags-ken-burns {
+    animation: none !important;
+  }
+  .ags-ken-burns {
+    transform: scale(1.04);
+  }
+  .ags-hero-sweep::after {
+    animation: none !important;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ags-float,
+  .ags-float-slow,
+  .ags-float-delayed {
+    animation: none !important;
+  }
+  .ags-perspective-grid::before {
+    animation: none !important;
+  }
+  .ags-tilt__body,
+  .ags-tilt-layer {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+@media (hover: none) {
+  .ags-tilt__body {
+    transform: none !important;
+  }
+}

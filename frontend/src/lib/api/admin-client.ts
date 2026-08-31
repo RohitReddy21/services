@@ -1,7 +1,7 @@
 import type { Review, SupportTicket } from "@/types/account";
 import type { BookingStatus } from "@/types/service";
 import type { Subscription } from "@/types/subscription";
-import type { AdminUserSummary, Coupon, DiscountType } from "@/types/coupon";
+import type { AdminStats, AdminUserSummary, Coupon, DiscountType } from "@/types/coupon";
 import { API_BASE_URL } from "@/lib/api/api-base";
 import { mapBookingDoc } from "@/lib/api/booking-mapper";
 
@@ -24,9 +24,16 @@ function send<T>(path: string, method: string, body?: unknown) {
   }).then((res) => json<T>(res));
 }
 
-export function fetchAdminBookings(status?: string) {
-  const qs = status ? `?status=${encodeURIComponent(status)}` : "";
-  return get<{ bookings: Record<string, unknown>[] }>(`/api/admin/bookings${qs}`).then((res) => ({
+export function fetchAdminStats() {
+  return get<AdminStats>("/api/admin/stats");
+}
+
+export function fetchAdminBookings(params?: { status?: string; search?: string }) {
+  const qs = new URLSearchParams();
+  if (params?.status) qs.set("status", params.status);
+  if (params?.search?.trim()) qs.set("search", params.search.trim());
+  const suffix = qs.toString() ? `?${qs.toString()}` : "";
+  return get<{ bookings: Record<string, unknown>[] }>(`/api/admin/bookings${suffix}`).then((res) => ({
     bookings: res.bookings.map(mapBookingDoc),
   }));
 }
@@ -62,13 +69,28 @@ export function fetchAdminUsers(search?: string) {
   return get<{ users: AdminUserSummary[] }>(`/api/admin/users${qs}`);
 }
 
+export function updateUserRoleRequest(id: string, role: AdminUserSummary["role"]) {
+  return send<{ user: AdminUserSummary }>(`/api/admin/users/${id}/role`, "PATCH", { role });
+}
+
 export function fetchAdminSubscriptions(status?: string) {
   const qs = status ? `?status=${encodeURIComponent(status)}` : "";
   return get<{ subscriptions: Subscription[] }>(`/api/admin/subscriptions${qs}`);
 }
 
+export function sendSubscriptionInvoiceRequest(id: string) {
+  return send<{ status: "sent" | "logged" | "failed"; to: string; invoiceNumber: string }>(
+    `/api/admin/subscriptions/${id}/send-invoice`,
+    "POST"
+  );
+}
+
 export function fetchAdminReviews() {
   return get<{ reviews: Review[] }>("/api/admin/reviews");
+}
+
+export function deleteReviewRequest(id: string) {
+  return send<{ ok: boolean }>(`/api/admin/reviews/${id}`, "DELETE");
 }
 
 export function fetchAdminCoupons() {
@@ -86,7 +108,16 @@ export function createCouponRequest(input: {
   return send<{ coupon: Coupon }>("/api/admin/coupons", "POST", input);
 }
 
-export function updateCouponRequest(id: string, patch: Partial<{ active: boolean }>) {
+export function updateCouponRequest(
+  id: string,
+  patch: Partial<{
+    active: boolean;
+    description: string;
+    discountValue: number;
+    expiresAt: string | null;
+    maxRedemptions: number | null;
+  }>
+) {
   return send<{ coupon: Coupon }>(`/api/admin/coupons/${id}`, "PATCH", patch);
 }
 

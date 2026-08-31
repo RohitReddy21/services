@@ -1,8 +1,10 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Award, HeartHandshake, ShieldCheck, Wrench } from "lucide-react";
 import FadeInImage from "@/components/ui/fade-in-image";
+import TiltCard from "@/components/ui/tilt-card";
 
 const features = [
   {
@@ -60,7 +62,11 @@ export default function WhyChoose() {
             viewport={{ once: true, margin: "-90px" }}
             transition={{ duration: 0.62, ease: "easeOut" }}
           >
-            <div className="relative aspect-16/10 overflow-hidden rounded-[2rem] shadow-2xl shadow-navy-900/15">
+            <TiltCard
+              max={8}
+              glare
+              bodyClassName="relative aspect-16/10 overflow-hidden rounded-[2rem] ags-depth-xl"
+            >
               <FadeInImage
                 src="/images/services/outdoor-condenser-units.png"
                 alt="Outdoor condenser units installed for commercial climate control"
@@ -69,15 +75,18 @@ export default function WhyChoose() {
                 className="object-cover ags-image-reveal"
               />
               <div className="absolute inset-0 bg-linear-to-t from-ink-950/55 via-transparent to-transparent" />
-            </div>
-            <div className="absolute -bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/90 p-4 shadow-xl shadow-navy-900/10 backdrop-blur">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">
-                Quality check
-              </p>
-              <p className="mt-1 text-sm font-semibold text-navy-900">
-                Performance verified before handover.
-              </p>
-            </div>
+              <div
+                className="ags-tilt-layer absolute bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/90 p-4 ags-depth-md backdrop-blur"
+                style={{ "--ags-z": "70px" } as CSSProperties}
+              >
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">
+                  Quality check
+                </p>
+                <p className="mt-1 text-sm font-semibold text-navy-900">
+                  Performance verified before handover.
+                </p>
+              </div>
+            </TiltCard>
           </motion.div>
         </div>
 
@@ -89,9 +98,9 @@ export default function WhyChoose() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-70px" }}
               transition={{ duration: 0.42, delay: index * 0.06, ease: "easeOut" }}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-navy-900/5 transition-all hover:-translate-y-1 hover:border-brand-200 hover:shadow-xl hover:shadow-navy-900/10"
+              className="group rounded-2xl border border-slate-200 bg-white p-5 ags-depth-sm ags-lift-sm hover:border-brand-200"
             >
-              <div className="flex size-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+              <div className="flex size-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ags-depth-sm transition-transform duration-300 group-hover:-translate-y-1">
                 <feature.icon className="size-5" />
               </div>
               <h3 className="mt-4 font-display text-base font-bold text-navy-900">

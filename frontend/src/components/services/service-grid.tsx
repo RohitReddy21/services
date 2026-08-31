@@ -32,6 +32,7 @@ export default function ServiceGrid({
       {services.map((service) => (
         <motion.div
           key={service.id}
+          className="h-full"
           variants={{
             hidden: { opacity: 0, y: 18 },
             show: { opacity: 1, y: 0 },

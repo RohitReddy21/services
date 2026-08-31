@@ -17,7 +17,7 @@ export const reserveSlotSchema = z.object({
 export const createBookingSchema = z.object({
   reservationId: z.string().min(1),
   data: z.object({
-    categoryId: z.enum(["air-conditioning", "refrigeration"]),
+    categoryId: z.enum(["air-conditioning", "refrigeration", "electrical"]),
     equipmentId: z.string().min(1),
     equipmentLabel: z.string().min(1),
     requirement: z.enum([

@@ -3,8 +3,8 @@ import { z } from "zod";
 export const createSubscriptionSchema = z.object({
   planId: z.string().min(1),
   planName: z.string().min(1),
-  frequency: z.enum(["annual", "bi-annual", "quarterly", "quarterly-bundle"]),
-  categoryId: z.enum(["air-conditioning", "refrigeration"]),
+  frequency: z.enum(["monthly", "annual", "bi-annual", "quarterly", "quarterly-bundle"]),
+  categoryId: z.enum(["air-conditioning", "refrigeration", "electrical"]),
   equipmentId: z.string().min(1),
   equipmentLabel: z.string().min(1),
   address: z.object({
@@ -17,7 +17,7 @@ export const createSubscriptionSchema = z.object({
   price: z
     .object({
       amount: z.number().positive(),
-      currency: z.literal("EUR"),
+      currency: z.literal("GBP"),
       billingCycleMonths: z.number().int().positive(),
     })
     .nullable()

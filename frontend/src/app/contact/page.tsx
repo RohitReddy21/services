@@ -2,15 +2,36 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Clock3, Mail, MapPin, Phone } from "lucide-react";
 import ContactForm from "@/components/contact/contact-form";
+import JsonLd from "@/components/seo/json-ld";
+import Reveal from "@/components/ui/reveal";
+import { breadcrumbSchema, webPageSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Contact Us",
   description: "Get in touch with AGS - Advanced Gas Solutions for air conditioning and refrigeration enquiries across the UK.",
+  alternates: { canonical: "/contact" },
+  openGraph: { url: "/contact", title: "Contact Us" },
 };
 
 export default function ContactPage() {
   return (
     <div className="bg-white">
+      <JsonLd
+        id="ld-page"
+        data={webPageSchema({
+          name: "Contact AGS",
+          description: "Contact Advanced Gas Solutions for AC, refrigeration and electrical enquiries.",
+          path: "/contact",
+          type: "ContactPage",
+        })}
+      />
+      <JsonLd
+        id="ld-breadcrumb"
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ])}
+      />
       <div className="border-b border-slate-200 bg-sky-50">
         <div className="container-ags py-4 text-xs font-medium text-slate-500">
           <Link href="/" className="hover:text-brand-600">Home</Link>
@@ -20,7 +41,7 @@ export default function ContactPage() {
       </div>
 
       <div className="container-ags py-12 lg:py-16">
-        <div className="mx-auto max-w-xl text-center">
+        <Reveal className="mx-auto max-w-xl text-center">
           <h1 className="font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
             Get in Touch
           </h1>
@@ -28,10 +49,10 @@ export default function ContactPage() {
             Questions about a service, a booking, or a Care Plan? Our team is
             here to help.
           </p>
-        </div>
+        </Reveal>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[320px_1fr]">
-          <div className="space-y-4">
+          <Reveal variant="left" className="space-y-4">
             <ContactInfoCard icon={Phone} title="Phone">
               <a href="tel:02079460018" className="hover:text-brand-600">020 7946 0018</a>
             </ContactInfoCard>
@@ -46,9 +67,11 @@ export default function ContactPage() {
             <ContactInfoCard icon={Clock3} title="Opening Hours">
               Mon &ndash; Sat, 8:00 AM &ndash; 6:00 PM
             </ContactInfoCard>
-          </div>
+          </Reveal>
 
-          <ContactForm />
+          <Reveal variant="right" delay={0.08}>
+            <ContactForm />
+          </Reveal>
         </div>
       </div>
     </div>

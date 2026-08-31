@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CalendarCheck, ClipboardCheck, MessageSquare, Wrench } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
+import Reveal, { RevealStagger, RevealItem } from "@/components/ui/reveal";
 
 export const metadata: Metadata = {
   title: "How It Works",
   description: "How booking an air conditioning or refrigeration service with AGS works, from request to completion.",
+  alternates: { canonical: "/how-it-works" },
+  openGraph: { url: "/how-it-works", title: "How It Works" },
 };
 
 const steps = [
@@ -47,7 +50,7 @@ export default function HowItWorksPage() {
       </div>
 
       <div className="container-ags py-12 lg:py-20">
-        <div className="mx-auto max-w-xl text-center">
+        <Reveal className="mx-auto max-w-xl text-center">
           <h1 className="font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
             How It Works
           </h1>
@@ -55,41 +58,42 @@ export default function HowItWorksPage() {
             Booking a service with AGS is straightforward, from your first
             request through to a completed job.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="mx-auto mt-14 max-w-3xl">
-          <ol className="space-y-10">
-            {steps.map((step, index) => (
-              <li key={step.title} className="relative flex gap-5">
-                {index < steps.length - 1 && (
-                  <span className="absolute left-6 top-14 h-[calc(100%-1.5rem)] w-0.5 bg-slate-200" />
-                )}
-                <span className="z-10 flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-sm shadow-brand-600/20">
-                  <step.icon className="size-5" />
-                </span>
-                <div className="pt-1.5">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
-                    Step {index + 1}
-                  </p>
-                  <h2 className="mt-1 font-display text-lg font-bold text-navy-900">
-                    {step.title}
-                  </h2>
-                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
-                    {step.description}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
+        <RevealStagger step={0.12} className="mx-auto mt-14 max-w-3xl space-y-10">
+          {steps.map((step, index) => (
+            <RevealItem key={step.title} variant="left" className="relative flex gap-5">
+              {index < steps.length - 1 && (
+                <span className="absolute left-6 top-14 h-[calc(100%-1.5rem)] w-0.5 bg-slate-200" />
+              )}
+              <span className="z-10 flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-sm shadow-brand-600/20">
+                <step.icon className="size-5" />
+              </span>
+              <div className="pt-1.5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
+                  Step {index + 1}
+                </p>
+                <h2 className="mt-1 font-display text-lg font-bold text-navy-900">
+                  {step.title}
+                </h2>
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
+                  {step.description}
+                </p>
+              </div>
+            </RevealItem>
+          ))}
+        </RevealStagger>
 
-        <div className="mx-auto mt-16 max-w-lg rounded-2xl border border-slate-200 bg-slate-25 p-6 text-center">
+        <Reveal
+          variant="scale"
+          className="mx-auto mt-16 max-w-lg rounded-2xl border border-slate-200 bg-slate-25 p-6 text-center"
+        >
           <p className="text-sm text-slate-600">Ready to get started?</p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
             <ButtonLink href="/book" size="lg">Book a Service</ButtonLink>
             <ButtonLink href="/services" variant="secondary" size="lg">Explore Services</ButtonLink>
           </div>
-        </div>
+        </Reveal>
       </div>
     </div>
   );

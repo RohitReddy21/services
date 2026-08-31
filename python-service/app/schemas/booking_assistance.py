@@ -7,7 +7,7 @@ from app.schemas.classification import RequirementType
 
 class BookingAssistanceRequest(BaseModel):
     message: str = Field(..., min_length=3, max_length=2000)
-    category_id: Literal["air-conditioning", "refrigeration"] | None = Field(
+    category_id: Literal["air-conditioning", "refrigeration", "electrical"] | None = Field(
         None, alias="categoryId"
     )
 

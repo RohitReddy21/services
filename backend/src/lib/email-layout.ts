@@ -88,4 +88,38 @@ export function detailTable(rows: string) {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;border-top:1px solid #eef4ff;border-bottom:1px solid #eef4ff;">${rows}</table>`;
 }
 
+/**
+ * Navy "amount" card with a gold accent bar — the hero element of billing
+ * emails. `meta` is a short line under the figure (invoice no., date, etc.).
+ */
+export function amountHero({
+  label,
+  amount,
+  meta,
+}: {
+  label: string;
+  amount: string;
+  meta?: string;
+}) {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;">
+    <tr><td style="background-color:#0b1b33;border-radius:14px;padding:22px 24px;">
+      <div style="height:3px;width:44px;background-color:#cf9f3d;border-radius:2px;margin-bottom:14px;"></div>
+      <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8ab5ff;font-weight:700;">${label}</div>
+      <div style="font-size:32px;font-weight:800;color:#ffffff;margin-top:6px;line-height:1.1;">${amount}</div>
+      ${
+        meta
+          ? `<div style="font-size:12px;color:#a8c4ff;margin-top:8px;">${meta}</div>`
+          : ""
+      }
+    </td></tr>
+  </table>`;
+}
+
+/** Soft sky-tinted callout box, e.g. "your invoice PDF is attached". */
+export function noteBox(html: string) {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0;">
+    <tr><td style="background-color:#f4f8fd;border:1px solid #dce9ff;border-radius:10px;padding:14px 16px;font-size:13px;color:#334155;line-height:1.55;">${html}</td></tr>
+  </table>`;
+}
+
 export { FRONTEND_URL };

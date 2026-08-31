@@ -3,10 +3,15 @@ import Link from "next/link";
 import { MapPinned } from "lucide-react";
 import { serviceAreas } from "@/lib/data/service-areas";
 import PostcodeChecker from "@/components/service-areas/postcode-checker";
+import JsonLd from "@/components/seo/json-ld";
+import Reveal, { RevealStagger, RevealItem } from "@/components/ui/reveal";
+import { breadcrumbSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Service Areas",
   description: "AGS air conditioning and refrigeration services across the UK, including London, Manchester, Birmingham, Leeds, Liverpool, Bristol, Glasgow and Edinburgh.",
+  alternates: { canonical: "/service-areas" },
+  openGraph: { url: "/service-areas", title: "Service Areas" },
 };
 
 export default async function ServiceAreasPage({
@@ -17,6 +22,13 @@ export default async function ServiceAreasPage({
 
   return (
     <div className="bg-white">
+      <JsonLd
+        id="ld-breadcrumb"
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Service Areas", path: "/service-areas" },
+        ])}
+      />
       <div className="border-b border-slate-200 bg-sky-50">
         <div className="container-ags py-4 text-xs font-medium text-slate-500">
           <Link href="/" className="hover:text-brand-600">Home</Link>
@@ -26,7 +38,7 @@ export default async function ServiceAreasPage({
       </div>
 
       <div className="container-ags py-12 lg:py-16">
-        <div className="mx-auto max-w-xl text-center">
+        <Reveal className="mx-auto max-w-xl text-center">
           <h1 className="font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
             Where We Work
           </h1>
@@ -35,16 +47,20 @@ export default async function ServiceAreasPage({
             the UK, with engineers based near major cities for fast
             response times.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="mx-auto mt-10 max-w-2xl">
+        <Reveal delay={0.08} className="mx-auto mt-10 max-w-2xl">
           <PostcodeChecker initialPostcode={postcodeParam} />
-        </div>
+        </Reveal>
 
-        <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <RevealStagger
+          step={0.05}
+          className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+        >
           {serviceAreas.map((area) => (
-            <div
+            <RevealItem
               key={area.city}
+              variant="scale"
               className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-5"
             >
               <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
@@ -54,9 +70,9 @@ export default async function ServiceAreasPage({
                 <p className="text-sm font-semibold text-navy-900">{area.city}</p>
                 <p className="text-xs text-slate-500">{area.region}</p>
               </div>
-            </div>
+            </RevealItem>
           ))}
-        </div>
+        </RevealStagger>
 
         <p className="mx-auto mt-10 max-w-xl text-center text-sm text-slate-500">
           Don&apos;t see your area listed?{" "}

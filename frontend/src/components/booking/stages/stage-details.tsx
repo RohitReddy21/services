@@ -32,6 +32,17 @@ const equipmentImages: Record<ServiceCategoryId, Record<string, string>> = {
     "commercial-refrigeration": "/images/services/commercial-refrigeration.png",
     other: "/images/services/industrial-refrigeration.png",
   },
+  electrical: {
+    "consumer-unit": "/images/services/electrical-consumer-unit.png",
+    lighting: "/images/services/electrical-lighting.png",
+    "sockets-power": "/images/services/electrical-sockets.png",
+    "ev-charger": "/images/services/electrical-ev-charger.png",
+    rewiring: "/images/services/electrical-rewiring.png",
+    "eicr-testing": "/images/services/electrical-eicr.png",
+    "wiring-circuit": "/images/services/electrical-repairs.png",
+    "commercial-electrical": "/images/services/electrical-commercial.png",
+    other: "/images/services/electrical-installation.png",
+  },
 };
 
 export default function StageDetails() {

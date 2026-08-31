@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none" role="img" aria-label="1-Month Care plan">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#071224"/>
+      <stop offset="1" stop-color="#122a4d"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0.5" cy="0.45" r="0.5">
+      <stop offset="0" stop-color="#2b6bf0" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#2b6bf0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg1)"/>
+  <g stroke="#8ab5ff" stroke-opacity="0.10">
+    <path d="M0 150H800M0 300H800M0 450H800M200 0V600M400 0V600M600 0V600"/>
+  </g>
+  <circle cx="400" cy="285" r="230" fill="url(#glow1)"/>
+  <circle cx="400" cy="285" r="150" stroke="#2b6bf0" stroke-width="2" stroke-opacity="0.55"/>
+  <circle cx="400" cy="285" r="188" stroke="#8ab5ff" stroke-width="1.5" stroke-opacity="0.3" stroke-dasharray="4 10"/>
+  <circle cx="400" cy="135" r="13" fill="#e8c46a"/>
+  <circle cx="400" cy="135" r="24" stroke="#e8c46a" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="400" y="330" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="190" font-weight="800" fill="#ffffff">1</text>
+  <text x="400" y="392" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="6" fill="#8ab5ff">SERVICE</text>
+  <text x="400" y="520" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#dce9ff">1&#8211;MONTH CARE</text>
+</svg>

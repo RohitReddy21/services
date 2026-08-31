@@ -1,11 +1,16 @@
 import type { ServiceCategoryId } from "@/types/service";
 
-export type SubscriptionFrequency = "annual" | "bi-annual" | "quarterly" | "quarterly-bundle";
+export type SubscriptionFrequency =
+  | "monthly"
+  | "annual"
+  | "bi-annual"
+  | "quarterly"
+  | "quarterly-bundle";
 export type SubscriptionStatus = "ACTIVE" | "PAUSED" | "CANCELLED";
 
 export interface SubscriptionPlanPrice {
   amount: number;
-  currency: "EUR";
+  currency: "GBP";
   billingCycleMonths: number;
 }
 
@@ -14,11 +19,23 @@ export interface SubscriptionPlan {
   name: string;
   frequency: SubscriptionFrequency;
   visitsPerYear: number;
+  /** Length of the plan term in months. */
+  months: number;
+  /** Number of services covered across the whole term (one per month). */
+  servicesIncluded: number;
+  /** Fixed price for the full term, expressed per calendar month. */
+  pricePerMonth: number;
+  /** Per-month rate to extend the plan once the term ends (longer plans only). */
+  addOnMonthlyPrice?: number;
+  /** Unique illustration for this plan. */
+  image: string;
+  /** Visually featured on the pricing grid. */
+  highlight?: boolean;
   tagline: string;
   features: string[];
   recommendedFor: string;
-  /** Only set for fixed-price package plans; other plans confirm pricing with the customer directly. */
-  price?: SubscriptionPlanPrice;
+  /** Fixed price for the full term. */
+  price: SubscriptionPlanPrice;
   servicesPerCycle?: number;
   rolloverPolicy?: string;
 }

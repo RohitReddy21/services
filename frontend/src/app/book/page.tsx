@@ -7,6 +7,9 @@ import type { ServiceCategoryId } from "@/types/service";
 export const metadata: Metadata = {
   title: "Book a Service",
   description: "Book an air conditioning or refrigeration service with AGS.",
+  // Sits behind auth and redirects unauthenticated visitors — keep it out of
+  // the index but let link equity flow to public pages it links to.
+  robots: { index: false, follow: true },
 };
 
 export default async function BookPage({ searchParams }: PageProps<"/book">) {
@@ -29,7 +32,9 @@ export default async function BookPage({ searchParams }: PageProps<"/book">) {
 
   const categoryParam = Array.isArray(params.category) ? params.category[0] : params.category;
   const initialCategory: ServiceCategoryId | undefined =
-    categoryParam === "air-conditioning" || categoryParam === "refrigeration"
+    categoryParam === "air-conditioning" ||
+    categoryParam === "refrigeration" ||
+    categoryParam === "electrical"
       ? categoryParam
       : undefined;
 

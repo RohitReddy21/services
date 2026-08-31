@@ -6,6 +6,7 @@ import { mapBookingDoc } from "@/lib/api/booking-mapper";
 
 export const metadata: Metadata = {
   title: "Booking Confirmation",
+  robots: { index: false, follow: false },
 };
 
 export default async function BookingConfirmationPage({

@@ -11,6 +11,9 @@ import { requireAdmin } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
 import { sendEmail } from "../lib/email";
 import { bookingStatusUpdatedEmail } from "../emails/booking-status-updated";
+import { subscriptionInvoiceEmail } from "../emails/subscription-invoice";
+import { renderSubscriptionInvoice, streamSubscriptionInvoice } from "../lib/pdf";
+import { buildSubscriptionInvoiceData } from "../lib/invoice";
 
 export const adminRouter = Router();
 adminRouter.use(requireAdmin);
@@ -25,9 +28,94 @@ const BOOKING_STATUSES = [
   "CANCELLED",
 ] as const;
 
+// ---------------- Overview ----------------
+
+adminRouter.get("/stats", async (_req, res) => {
+  const [
+    bookingsTotal,
+    bookingsByStatus,
+    subs,
+    ticketsOpen,
+    ticketsTotal,
+    usersTotal,
+    admins,
+    reviewAgg,
+    couponsActive,
+    couponsTotal,
+    recentBookings,
+    openTickets,
+  ] = await Promise.all([
+    Booking.countDocuments({}),
+    Booking.aggregate<{ _id: string; count: number }>([
+      { $group: { _id: "$status", count: { $sum: 1 } } },
+    ]),
+    Subscription.find({}).select("status price createdAt planName").lean(),
+    SupportTicket.countDocuments({ status: "OPEN" }),
+    SupportTicket.countDocuments({}),
+    User.countDocuments({}),
+    User.countDocuments({ role: "ADMIN" }),
+    Review.aggregate<{ avg: number; count: number }>([
+      { $group: { _id: null, avg: { $avg: "$rating" }, count: { $sum: 1 } } },
+    ]),
+    Coupon.countDocuments({ active: true }),
+    Coupon.countDocuments({}),
+    Booking.find({}).sort({ createdAt: -1 }).limit(5),
+    SupportTicket.find({ status: "OPEN" }).sort({ createdAt: -1 }).limit(5),
+  ]);
+
+  const byStatus: Record<string, number> = {};
+  for (const row of bookingsByStatus) byStatus[row._id] = row.count;
+
+  let active = 0;
+  let paused = 0;
+  let cancelled = 0;
+  let monthlyRevenue = 0;
+  for (const s of subs) {
+    if (s.status === "ACTIVE") {
+      active += 1;
+      const amount = s.price?.amount ?? 0;
+      const months = s.price?.billingCycleMonths ?? 1;
+      monthlyRevenue += months > 0 ? amount / months : amount;
+    } else if (s.status === "PAUSED") {
+      paused += 1;
+    } else if (s.status === "CANCELLED") {
+      cancelled += 1;
+    }
+  }
+
+  res.json({
+    bookings: { total: bookingsTotal, byStatus },
+    subscriptions: {
+      active,
+      paused,
+      cancelled,
+      monthlyRevenue: Math.round(monthlyRevenue * 100) / 100,
+    },
+    tickets: { open: ticketsOpen, total: ticketsTotal },
+    users: { total: usersTotal, admins },
+    reviews: {
+      count: reviewAgg[0]?.count ?? 0,
+      avgRating: reviewAgg[0]?.avg ? Math.round(reviewAgg[0].avg * 10) / 10 : 0,
+    },
+    coupons: { active: couponsActive, total: couponsTotal },
+    recentBookings,
+    openTickets,
+  });
+});
+
 adminRouter.get("/bookings", async (req, res) => {
-  const { status } = req.query;
-  const filter: Record<string, unknown> = typeof status === "string" && status ? { status } : {};
+  const { status, search } = req.query;
+  const filter: Record<string, unknown> = {};
+  if (typeof status === "string" && status) filter.status = status;
+  if (typeof search === "string" && search.trim()) {
+    const rx = new RegExp(search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    filter.$or = [
+      { bookingReference: rx },
+      { "customer.fullName": rx },
+      { "customer.email": rx },
+      { equipmentLabel: rx },
+    ];
+  }
   const bookings = await Booking.find(filter).sort({ createdAt: -1 }).limit(200);
   res.json({ bookings });
 });
@@ -123,6 +211,22 @@ adminRouter.get("/users", async (req, res) => {
   res.json({ users });
 });
 
+const roleSchema = z.object({ role: z.enum(["CUSTOMER", "ADMIN", "TECHNICIAN"]) });
+
+adminRouter.patch("/users/:id/role", async (req, res) => {
+  const { role } = roleSchema.parse(req.body);
+  if (req.params.id === String(req.userId)) {
+    throw new ApiError(400, "You can't change your own role.");
+  }
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    { role },
+    { returnDocument: "after" }
+  ).select("-passwordHash -twoFactorSecret -twoFactorBackupCodes");
+  if (!user) throw new ApiError(404, "User not found");
+  res.json({ user });
+});
+
 // ---------------- Subscriptions (Care Plans) ----------------
 
 adminRouter.get("/subscriptions", async (req, res) => {
@@ -132,11 +236,52 @@ adminRouter.get("/subscriptions", async (req, res) => {
   res.json({ subscriptions });
 });
 
+async function loadSubscriptionForInvoice(id: string) {
+  const subscription = await Subscription.findById(id);
+  if (!subscription) throw new ApiError(404, "Subscription not found");
+  if (!subscription.price?.amount) {
+    throw new ApiError(400, "This plan has no billed amount to invoice.");
+  }
+  const user = await User.findById(subscription.userId);
+  return { subscription, user };
+}
+
+// Preview the invoice PDF inline in the admin UI.
+adminRouter.get("/subscriptions/:id/invoice", async (req, res) => {
+  const { subscription, user } = await loadSubscriptionForInvoice(req.params.id);
+  streamSubscriptionInvoice(res, buildSubscriptionInvoiceData(subscription, user));
+});
+
+// Generate the invoice and email it to the customer with the PDF attached.
+adminRouter.post("/subscriptions/:id/send-invoice", async (req, res) => {
+  const { subscription, user } = await loadSubscriptionForInvoice(req.params.id);
+  if (!user?.email) throw new ApiError(400, "This customer has no email address on file.");
+
+  const data = buildSubscriptionInvoiceData(subscription, user);
+  const pdf = await renderSubscriptionInvoice(data);
+  const email = subscriptionInvoiceEmail(data);
+  const result = await sendEmail({
+    to: user.email,
+    subject: email.subject,
+    html: email.html,
+    template: "subscription-invoice",
+    attachments: [{ filename: `${data.invoiceNumber}.pdf`, content: pdf }],
+  });
+
+  res.json({ status: result.status, to: user.email, invoiceNumber: data.invoiceNumber });
+});
+
 // ---------------- Reviews ----------------
 
 adminRouter.get("/reviews", async (req, res) => {
   const reviews = await Review.find().sort({ createdAt: -1 }).limit(300);
   res.json({ reviews });
+});
+
+adminRouter.delete("/reviews/:id", async (req, res) => {
+  const result = await Review.deleteOne({ _id: req.params.id });
+  if (result.deletedCount === 0) throw new ApiError(404, "Review not found");
+  res.json({ ok: true });
 });
 
 // ---------------- Coupons ----------------

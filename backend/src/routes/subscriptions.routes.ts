@@ -6,14 +6,17 @@ import { ApiError } from "../middleware/errorHandler";
 import { createSubscriptionSchema } from "../validation/subscription";
 import { sendEmail } from "../lib/email";
 import { subscriptionCreatedEmail } from "../emails/subscription-created";
+import { subscriptionInvoiceEmail } from "../emails/subscription-invoice";
 import { awardLoyaltyPoints } from "../lib/loyalty";
-import { streamSubscriptionInvoice } from "../lib/pdf";
+import { renderSubscriptionInvoice, streamSubscriptionInvoice } from "../lib/pdf";
+import { buildSubscriptionInvoiceData } from "../lib/invoice";
 import { applyDiscount, findValidCoupon } from "../lib/coupons";
 
 export const subscriptionsRouter = Router();
 subscriptionsRouter.use(requireAuth);
 
 const MONTHS_PER_VISIT: Record<string, number> = {
+  monthly: 1,
   quarterly: 3,
   "quarterly-bundle": 3,
   "bi-annual": 6,
@@ -71,20 +74,42 @@ subscriptionsRouter.post("/", async (req, res) => {
     description: `Subscribed to ${input.planName}`,
   });
 
-  const user = await User.findById(req.userId);
-  if (user) {
-    const subEmail = subscriptionCreatedEmail({
-      planName: input.planName,
-      frequency: input.frequency,
-      equipmentLabel: input.equipmentLabel,
-    });
-    void sendEmail({
-      to: user.email,
-      subject: subEmail.subject,
-      html: subEmail.html,
-      template: "subscription-created",
-    });
-  }
+  // Auto-generate the invoice PDF and email it to the customer. Priced Care
+  // Plans get the full invoice email with the PDF attached; anything without a
+  // billed amount falls back to the plain confirmation email.
+  void (async () => {
+    try {
+      const user = await User.findById(req.userId);
+      if (!user?.email) return;
+
+      if (subscription.price?.amount) {
+        const data = buildSubscriptionInvoiceData(subscription, user);
+        const pdf = await renderSubscriptionInvoice(data);
+        const email = subscriptionInvoiceEmail(data);
+        await sendEmail({
+          to: user.email,
+          subject: email.subject,
+          html: email.html,
+          template: "subscription-invoice",
+          attachments: [{ filename: `${data.invoiceNumber}.pdf`, content: pdf }],
+        });
+      } else {
+        const subEmail = subscriptionCreatedEmail({
+          planName: input.planName,
+          frequency: input.frequency,
+          equipmentLabel: input.equipmentLabel,
+        });
+        await sendEmail({
+          to: user.email,
+          subject: subEmail.subject,
+          html: subEmail.html,
+          template: "subscription-created",
+        });
+      }
+    } catch (err) {
+      console.error("[subscription] invoice email failed:", err);
+    }
+  })();
 
   res.status(201).json({ subscription });
 });
@@ -102,43 +127,7 @@ subscriptionsRouter.get("/:id/invoice", async (req, res) => {
   }
 
   const user = await User.findById(req.userId);
-  const months = subscription.price.billingCycleMonths ?? 3;
-  const start = new Date(subscription.startDate);
-  const now = new Date();
-  const monthsSinceStart =
-    (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
-  const cycleIndex = Math.max(0, Math.floor(monthsSinceStart / months));
-  const periodStart = new Date(start);
-  periodStart.setMonth(periodStart.getMonth() + cycleIndex * months);
-  const periodEnd = new Date(periodStart);
-  periodEnd.setMonth(periodEnd.getMonth() + months);
-
-  const addressLine = [
-    subscription.address?.houseNumber,
-    subscription.address?.street,
-    subscription.address?.city,
-    subscription.address?.postcode,
-  ]
-    .filter(Boolean)
-    .join(", ");
-
-  streamSubscriptionInvoice(res, {
-    invoiceNumber: `AGS-INV-${subscription.id.slice(-8).toUpperCase()}-${cycleIndex + 1}`,
-    issuedAt: new Date(),
-    customerName: user?.name ?? "Customer",
-    customerEmail: user?.email ?? "",
-    planName: subscription.planName,
-    billingCycleMonths: months,
-    servicesPerCycle: subscription.servicesPerCycle ?? 0,
-    amount: subscription.price.amount,
-    currency: subscription.price.currency ?? "EUR",
-    periodStart,
-    periodEnd,
-    equipmentLabel: subscription.equipmentLabel,
-    address: addressLine,
-    originalAmount: subscription.originalAmount,
-    couponCode: subscription.couponCode,
-  });
+  streamSubscriptionInvoice(res, buildSubscriptionInvoiceData(subscription, user));
 });
 
 subscriptionsRouter.post("/:id/pause", async (req, res) => {
