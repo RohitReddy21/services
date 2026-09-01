@@ -41,6 +41,7 @@ export interface Review {
   serviceName: string;
   rating: number;
   text: string;
+  deletedAt?: string | null;
   createdAt: string;
 }
 
@@ -60,5 +61,6 @@ export interface SupportTicket {
   message: string;
   email: string;
   status: "OPEN" | "RESOLVED";
+  deletedAt?: string | null;
   createdAt: string;
 }

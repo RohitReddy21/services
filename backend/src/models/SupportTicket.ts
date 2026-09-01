@@ -18,6 +18,9 @@ const supportTicketSchema = new Schema(
     message: { type: String, required: true, trim: true },
     email: { type: String, required: true, trim: true },
     status: { type: String, enum: ["OPEN", "RESOLVED"], default: "OPEN" },
+
+    // Soft delete — archived tickets are hidden from the admin list by default.
+    deletedAt: { type: Date, default: null, index: true },
   },
   { timestamps: true }
 );

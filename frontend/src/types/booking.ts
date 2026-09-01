@@ -87,6 +87,7 @@ export interface BookingRecord {
   rescheduleNote: string | null;
   technicianName: string | null;
   technicianPhone: string | null;
+  deletedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }

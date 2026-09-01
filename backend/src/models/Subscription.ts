@@ -31,6 +31,9 @@ const subscriptionSchema = new Schema(
     servicesPerCycle: { type: Number, default: null },
     couponCode: { type: String, default: null },
     originalAmount: { type: Number, default: null },
+
+    // Soft delete — archived plans are hidden from the admin lists by default.
+    deletedAt: { type: Date, default: null, index: true },
   },
   { timestamps: true }
 );

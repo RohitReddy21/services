@@ -21,6 +21,10 @@ const userSchema = new Schema(
       email: { type: Boolean, default: true },
       sms: { type: Boolean, default: false },
     },
+    // Soft delete: set to archive an account without breaking the bookings,
+    // subscriptions and reviews that reference it. Excluded from every list by
+    // default; admins can view and restore archived records.
+    deletedAt: { type: Date, default: null, index: true },
   },
   { timestamps: true }
 );

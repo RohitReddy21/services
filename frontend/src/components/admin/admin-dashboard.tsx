@@ -8,26 +8,40 @@ import {
   LifeBuoy,
   LogOut,
   MapPin,
+  Pencil,
   Phone,
+  Plus,
   Repeat,
+  RotateCcw,
   Search,
   Star,
   Tag,
+  Trash2,
   Users,
 } from "lucide-react";
 import {
+  archiveBookingRequest,
+  archiveSupportTicketRequest,
+  createBookingRequest,
+  createSupportTicketRequest,
   fetchAdminBookings,
   fetchAdminStats,
   fetchAdminSupportTickets,
+  reopenSupportTicketRequest,
   resolveSupportTicketRequest,
+  restoreBookingRequest,
+  restoreSupportTicketRequest,
+  updateBookingRequest,
   updateBookingStatusRequest,
+  updateSupportTicketRequest,
   updateTechnicianRequest,
+  type AdminBookingInput,
 } from "@/lib/api/admin-client";
 import { useAuth } from "@/components/auth/auth-context";
 import { statusMeta } from "@/lib/data/booking-status";
 import type { BookingRecord } from "@/types/booking";
-import type { SupportTicket } from "@/types/account";
-import type { BookingStatus } from "@/types/service";
+import type { SupportCategory, SupportTicket } from "@/types/account";
+import type { BookingStatus, RequirementType, ServiceCategoryId } from "@/types/service";
 import type { AdminStats } from "@/types/coupon";
 import { cn } from "@/lib/utils";
 import { StatusBadge, type BadgeTone } from "@/components/ui/badge";
@@ -35,7 +49,14 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { FilterPills } from "@/components/ui/filter-pills";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/navigation/logo";
-import { PanelHeader, SkeletonRows } from "@/components/admin/panel-shell";
+import {
+  AdminModal,
+  ArchiveToggle,
+  Field,
+  FieldGrid,
+  PanelHeader,
+  SkeletonRows,
+} from "@/components/admin/panel-shell";
 import OverviewPanel from "@/components/admin/overview-panel";
 import UsersPanel from "@/components/admin/users-panel";
 import SubscriptionsPanel from "@/components/admin/subscriptions-panel";
@@ -53,6 +74,133 @@ const BOOKING_TONE: Record<BookingStatus, BadgeTone> = {
   COMPLETED: "success",
   CANCELLED: "danger",
 };
+
+const CATEGORY_OPTIONS: ServiceCategoryId[] = [
+  "air-conditioning",
+  "refrigeration",
+  "electrical",
+];
+const REQUIREMENT_OPTIONS: RequirementType[] = [
+  "installation",
+  "repair",
+  "servicing",
+  "maintenance",
+  "replacement",
+  "diagnostics",
+  "emergency",
+  "other",
+];
+const CONTACT_OPTIONS = ["phone", "email", "sms"] as const;
+const SUPPORT_CATEGORY_OPTIONS: SupportCategory[] = [
+  "booking_help",
+  "reschedule_help",
+  "cancellation_help",
+  "service_questions",
+  "technical_questions",
+  "general_enquiry",
+];
+
+type BookingFormState = {
+  customerId: string;
+  categoryId: ServiceCategoryId;
+  equipmentId: string;
+  equipmentLabel: string;
+  requirement: RequirementType;
+  description: string;
+  date: string;
+  slotLabel: string;
+  slotStart: string;
+  slotEnd: string;
+  status: BookingStatus;
+  fullName: string;
+  email: string;
+  phone: string;
+  preferredContact: (typeof CONTACT_OPTIONS)[number];
+  houseNumber: string;
+  street: string;
+  city: string;
+  postcode: string;
+  instructions: string;
+};
+
+const emptyBookingForm: BookingFormState = {
+  customerId: "",
+  categoryId: "air-conditioning",
+  equipmentId: "",
+  equipmentLabel: "",
+  requirement: "repair",
+  description: "",
+  date: "",
+  slotLabel: "",
+  slotStart: "",
+  slotEnd: "",
+  status: "BOOKING_RECEIVED",
+  fullName: "",
+  email: "",
+  phone: "",
+  preferredContact: "phone",
+  houseNumber: "",
+  street: "",
+  city: "",
+  postcode: "",
+  instructions: "",
+};
+
+function bookingFormToInput(f: BookingFormState): AdminBookingInput {
+  return {
+    customerId: f.customerId.trim() || null,
+    categoryId: f.categoryId,
+    equipmentId: f.equipmentId.trim(),
+    equipmentLabel: f.equipmentLabel.trim(),
+    requirement: f.requirement,
+    description: f.description.trim(),
+    date: f.date,
+    timeSlot: {
+      label: f.slotLabel.trim(),
+      start: f.slotStart.trim(),
+      end: f.slotEnd.trim(),
+    },
+    status: f.status,
+    customer: {
+      fullName: f.fullName.trim(),
+      email: f.email.trim(),
+      phone: f.phone.trim(),
+      preferredContact: f.preferredContact,
+    },
+    address: {
+      houseNumber: f.houseNumber.trim(),
+      street: f.street.trim(),
+      city: f.city.trim(),
+      postcode: f.postcode.trim(),
+      instructions: f.instructions.trim(),
+    },
+  };
+}
+
+function bookingToForm(b: BookingRecord): BookingFormState {
+  return {
+    customerId: b.customerId ?? "",
+    categoryId: b.data.categoryId ?? "air-conditioning",
+    equipmentId: b.data.equipmentId ?? "",
+    equipmentLabel: b.data.equipmentLabel ?? "",
+    requirement: b.data.requirement ?? "repair",
+    description: b.data.description,
+    date: b.data.date ?? "",
+    slotLabel: b.data.timeSlot?.label ?? "",
+    slotStart: b.data.timeSlot?.start ?? "",
+    slotEnd: b.data.timeSlot?.end ?? "",
+    status: b.status,
+    fullName: b.data.customer.fullName,
+    email: b.data.customer.email,
+    phone: b.data.customer.phone,
+    preferredContact: b.data.customer.preferredContact,
+    houseNumber: b.data.address.houseNumber,
+    street: b.data.address.street,
+    city: b.data.address.city,
+    postcode: b.data.address.postcode,
+    instructions: b.data.address.instructions,
+  };
+}
 
 const NAV = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -174,17 +322,233 @@ export default function AdminDashboard({ adminName }: { adminName: string }) {
   );
 }
 
+function BookingFormFields({
+  form,
+  set,
+  isEdit,
+}: {
+  form: BookingFormState;
+  set: <K extends keyof BookingFormState>(key: K, value: BookingFormState[K]) => void;
+  isEdit: boolean;
+}) {
+  return (
+    <div className="space-y-3">
+      {!isEdit && (
+        <Field label="Customer ID" hint="Optional — link this booking to a user account.">
+          <input
+            className="input-field h-9 text-sm"
+            value={form.customerId}
+            onChange={(e) => set("customerId", e.target.value)}
+          />
+        </Field>
+      )}
+      <FieldGrid>
+        <Field label="Category">
+          <select
+            className="input-field h-9 text-sm"
+            value={form.categoryId}
+            onChange={(e) => set("categoryId", e.target.value as ServiceCategoryId)}
+          >
+            {CATEGORY_OPTIONS.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Requirement">
+          <select
+            className="input-field h-9 text-sm"
+            value={form.requirement}
+            onChange={(e) => set("requirement", e.target.value as RequirementType)}
+          >
+            {REQUIREMENT_OPTIONS.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </FieldGrid>
+      <FieldGrid>
+        <Field label="Equipment ID">
+          <input
+            className="input-field h-9 text-sm"
+            value={form.equipmentId}
+            onChange={(e) => set("equipmentId", e.target.value)}
+          />
+        </Field>
+        <Field label="Equipment label">
+          <input
+            className="input-field h-9 text-sm"
+            value={form.equipmentLabel}
+            onChange={(e) => set("equipmentLabel", e.target.value)}
+          />
+        </Field>
+      </FieldGrid>
+      <FieldGrid>
+        <Field label="Date">
+          <input
+            type="date"
+            className="input-field h-9 text-sm"
+            value={form.date}
+            onChange={(e) => set("date", e.target.value)}
+          />
+        </Field>
+        <Field label="Status">
+          <select
+            className="input-field h-9 text-sm"
+            value={form.status}
+            onChange={(e) => set("status", e.target.value as BookingStatus)}
+          >
+            {STATUS_OPTIONS.map((s) => (
+              <option key={s} value={s}>
+                {statusMeta[s].label}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </FieldGrid>
+      <FieldGrid>
+        <Field label="Time slot label" hint='e.g. "Morning (9am–12pm)"'>
+          <input
+            className="input-field h-9 text-sm"
+            value={form.slotLabel}
+            onChange={(e) => set("slotLabel", e.target.value)}
+          />
+        </Field>
+        <div className="grid grid-cols-2 gap-2">
+          <Field label="Start">
+            <input
+              className="input-field h-9 text-sm"
+              placeholder="09:00"
+              value={form.slotStart}
+              onChange={(e) => set("slotStart", e.target.value)}
+            />
+          </Field>
+          <Field label="End">
+            <input
+              className="input-field h-9 text-sm"
+              placeholder="12:00"
+              value={form.slotEnd}
+              onChange={(e) => set("slotEnd", e.target.value)}
+            />
+          </Field>
+        </div>
+      </FieldGrid>
+      <Field label="Description">
+        <textarea
+          className="input-field min-h-16 text-sm"
+          value={form.description}
+          onChange={(e) => set("description", e.target.value)}
+        />
+      </Field>
+
+      <p className="pt-1 text-xs font-bold uppercase tracking-wide text-slate-400">Customer</p>
+      <FieldGrid>
+        <Field label="Full name">
+          <input
+            className="input-field h-9 text-sm"
+            value={form.fullName}
+            onChange={(e) => set("fullName", e.target.value)}
+          />
+        </Field>
+        <Field label="Phone">
+          <input
+            className="input-field h-9 text-sm"
+            value={form.phone}
+            onChange={(e) => set("phone", e.target.value)}
+          />
+        </Field>
+        <Field label="Email">
+          <input
+            type="email"
+            className="input-field h-9 text-sm"
+            value={form.email}
+            onChange={(e) => set("email", e.target.value)}
+          />
+        </Field>
+        <Field label="Preferred contact">
+          <select
+            className="input-field h-9 text-sm"
+            value={form.preferredContact}
+            onChange={(e) =>
+              set("preferredContact", e.target.value as BookingFormState["preferredContact"])
+            }
+          >
+            {CONTACT_OPTIONS.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </FieldGrid>
+
+      <p className="pt-1 text-xs font-bold uppercase tracking-wide text-slate-400">Address</p>
+      <FieldGrid>
+        <Field label="House number">
+          <input
+            className="input-field h-9 text-sm"
+            value={form.houseNumber}
+            onChange={(e) => set("houseNumber", e.target.value)}
+          />
+        </Field>
+        <Field label="Street">
+          <input
+            className="input-field h-9 text-sm"
+            value={form.street}
+            onChange={(e) => set("street", e.target.value)}
+          />
+        </Field>
+        <Field label="City">
+          <input
+            className="input-field h-9 text-sm"
+            value={form.city}
+            onChange={(e) => set("city", e.target.value)}
+          />
+        </Field>
+        <Field label="Postcode">
+          <input
+            className="input-field h-9 text-sm"
+            value={form.postcode}
+            onChange={(e) => set("postcode", e.target.value)}
+          />
+        </Field>
+      </FieldGrid>
+      <Field label="Access instructions">
+        <input
+          className="input-field h-9 text-sm"
+          value={form.instructions}
+          onChange={(e) => set("instructions", e.target.value)}
+        />
+      </Field>
+    </div>
+  );
+}
+
 function BookingsPanel() {
   const [bookings, setBookings] = useState<BookingRecord[] | null>(null);
   const [filter, setFilter] = useState<string>("");
   const [search, setSearch] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [savingRef, setSavingRef] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [techDraft, setTechDraft] = useState<Record<string, { name: string; phone: string }>>({});
+
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState<BookingFormState>(emptyBookingForm);
+  const [editRef, setEditRef] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const load = useCallback(() => {
     setRefreshing(true);
-    return fetchAdminBookings({ status: filter || undefined, search: search || undefined })
+    return fetchAdminBookings({
+      status: filter || undefined,
+      search: search || undefined,
+      includeArchived: showArchived,
+    })
       .then((res) => {
         setBookings(res.bookings);
         setTechDraft((prev) => {
@@ -201,12 +565,15 @@ function BookingsPanel() {
         });
       })
       .finally(() => setRefreshing(false));
-  }, [filter, search]);
+  }, [filter, search, showArchived]);
 
   useEffect(() => {
     const handle = setTimeout(load, search ? 300 : 0);
     return () => clearTimeout(handle);
   }, [load, search]);
+
+  const set = <K extends keyof BookingFormState>(key: K, value: BookingFormState[K]) =>
+    setForm((f) => ({ ...f, [key]: value }));
 
   const handleStatusChange = async (reference: string, status: BookingStatus) => {
     setSavingRef(reference);
@@ -229,6 +596,65 @@ function BookingsPanel() {
     }
   };
 
+  const openCreate = () => {
+    setError(null);
+    setEditRef(null);
+    setForm(emptyBookingForm);
+    setShowForm(true);
+  };
+
+  const openEdit = (b: BookingRecord) => {
+    setError(null);
+    setEditRef(b.bookingReference);
+    setForm(bookingToForm(b));
+    setShowForm(true);
+  };
+
+  const submitForm = async () => {
+    const input = bookingFormToInput(form);
+    if (!input.equipmentLabel || !input.customer.fullName || !input.customer.email || !input.date) {
+      setError("Equipment label, customer name, email and date are required.");
+      return;
+    }
+    if (!input.timeSlot.label || !input.timeSlot.start || !input.timeSlot.end) {
+      setError("A time slot label, start and end are required.");
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    try {
+      if (editRef) {
+        const { customerId: _c, ...patch } = input;
+        void _c;
+        await updateBookingRequest(editRef, patch);
+      } else {
+        await createBookingRequest(input);
+      }
+      setShowForm(false);
+      setEditRef(null);
+      setForm(emptyBookingForm);
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't save the booking.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const toggleArchive = async (b: BookingRecord) => {
+    setSavingRef(b.bookingReference);
+    setError(null);
+    try {
+      if (b.deletedAt) await restoreBookingRequest(b.bookingReference);
+      else await archiveBookingRequest(b.bookingReference);
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't update the booking.");
+    } finally {
+      setSavingRef(null);
+    }
+  };
+
   const filterOptions = [
     { value: "", label: "All" },
     ...STATUS_OPTIONS.map((s) => ({ value: s, label: statusMeta[s].label })),
@@ -238,24 +664,35 @@ function BookingsPanel() {
     <div className="space-y-4">
       <PanelHeader
         title="Bookings"
-        subtitle="Assign technicians and move jobs through the pipeline"
+        subtitle="Create jobs, assign technicians, move them through the pipeline"
         count={bookings?.length}
         onRefresh={load}
         refreshing={refreshing}
         actions={
-          <label className="relative block">
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search ref, name, email…"
-              className="input-field h-9 w-52 pl-8 text-xs"
-            />
-          </label>
+          <div className="flex items-center gap-2">
+            <ArchiveToggle value={showArchived} onChange={setShowArchived} />
+            <label className="relative block">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search ref, name, email…"
+                className="input-field h-9 w-48 pl-8 text-xs"
+              />
+            </label>
+            <Button size="sm" onClick={openCreate}>
+              <Plus className="size-4" />
+              New
+            </Button>
+          </div>
         }
       />
 
       <FilterPills options={filterOptions} value={filter} onChange={setFilter} />
+
+      {error && (
+        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600">{error}</p>
+      )}
 
       {!bookings ? (
         <SkeletonRows />
@@ -270,7 +707,9 @@ function BookingsPanel() {
             return (
               <div
                 key={b.bookingReference}
-                className="rounded-2xl border border-slate-200 bg-white p-4 ags-depth-sm"
+                className={`rounded-2xl border border-slate-200 bg-white p-4 ags-depth-sm ${
+                  b.deletedAt ? "opacity-55" : ""
+                }`}
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -281,6 +720,11 @@ function BookingsPanel() {
                       <StatusBadge tone={BOOKING_TONE[b.status] ?? "neutral"} size="sm">
                         {meta?.label ?? b.status}
                       </StatusBadge>
+                      {b.deletedAt && (
+                        <StatusBadge tone="neutral" size="sm">
+                          Archived
+                        </StatusBadge>
+                      )}
                     </div>
                     <p className="mt-1.5 text-sm font-bold text-navy-900">
                       {b.data.customer.fullName} &middot; {b.data.equipmentLabel}
@@ -306,74 +750,162 @@ function BookingsPanel() {
                       )}
                     </div>
                   </div>
-                  <select
-                    value={b.status}
-                    disabled={savingRef === b.bookingReference}
-                    onChange={(e) =>
-                      handleStatusChange(b.bookingReference, e.target.value as BookingStatus)
-                    }
-                    className="input-field h-9 w-auto text-xs"
-                  >
-                    {STATUS_OPTIONS.map((s) => (
-                      <option key={s} value={s}>
-                        {statusMeta[s].label}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <select
+                      value={b.status}
+                      disabled={savingRef === b.bookingReference || Boolean(b.deletedAt)}
+                      onChange={(e) =>
+                        handleStatusChange(b.bookingReference, e.target.value as BookingStatus)
+                      }
+                      className="input-field h-9 w-auto text-xs"
+                    >
+                      {STATUS_OPTIONS.map((s) => (
+                        <option key={s} value={s}>
+                          {statusMeta[s].label}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => openEdit(b)}
+                      disabled={savingRef === b.bookingReference}
+                      className="ags-focus flex size-9 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-navy-700 disabled:opacity-50"
+                      aria-label="Edit booking"
+                    >
+                      <Pencil className="size-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => toggleArchive(b)}
+                      disabled={savingRef === b.bookingReference}
+                      className={`ags-focus flex size-9 items-center justify-center rounded-lg transition-colors disabled:opacity-50 ${
+                        b.deletedAt
+                          ? "text-brand-600 hover:bg-brand-50"
+                          : "text-red-500 hover:bg-red-50"
+                      }`}
+                      aria-label={b.deletedAt ? "Restore booking" : "Archive booking"}
+                    >
+                      {b.deletedAt ? <RotateCcw className="size-4" /> : <Trash2 className="size-4" />}
+                    </button>
+                  </div>
                 </div>
 
-                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
-                  <span className="text-xs font-semibold text-slate-400">Technician</span>
-                  <input
-                    value={draft.name}
-                    onChange={(e) =>
-                      setTechDraft((prev) => ({
-                        ...prev,
-                        [b.bookingReference]: { ...prev[b.bookingReference], name: e.target.value },
-                      }))
-                    }
-                    placeholder="Name"
-                    className="input-field h-9 w-36 text-xs"
-                  />
-                  <input
-                    value={draft.phone}
-                    onChange={(e) =>
-                      setTechDraft((prev) => ({
-                        ...prev,
-                        [b.bookingReference]: { ...prev[b.bookingReference], phone: e.target.value },
-                      }))
-                    }
-                    placeholder="Phone"
-                    className="input-field h-9 w-36 text-xs"
-                  />
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="secondary"
-                    disabled={savingRef === b.bookingReference}
-                    onClick={() => handleTechnicianSave(b.bookingReference)}
-                  >
-                    Save
-                  </Button>
-                </div>
+                {!b.deletedAt && (
+                  <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
+                    <span className="text-xs font-semibold text-slate-400">Technician</span>
+                    <input
+                      value={draft.name}
+                      onChange={(e) =>
+                        setTechDraft((prev) => ({
+                          ...prev,
+                          [b.bookingReference]: {
+                            ...prev[b.bookingReference],
+                            name: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="Name"
+                      className="input-field h-9 w-36 text-xs"
+                    />
+                    <input
+                      value={draft.phone}
+                      onChange={(e) =>
+                        setTechDraft((prev) => ({
+                          ...prev,
+                          [b.bookingReference]: {
+                            ...prev[b.bookingReference],
+                            phone: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="Phone"
+                      className="input-field h-9 w-36 text-xs"
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      disabled={savingRef === b.bookingReference}
+                      onClick={() => handleTechnicianSave(b.bookingReference)}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
       )}
+
+      {showForm && (
+        <AdminModal
+          title={editRef ? `Edit ${editRef}` : "New booking"}
+          wide
+          onClose={() => {
+            setShowForm(false);
+            setEditRef(null);
+          }}
+          footer={
+            <>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  setShowForm(false);
+                  setEditRef(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button size="sm" onClick={submitForm} disabled={saving}>
+                {saving ? "Saving…" : editRef ? "Save changes" : "Create booking"}
+              </Button>
+            </>
+          }
+        >
+          <BookingFormFields form={form} set={set} isEdit={Boolean(editRef)} />
+        </AdminModal>
+      )}
     </div>
   );
 }
 
+type TicketFormState = {
+  category: SupportCategory;
+  subject: string;
+  message: string;
+  email: string;
+  status: "OPEN" | "RESOLVED";
+};
+
+const emptyTicketForm: TicketFormState = {
+  category: "general_enquiry",
+  subject: "",
+  message: "",
+  email: "",
+  status: "OPEN",
+};
+
 function SupportPanel() {
   const [tickets, setTickets] = useState<SupportTicket[] | null>(null);
   const [filter, setFilter] = useState<"" | "OPEN" | "RESOLVED">("");
+  const [showArchived, setShowArchived] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [resolvingId, setResolvingId] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState<TicketFormState>(emptyTicketForm);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const load = useCallback(
-    () => fetchAdminSupportTickets().then((res) => setTickets(res.tickets)),
-    []
+    () =>
+      fetchAdminSupportTickets({ includeArchived: showArchived }).then((res) =>
+        setTickets(res.tickets)
+      ),
+    [showArchived]
   );
 
   const refresh = useCallback(() => {
@@ -385,20 +917,84 @@ function SupportPanel() {
     load();
   }, [load]);
 
-  const handleResolve = async (id: string) => {
-    setResolvingId(id);
+  const set = <K extends keyof TicketFormState>(key: K, value: TicketFormState[K]) =>
+    setForm((f) => ({ ...f, [key]: value }));
+
+  const runAction = async (id: string, fn: () => Promise<unknown>) => {
+    setBusyId(id);
+    setError(null);
     try {
-      await resolveSupportTicketRequest(id);
+      await fn();
       await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
-      setResolvingId(null);
+      setBusyId(null);
+    }
+  };
+
+  const openCreate = () => {
+    setError(null);
+    setEditId(null);
+    setForm(emptyTicketForm);
+    setShowForm(true);
+  };
+
+  const openEdit = (t: SupportTicket) => {
+    setError(null);
+    setEditId(t.id);
+    setForm({
+      category: t.category,
+      subject: t.subject,
+      message: t.message,
+      email: t.email,
+      status: t.status,
+    });
+    setShowForm(true);
+  };
+
+  const submitForm = async () => {
+    if (!form.subject.trim() || !form.message.trim() || !form.email.trim()) {
+      setError("Subject, message and email are required.");
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    try {
+      if (editId) {
+        await updateSupportTicketRequest(editId, {
+          category: form.category,
+          subject: form.subject.trim(),
+          message: form.message.trim(),
+          email: form.email.trim(),
+          status: form.status,
+        });
+      } else {
+        await createSupportTicketRequest({
+          category: form.category,
+          subject: form.subject.trim(),
+          message: form.message.trim(),
+          email: form.email.trim(),
+          status: form.status,
+        });
+      }
+      setShowForm(false);
+      setEditId(null);
+      setForm(emptyTicketForm);
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't save the ticket.");
+    } finally {
+      setSaving(false);
     }
   };
 
   const counts = useMemo(() => {
-    const open = tickets?.filter((t) => t.status === "OPEN").length ?? 0;
-    const resolved = tickets?.filter((t) => t.status === "RESOLVED").length ?? 0;
-    return { open, resolved };
+    const list = (tickets ?? []).filter((t) => !t.deletedAt);
+    return {
+      open: list.filter((t) => t.status === "OPEN").length,
+      resolved: list.filter((t) => t.status === "RESOLVED").length,
+    };
   }, [tickets]);
 
   const shown = (tickets ?? []).filter((t) => !filter || t.status === filter);
@@ -411,6 +1007,15 @@ function SupportPanel() {
         count={shown.length}
         onRefresh={refresh}
         refreshing={refreshing}
+        actions={
+          <div className="flex items-center gap-2">
+            <ArchiveToggle value={showArchived} onChange={setShowArchived} />
+            <Button size="sm" onClick={openCreate}>
+              <Plus className="size-4" />
+              New
+            </Button>
+          </div>
+        }
       />
 
       <FilterPills
@@ -423,6 +1028,10 @@ function SupportPanel() {
         onChange={(v) => setFilter(v as typeof filter)}
       />
 
+      {error && (
+        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600">{error}</p>
+      )}
+
       {!tickets ? (
         <SkeletonRows />
       ) : shown.length === 0 ? (
@@ -432,7 +1041,9 @@ function SupportPanel() {
           {shown.map((t) => (
             <div
               key={t.id}
-              className="rounded-2xl border border-slate-200 bg-white p-4 ags-depth-sm"
+              className={`rounded-2xl border border-slate-200 bg-white p-4 ags-depth-sm ${
+                t.deletedAt ? "opacity-55" : ""
+              }`}
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -443,6 +1054,11 @@ function SupportPanel() {
                     <StatusBadge tone={t.status === "OPEN" ? "warning" : "success"} size="sm">
                       {t.status}
                     </StatusBadge>
+                    {t.deletedAt && (
+                      <StatusBadge tone="neutral" size="sm">
+                        Archived
+                      </StatusBadge>
+                    )}
                   </div>
                   <p className="mt-1 text-sm font-bold text-navy-900">{t.subject}</p>
                   <p className="mt-1 text-sm text-slate-600">{t.message}</p>
@@ -450,20 +1066,138 @@ function SupportPanel() {
                     {t.email} · {new Date(t.createdAt).toLocaleDateString("en-GB")}
                   </p>
                 </div>
-                {t.status === "OPEN" && (
-                  <Button
+                <div className="flex shrink-0 items-center gap-1">
+                  {!t.deletedAt && t.status === "OPEN" && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={busyId === t.id}
+                      onClick={() => runAction(t.id, () => resolveSupportTicketRequest(t.id))}
+                    >
+                      Resolve
+                    </Button>
+                  )}
+                  {!t.deletedAt && t.status === "RESOLVED" && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      disabled={busyId === t.id}
+                      onClick={() => runAction(t.id, () => reopenSupportTicketRequest(t.id))}
+                    >
+                      Reopen
+                    </Button>
+                  )}
+                  <button
                     type="button"
-                    size="sm"
-                    disabled={resolvingId === t.id}
-                    onClick={() => handleResolve(t.id)}
+                    onClick={() => openEdit(t)}
+                    disabled={busyId === t.id}
+                    className="ags-focus flex size-9 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-navy-700 disabled:opacity-50"
+                    aria-label="Edit ticket"
                   >
-                    Mark Resolved
-                  </Button>
-                )}
+                    <Pencil className="size-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      runAction(t.id, () =>
+                        t.deletedAt
+                          ? restoreSupportTicketRequest(t.id)
+                          : archiveSupportTicketRequest(t.id)
+                      )
+                    }
+                    disabled={busyId === t.id}
+                    className={`ags-focus flex size-9 items-center justify-center rounded-lg transition-colors disabled:opacity-50 ${
+                      t.deletedAt
+                        ? "text-brand-600 hover:bg-brand-50"
+                        : "text-red-500 hover:bg-red-50"
+                    }`}
+                    aria-label={t.deletedAt ? "Restore ticket" : "Archive ticket"}
+                  >
+                    {t.deletedAt ? <RotateCcw className="size-4" /> : <Trash2 className="size-4" />}
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      {showForm && (
+        <AdminModal
+          title={editId ? "Edit ticket" : "New support ticket"}
+          onClose={() => {
+            setShowForm(false);
+            setEditId(null);
+          }}
+          footer={
+            <>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  setShowForm(false);
+                  setEditId(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button size="sm" onClick={submitForm} disabled={saving}>
+                {saving ? "Saving…" : editId ? "Save changes" : "Create ticket"}
+              </Button>
+            </>
+          }
+        >
+          <div className="space-y-3">
+            <FieldGrid>
+              <Field label="Category">
+                <select
+                  className="input-field h-9 text-sm"
+                  value={form.category}
+                  onChange={(e) => set("category", e.target.value as SupportCategory)}
+                >
+                  {SUPPORT_CATEGORY_OPTIONS.map((c) => (
+                    <option key={c} value={c}>
+                      {c.replaceAll("_", " ")}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="Status">
+                <select
+                  className="input-field h-9 text-sm"
+                  value={form.status}
+                  onChange={(e) => set("status", e.target.value as "OPEN" | "RESOLVED")}
+                >
+                  <option value="OPEN">OPEN</option>
+                  <option value="RESOLVED">RESOLVED</option>
+                </select>
+              </Field>
+            </FieldGrid>
+            <Field label="Email">
+              <input
+                type="email"
+                className="input-field h-9 text-sm"
+                value={form.email}
+                onChange={(e) => set("email", e.target.value)}
+              />
+            </Field>
+            <Field label="Subject">
+              <input
+                className="input-field h-9 text-sm"
+                value={form.subject}
+                onChange={(e) => set("subject", e.target.value)}
+              />
+            </Field>
+            <Field label="Message">
+              <textarea
+                className="input-field min-h-24 text-sm"
+                value={form.message}
+                onChange={(e) => set("message", e.target.value)}
+              />
+            </Field>
+          </div>
+        </AdminModal>
       )}
     </div>
   );

@@ -8,7 +8,7 @@ import { ApiError } from "../middleware/errorHandler";
 export const reviewsRouter = Router();
 
 reviewsRouter.get("/", requireAuth, async (req, res) => {
-  const reviews = await Review.find({ userId: req.userId }).sort({ createdAt: -1 });
+  const reviews = await Review.find({ userId: req.userId, deletedAt: null }).sort({ createdAt: -1 });
   res.json({ reviews });
 });
 

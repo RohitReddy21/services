@@ -73,6 +73,10 @@ const bookingSchema = new Schema(
     technicianId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     technicianName: { type: String, default: null },
     technicianPhone: { type: String, default: null },
+
+    // Soft delete — archived bookings are hidden from the admin lists by
+    // default but can be restored.
+    deletedAt: { type: Date, default: null, index: true },
   },
   { timestamps: true }
 );

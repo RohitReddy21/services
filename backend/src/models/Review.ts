@@ -8,6 +8,10 @@ const reviewSchema = new Schema(
     serviceName: { type: String, required: true },
     rating: { type: Number, min: 1, max: 5, required: true },
     text: { type: String, default: "", trim: true },
+
+    // Soft delete — archived reviews are hidden from the public site and the
+    // admin list by default but can be restored.
+    deletedAt: { type: Date, default: null, index: true },
   },
   { timestamps: true }
 );

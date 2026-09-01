@@ -3,6 +3,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useRevealInView } from "@/hooks/use-reveal-in-view";
 
 export type RevealVariant = "up" | "down" | "left" | "right" | "fade" | "scale" | "blur";
 
@@ -67,6 +68,11 @@ export default function Reveal({
   style,
 }: RevealProps) {
   const reduce = useReducedMotion();
+  const [ref, inView] = useRevealInView<HTMLDivElement>({
+    once,
+    amount,
+    rootMargin: "0px 0px -10% 0px",
+  });
   const Tag = as;
   // Runtime picks the right tag; the cast keeps the prop types simple.
   const MotionTag = motion[as] as typeof motion.div;
@@ -79,13 +85,15 @@ export default function Reveal({
     );
   }
 
+  const shown = { opacity: 1, x: 0, y: 0, scale: 1, filter: "blur(0px)" };
+
   return (
     <MotionTag
+      ref={ref}
       className={className}
       style={style}
       initial={hidden(variant, distance)}
-      whileInView={{ opacity: 1, x: 0, y: 0, scale: 1, filter: "blur(0px)" }}
-      viewport={{ once, amount, margin: "0px 0px -10% 0px" }}
+      animate={inView ? shown : hidden(variant, distance)}
       transition={{ duration, ease: EASE, delay }}
     >
       {children}
@@ -111,6 +119,11 @@ export function RevealStagger({
   amount?: number;
 }) {
   const reduce = useReducedMotion();
+  const [ref, inView] = useRevealInView<HTMLDivElement>({
+    once,
+    amount,
+    rootMargin: "0px 0px -10% 0px",
+  });
   if (reduce) return <div className={className}>{children}</div>;
 
   const container: Variants = {
@@ -120,11 +133,11 @@ export function RevealStagger({
 
   return (
     <motion.div
+      ref={ref}
       className={className}
       variants={container}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once, amount, margin: "0px 0px -10% 0px" }}
+      animate={inView ? "show" : "hidden"}
     >
       {children}
     </motion.div>

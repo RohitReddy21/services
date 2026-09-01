@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import ServiceCard from "@/components/services/service-card";
 import type { ServiceSummary } from "@/types/service";
 import { cn } from "@/lib/utils";
+import { useRevealInView } from "@/hooks/use-reveal-in-view";
 
 export default function ServiceGrid({
   services,
@@ -13,13 +14,14 @@ export default function ServiceGrid({
   className?: string;
 }) {
   const reducedMotion = useReducedMotion();
+  const [ref, inView] = useRevealInView<HTMLDivElement>({ once: true, rootMargin: "-80px" });
 
   return (
     <motion.div
+      ref={ref}
       className={cn("grid grid-cols-2 gap-4 [perspective:1200px] sm:grid-cols-3 lg:grid-cols-4", className)}
       initial={reducedMotion ? false : "hidden"}
-      whileInView="show"
-      viewport={{ once: true, margin: "-80px" }}
+      animate={reducedMotion || inView ? "show" : "hidden"}
       variants={{
         hidden: {},
         show: {

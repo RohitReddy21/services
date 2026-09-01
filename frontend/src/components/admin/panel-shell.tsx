@@ -1,7 +1,7 @@
 "use client";
 
-import type { ComponentType, ReactNode } from "react";
-import { RefreshCw } from "lucide-react";
+import { useEffect, type ComponentType, type ReactNode } from "react";
+import { RefreshCw, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** Consistent header for every admin panel: title, count, and right-aligned actions. */
@@ -100,5 +100,116 @@ export function SkeletonRows({ rows = 4 }: { rows?: number }) {
         </div>
       ))}
     </div>
+  );
+}
+
+/** Centered dialog used by every admin create/edit form. */
+export function AdminModal({
+  title,
+  onClose,
+  children,
+  footer,
+  wide,
+}: {
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+  footer?: ReactNode;
+  wide?: boolean;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-navy-950/40 p-4 backdrop-blur-sm sm:p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className={cn(
+          "my-8 w-full rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-navy-900/20",
+          wide ? "max-w-2xl" : "max-w-lg"
+        )}
+      >
+        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3.5">
+          <h3 className="font-display text-base font-bold text-navy-900">{title}</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="ags-focus flex size-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-navy-700"
+            aria-label="Close"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+        <div className="max-h-[70vh] overflow-y-auto px-5 py-4">{children}</div>
+        {footer && (
+          <div className="flex items-center justify-end gap-2 border-t border-slate-100 px-5 py-3">
+            {footer}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Labelled form control for admin modals. */
+export function Field({
+  label,
+  children,
+  hint,
+  className,
+}: {
+  label: string;
+  children: ReactNode;
+  hint?: string;
+  className?: string;
+}) {
+  return (
+    <label className={cn("block", className)}>
+      <span className="mb-1 block text-xs font-semibold text-slate-500">{label}</span>
+      {children}
+      {hint && <span className="mt-1 block text-[11px] text-slate-400">{hint}</span>}
+    </label>
+  );
+}
+
+/** Two-column responsive grid for form fields. */
+export function FieldGrid({ children }: { children: ReactNode }) {
+  return <div className="grid gap-3 sm:grid-cols-2">{children}</div>;
+}
+
+/** "Show archived" checkbox used on list panels. */
+export function ArchiveToggle({
+  value,
+  onChange,
+}: {
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <label className="inline-flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-slate-500">
+      <input
+        type="checkbox"
+        checked={value}
+        onChange={(e) => onChange(e.target.checked)}
+        className="size-3.5 rounded border-slate-300 text-brand-600 focus:ring-brand-200"
+      />
+      Show archived
+    </label>
   );
 }

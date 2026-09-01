@@ -22,6 +22,8 @@ export interface AdminUserSummary {
   role: "CUSTOMER" | "ADMIN" | "TECHNICIAN";
   loyaltyPoints: number;
   referralCode: string;
+  emailVerified?: boolean;
+  deletedAt?: string | null;
   createdAt: string;
 }
 

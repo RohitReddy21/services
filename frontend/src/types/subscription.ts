@@ -65,6 +65,7 @@ export interface Subscription {
   servicesPerCycle: number | null;
   couponCode?: string | null;
   originalAmount?: number | null;
+  deletedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
