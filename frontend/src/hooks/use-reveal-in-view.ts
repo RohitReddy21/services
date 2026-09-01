@@ -46,6 +46,14 @@ export function useRevealInView<T extends Element = HTMLDivElement>(
       teardown();
     };
 
+    // An element taller than the viewport can never reach a fractional
+    // threshold — a 3700px card grid on a 844px phone tops out around 0.22, so
+    // asking for 0.15 with a negative root margin left it permanently
+    // "not intersecting" and the content stuck at opacity 0. Fall back to
+    // "any pixel visible" for anything that can't physically satisfy `amount`.
+    const tallerThanViewport = el.getBoundingClientRect().height > window.innerHeight;
+    const threshold = tallerThanViewport ? 0 : Math.min(amount, 0.5);
+
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -53,7 +61,7 @@ export function useRevealInView<T extends Element = HTMLDivElement>(
           else if (!once) setInView(false);
         }
       },
-      { threshold: amount, rootMargin }
+      { threshold, rootMargin }
     );
     observer.observe(el);
 
