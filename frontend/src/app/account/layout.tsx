@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/server/current-user";
 import AccountSidebar from "@/components/account/account-sidebar";
@@ -10,7 +11,14 @@ export const metadata: Metadata = {
 
 export default async function AccountLayout({ children }: LayoutProps<"/account">) {
   const user = await getCurrentUser();
-  if (!user) redirect("/login?redirect=/account");
+  if (!user) {
+    // middleware.ts already redirects when there's no session cookie, so
+    // reaching here with a cookie present means the API didn't answer in time
+    // (cold start). Render the shell rather than bouncing a logged-in user to
+    // /login — client-side auth and per-page fetches recover on their own.
+    const hasSession = (await cookies()).has("ags_at");
+    if (!hasSession) redirect("/login?redirect=/account");
+  }
 
   return (
     <div className="min-h-[calc(100vh-4.5rem)] bg-linear-to-b from-sky-50 via-white to-slate-25 pb-20 lg:pb-0">

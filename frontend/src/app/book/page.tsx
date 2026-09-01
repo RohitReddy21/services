@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import BookingFlow from "@/components/booking/booking-flow";
-import { getCurrentUser } from "@/lib/server/current-user";
 import type { ServiceCategoryId } from "@/types/service";
 
 export const metadata: Metadata = {
@@ -12,24 +10,11 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
+// Auth is gated in middleware.ts (fast, cookie-only) and again client-side in
+// BookingFlow via useAuth — this page does no backend round-trip of its own, so
+// navigating here is instant even when the API is cold.
 export default async function BookPage({ searchParams }: PageProps<"/book">) {
   const params = await searchParams;
-  const user = await getCurrentUser();
-
-  if (!user) {
-    const redirectParams = new URLSearchParams();
-    for (const [key, value] of Object.entries(params)) {
-      if (Array.isArray(value)) {
-        value.forEach((item) => redirectParams.append(key, item));
-      } else if (typeof value === "string") {
-        redirectParams.set(key, value);
-      }
-    }
-
-    const returnTo = `/book${redirectParams.size ? `?${redirectParams.toString()}` : ""}`;
-    redirect(`/login?redirect=${encodeURIComponent(returnTo)}`);
-  }
-
   const categoryParam = Array.isArray(params.category) ? params.category[0] : params.category;
   const initialCategory: ServiceCategoryId | undefined =
     categoryParam === "air-conditioning" ||

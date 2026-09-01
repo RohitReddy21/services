@@ -7,10 +7,10 @@ const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"
 
 // The backend runs on a platform that can cold-start (spun-down free instance),
 // where the first request may take 30-60s. Without a bound, that stalls the
-// whole server render — and eventually the platform kills it with a 504. A
-// timeout lets the page fall back to its logged-out / empty state instead of
-// hanging. Generous enough to ride out a warm-but-slow response.
-const DEFAULT_TIMEOUT_MS = 12_000;
+// whole server render until the host kills it with a 504. Keep this a little
+// under a typical serverless function limit (~10s) so our own graceful
+// null-return wins the race and the page can render its empty/fallback state.
+const DEFAULT_TIMEOUT_MS = 8_000;
 
 /**
  * Server Components can't rely on the browser to attach cookies when calling

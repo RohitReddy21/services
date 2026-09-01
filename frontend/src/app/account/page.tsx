@@ -15,7 +15,10 @@ export const metadata: Metadata = {
 
 export default async function AccountOverviewPage() {
   const user = await getCurrentUser();
-  if (!user) return null; // guarded by layout
+  // Auth is gated by middleware + layout. If `user` is missing here the API
+  // just didn't answer in time (cold start) — render the overview with safe
+  // fallbacks instead of a blank page; a refresh fills it in once warm.
+  const firstName = user?.name?.split(" ")[0] ?? "there";
 
   const [bookingsRes, notificationsRes, loyaltyRes] = await Promise.all([
     serverFetchJson<{ bookings: Record<string, unknown>[] }>("/api/bookings?mine=true"),
@@ -33,7 +36,7 @@ export default async function AccountOverviewPage() {
   return (
     <div>
       <h1 className="font-display text-2xl font-extrabold text-navy-900 sm:text-3xl">
-        Welcome back, {user.name.split(" ")[0]}
+        Welcome back, {firstName}
       </h1>
       <p className="mt-1.5 text-sm text-slate-500">
         Here&apos;s an overview of your account.
