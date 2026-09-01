@@ -43,7 +43,7 @@ export default function ServicesExplorer({
   return (
     <div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="inline-flex rounded-xl border border-slate-200 bg-slate-25 p-1">
+        <div className="grid w-full grid-cols-3 gap-1 rounded-xl border border-slate-200 bg-slate-25 p-1 sm:inline-flex sm:w-auto sm:gap-0">
           {categories.map((c) => {
             const Icon = categoryIcon[c.icon];
             const isActive = !isSearching && c.id === category;
@@ -53,13 +53,13 @@ export default function ServicesExplorer({
                 type="button"
                 onClick={() => setCategory(c.id)}
                 className={cn(
-                  "flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors",
+                  "flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-center text-xs font-semibold leading-tight transition-colors sm:gap-2 sm:px-4 sm:py-2.5 sm:text-sm",
                   isActive
                     ? "bg-white text-brand-600 shadow-sm"
                     : "text-slate-500 hover:text-navy-800"
                 )}
               >
-                <Icon className="size-4" />
+                <Icon className="hidden size-4 shrink-0 sm:block" />
                 {c.name}
               </button>
             );
@@ -68,14 +68,14 @@ export default function ServicesExplorer({
 
         <label className="relative w-full sm:w-72">
           <span className="sr-only">Search services</span>
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 z-10 size-4 -translate-y-1/2 text-slate-400" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             type="text"
             placeholder="Search services..."
             aria-label="Search services"
-            className="input-field h-11 w-full pl-10 pr-9"
+            className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-9 text-navy-900 outline-none transition-[border-color,box-shadow] placeholder:text-slate-400 focus:border-brand-400 focus:ring-[3px] focus:ring-brand-100"
           />
           {query.length > 0 && (
             <button

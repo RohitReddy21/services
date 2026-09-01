@@ -106,30 +106,37 @@ body {
   }
 }
 
-.input-field {
-  width: 100%;
-  height: 2.75rem;
-  border-radius: 0.75rem;
-  border: 1px solid #e2e8f0;
-  padding-inline: 0.875rem;
-  font-size: 0.8125rem;
-  color: var(--color-navy-900);
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
+/*
+ * In the `components` layer so Tailwind utilities placed on the same element
+ * (pl-10 for a leading icon, pr-10 for a trailing button, text-xs in compact
+ * UIs) win over these defaults — the utilities layer comes after `components`.
+ */
+@layer components {
+  .input-field {
+    width: 100%;
+    height: 2.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    padding-inline: 0.875rem;
+    font-size: 0.875rem;
+    color: var(--color-navy-900);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
 
-.input-field::placeholder {
-  color: #94a3b8;
-}
+  .input-field::placeholder {
+    color: #94a3b8;
+  }
 
-.input-field:focus {
-  border-color: var(--color-brand-400);
-  box-shadow: 0 0 0 3px var(--color-brand-100);
-}
+  .input-field:focus {
+    border-color: var(--color-brand-400);
+    box-shadow: 0 0 0 3px var(--color-brand-100);
+  }
 
-textarea.input-field {
-  height: auto;
-  padding-block: 0.75rem;
+  textarea.input-field {
+    height: auto;
+    padding-block: 0.75rem;
+  }
 }
 
 /*
