@@ -196,18 +196,24 @@ export default function HeroMotionScene() {
   return (
     <div className="size-full">
       <Canvas
-        dpr={[1, 1.6]}
-        shadows
+        dpr={[1, 1.5]}
         camera={{ position: [0, 0.45, 5.7], fov: 38 }}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        gl={{ antialias: true, alpha: true, powerPreference: "default" }}
+        onCreated={({ gl }) => {
+          // Let the browser attempt to restore a lost context instead of
+          // leaving the render loop to spin on "Context Lost" forever.
+          gl.domElement.addEventListener(
+            "webglcontextlost",
+            (event) => event.preventDefault(),
+            false
+          );
+        }}
       >
         <ambientLight intensity={0.45} />
         <directionalLight
           position={[3.5, 3.8, 4.5]}
           intensity={1.45}
           color="#ffffff"
-          castShadow
-          shadow-mapSize={[1024, 1024]}
         />
         <directionalLight position={[-4, 1.2, 1]} intensity={0.62} color="#8ab5ff" />
         <ServiceRig

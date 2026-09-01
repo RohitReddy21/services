@@ -8,17 +8,20 @@ import { ArrowRight, BadgeCheck, MapPin, ShieldCheck, Star, Timer } from "lucide
 import { Button, ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
 import TiltCard from "@/components/ui/tilt-card";
+import CanvasGuard from "@/components/three/canvas-guard";
 import { trackEvent } from "@/lib/analytics";
+
+const HeroSceneFallback = () => (
+  <div className="relative size-full opacity-50" aria-hidden="true">
+    <div className="absolute left-1/2 top-1/2 h-56 w-72 -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-brand-300/25" />
+    <div className="absolute left-1/2 top-1/2 h-px w-80 -translate-x-1/2 bg-brand-300/25" />
+    <div className="absolute left-1/2 top-1/2 h-64 w-px -translate-y-1/2 bg-brand-300/20" />
+  </div>
+);
 
 const HeroMotionScene = dynamic(() => import("@/components/three/hero-motion-scene"), {
   ssr: false,
-  loading: () => (
-    <div className="relative size-full opacity-50" aria-hidden="true">
-      <div className="absolute left-1/2 top-1/2 h-56 w-72 -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-brand-300/25" />
-      <div className="absolute left-1/2 top-1/2 h-px w-80 -translate-x-1/2 bg-brand-300/25" />
-      <div className="absolute left-1/2 top-1/2 h-64 w-px -translate-y-1/2 bg-brand-300/20" />
-    </div>
-  ),
+  loading: () => <HeroSceneFallback />,
 });
 
 const trustBadges = [
@@ -102,7 +105,9 @@ export default function Hero() {
           style={reducedMotion ? undefined : { y: sceneY, rotateZ: sceneRotate }}
           aria-hidden="true"
         >
-          <HeroMotionScene />
+          <CanvasGuard fallback={<HeroSceneFallback />}>
+            <HeroMotionScene />
+          </CanvasGuard>
         </motion.div>
         <div className="pointer-events-none absolute inset-y-0 right-0 z-[2] hidden w-1/2 bg-linear-to-l from-brand-500/10 via-transparent to-transparent lg:block" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-white to-transparent" />

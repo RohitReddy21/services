@@ -117,18 +117,22 @@ function Label({ children }: { children: ReactNode }) {
 export default function TechnicalShowcaseModel() {
   return (
     <Canvas
-      dpr={[1, 1.7]}
-      shadows
+      dpr={[1, 1.5]}
       camera={{ position: [0, 1.2, 5.2], fov: 42 }}
-      gl={{ antialias: true, alpha: true }}
+      gl={{ antialias: true, alpha: true, powerPreference: "default" }}
+      onCreated={({ gl }) => {
+        gl.domElement.addEventListener(
+          "webglcontextlost",
+          (event) => event.preventDefault(),
+          false
+        );
+      }}
     >
       <ambientLight intensity={0.6} />
       <directionalLight
         position={[4, 5, 5]}
         intensity={1.35}
         color="#ffffff"
-        castShadow
-        shadow-mapSize={[1024, 1024]}
       />
       <directionalLight position={[-4, 1, -2]} intensity={0.45} color="#8ab5ff" />
       <CompressorAssembly />

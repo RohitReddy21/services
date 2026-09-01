@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { CheckCircle2, Clock, Headphones, PackageCheck, Phone, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Clock, Headphones, PackageCheck, Phone, RotateCcw, ShieldCheck } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-context";
 import { BookingProvider, STEP_LABELS, useBooking } from "@/components/booking/booking-context";
@@ -27,7 +27,7 @@ const stepComponents = [
 ];
 
 function BookingFlowInner() {
-  const { step, direction, bookingResult, form, setField } = useBooking();
+  const { step, direction, bookingResult, form, setField, hydrated, reset } = useBooking();
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -55,6 +55,10 @@ function BookingFlowInner() {
 
   if (loading || !user) {
     return <PageLoader compact label="Checking sign in" />;
+  }
+
+  if (!hydrated) {
+    return <PageLoader compact label="Restoring your booking" />;
   }
 
   const StepComponent = stepComponents[step] ?? StageService;
@@ -92,7 +96,26 @@ function BookingFlowInner() {
             <PackageCheck className="size-4 text-brand-600" />
             {STEP_LABELS[step]}
           </span>
-          <span>Every day and listed time slot is available.</span>
+          <span className="flex items-center gap-3">
+            <span className="hidden sm:inline">Every day and listed time slot is available.</span>
+            {step > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (
+                    typeof window === "undefined" ||
+                    window.confirm("Start a new booking? Your current progress will be cleared.")
+                  ) {
+                    reset();
+                  }
+                }}
+                className="ags-focus flex items-center gap-1.5 rounded-md px-2 py-1 font-semibold text-slate-500 transition-colors hover:bg-white hover:text-brand-700"
+              >
+                <RotateCcw className="size-3.5" />
+                Start over
+              </button>
+            )}
+          </span>
         </div>
 
         <div className="p-4 sm:p-6 lg:p-7">

@@ -6,6 +6,7 @@ import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "fr
 import { Cpu, Fan, Gauge, Snowflake, ThermometerSnowflake } from "lucide-react";
 import FadeInImage from "@/components/ui/fade-in-image";
 import { ThreeDLoader } from "@/components/ui/loaders";
+import CanvasGuard from "@/components/three/canvas-guard";
 
 const TechnicalShowcaseModel = dynamic(
   () => import("@/components/three/technical-showcase-model"),
@@ -93,7 +94,9 @@ export default function TechnicalShowcase() {
           <div className="pointer-events-none absolute right-14 top-14 h-12 w-28 rounded-xl border border-accent-gold-400/35 ags-float-delayed" />
           <div className="pointer-events-none absolute right-28 top-4 h-36 w-px bg-linear-to-b from-transparent via-brand-300/45 to-transparent" />
           <div className="relative hidden h-80 sm:block lg:h-96">
-            <TechnicalShowcaseModel />
+            <CanvasGuard fallback={<ThreeDLoader />}>
+              <TechnicalShowcaseModel />
+            </CanvasGuard>
           </div>
           <div className="relative block sm:hidden">
             <div className="relative aspect-4/3 overflow-hidden rounded-2xl">

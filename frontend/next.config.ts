@@ -18,6 +18,17 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Pull only the used symbols out of these large packages instead of their
+  // barrel files, which meaningfully trims the client bundle (drei in
+  // particular pulls in a lot transitively).
+  experimental: {
+    optimizePackageImports: [
+      "@react-three/drei",
+      "@react-three/fiber",
+      "framer-motion",
+      "lucide-react",
+    ],
+  },
   async rewrites() {
     return [
       {

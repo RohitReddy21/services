@@ -1,0 +1,49 @@
+name: Keep services warm
+
+# Render's free web instances spin down after ~15 minutes of inactivity, and
+# the next request then pays a 30-60s cold start. Pinging the health endpoints
+# every 10 minutes keeps the Node backend and Python service awake so pages
+# that render server-side (account, booking) load promptly.
+#
+# Override the targets with repo-level Actions variables if the URLs change:
+#   Settings -> Secrets and variables -> Actions -> Variables
+#     BACKEND_URL          e.g. https://ags-backend.onrender.com
+#     PYTHON_SERVICE_URL   e.g. https://ags-python-service.onrender.com
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: keep-warm
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping backend and Python service
+        env:
+          BACKEND_URL: ${{ vars.BACKEND_URL || 'https://ags-backend.onrender.com' }}
+          PYTHON_SERVICE_URL: ${{ vars.PYTHON_SERVICE_URL || 'https://ags-python-service.onrender.com' }}
+        run: |
+          set -u
+          ping() {
+            local name="$1" url="$2"
+            echo "Pinging $name -> $url/health"
+            for attempt in 1 2 3 4 5; do
+              code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 90 "$url/health" || echo "000")
+              if [ "$code" = "200" ]; then
+                echo "  $name is up (HTTP $code) on attempt $attempt"
+                return 0
+              fi
+              echo "  attempt $attempt: HTTP $code — waking up, retrying in 20s"
+              sleep 20
+            done
+            echo "  WARNING: $name did not return 200 after retries"
+            return 0
+          }
+          ping "backend" "$BACKEND_URL"
+          ping "python-service" "$PYTHON_SERVICE_URL"
