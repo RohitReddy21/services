@@ -132,12 +132,30 @@ function ServiceChapter({
         </motion.div>
 
         <motion.div
-          className={`relative ${reverse ? "lg:col-start-1" : ""}`}
+          className={`relative isolate ${reverse ? "lg:col-start-1" : ""}`}
           initial={reducedMotion ? false : { opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
+          <div className="pointer-events-none absolute -inset-8 -z-10 hidden lg:block">
+            <span
+              className={`absolute top-4 h-28 w-44 rounded-2xl border border-brand-200/70 ags-float-slow ${
+                reverse ? "right-6" : "left-6"
+              }`}
+            />
+            <span
+              className={`absolute bottom-8 h-12 w-36 rounded-xl border border-accent-gold-400/35 ags-float-delayed ${
+                reverse ? "left-10" : "right-10"
+              }`}
+            />
+            <span
+              className={`absolute top-10 h-28 w-px bg-linear-to-b from-transparent via-brand-300/45 to-transparent ${
+                reverse ? "right-24" : "left-24"
+              }`}
+            />
+            <span className="absolute left-1/4 top-1/2 h-px w-2/3 -translate-y-1/2 rotate-[-12deg] bg-linear-to-r from-transparent via-brand-300/45 to-transparent" />
+          </div>
           <TiltCard
             max={8}
             glare

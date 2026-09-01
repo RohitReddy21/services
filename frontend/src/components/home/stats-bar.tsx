@@ -16,16 +16,18 @@ export default function StatsBar() {
   return (
     <section className="container-ags relative z-10 -mt-10 pb-6">
       <motion.div
-        className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/70 bg-brand-100/70 ags-depth-lg backdrop-blur sm:grid-cols-4"
+        className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/70 bg-brand-100/70 ags-depth-lg [perspective:1000px] backdrop-blur sm:grid-cols-4"
         initial={reducedMotion ? false : { opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.48, ease: "easeOut" }}
       >
         {stats.map((stat) => (
-          <div
+          <motion.div
             key={stat.label}
             className="group relative bg-white/95 px-6 py-7 text-center backdrop-blur transition-colors duration-300 hover:bg-brand-50/90"
+            whileHover={reducedMotion ? undefined : { y: -6, rotateX: -4 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
           >
             <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white to-transparent" />
             <div className="transition-transform duration-300 group-hover:-translate-y-1">
@@ -34,7 +36,7 @@ export default function StatsBar() {
                 {stat.label}
               </p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </motion.div>
     </section>

@@ -1,13 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, BadgeCheck, MapPin, ShieldCheck, Star, Timer } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
 import TiltCard from "@/components/ui/tilt-card";
 import { trackEvent } from "@/lib/analytics";
+
+const HeroMotionScene = dynamic(() => import("@/components/three/hero-motion-scene"), {
+  ssr: false,
+  loading: () => (
+    <div className="relative size-full opacity-50" aria-hidden="true">
+      <div className="absolute left-1/2 top-1/2 h-56 w-72 -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-brand-300/25" />
+      <div className="absolute left-1/2 top-1/2 h-px w-80 -translate-x-1/2 bg-brand-300/25" />
+      <div className="absolute left-1/2 top-1/2 h-64 w-px -translate-y-1/2 bg-brand-300/20" />
+    </div>
+  ),
+});
 
 const trustBadges = [
   { icon: ShieldCheck, label: "Certified Engineers" },
@@ -19,6 +31,27 @@ export default function Hero() {
   const [postcode, setPostcode] = useState("");
   const router = useRouter();
   const reducedMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const contentY = useSpring(useTransform(scrollYProgress, [0, 1], [0, -62]), {
+    stiffness: 110,
+    damping: 28,
+  });
+  const sceneY = useSpring(useTransform(scrollYProgress, [0, 1], [0, 130]), {
+    stiffness: 95,
+    damping: 26,
+  });
+  const sceneRotate = useSpring(useTransform(scrollYProgress, [0, 1], [0, -8]), {
+    stiffness: 100,
+    damping: 28,
+  });
+  const cardY = useSpring(useTransform(scrollYProgress, [0, 1], [0, 46]), {
+    stiffness: 95,
+    damping: 26,
+  });
 
   const handlePostcodeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +62,10 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-[640px] overflow-hidden bg-ink-950 text-white sm:min-h-[700px]">
+    <section
+      ref={sectionRef}
+      className="relative min-h-[640px] overflow-hidden bg-ink-950 text-white sm:min-h-[700px]"
+    >
       {/* Background: one photo, one ambient video, cinematic scrims. */}
       <div className="absolute inset-0">
         <div className="ags-ken-burns absolute inset-0">
@@ -61,14 +97,23 @@ export default function Hero() {
         <div className="absolute inset-0 bg-linear-to-r from-ink-950 via-ink-950/85 to-ink-950/35" />
         <div className="absolute inset-0 bg-linear-to-t from-ink-950/90 via-ink-950/10 to-ink-950/50" />
         <div className="ags-hero-sweep absolute inset-0" aria-hidden="true" />
+        <motion.div
+          className="pointer-events-none absolute right-[-48vw] top-16 z-[1] h-[54vh] w-[118vw] opacity-35 sm:right-[-36vw] sm:w-[98vw] sm:opacity-45 lg:inset-y-0 lg:right-[-16vw] lg:h-auto lg:w-[72vw] lg:opacity-80 xl:opacity-95"
+          style={reducedMotion ? undefined : { y: sceneY, rotateZ: sceneRotate }}
+          aria-hidden="true"
+        >
+          <HeroMotionScene />
+        </motion.div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-[2] hidden w-1/2 bg-linear-to-l from-brand-500/10 via-transparent to-transparent lg:block" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-white to-transparent" />
       </div>
 
-      <div className="container-ags relative grid min-h-[640px] gap-12 py-16 sm:min-h-[700px] lg:grid-cols-[1fr_440px] lg:items-center lg:py-20">
+      <div className="container-ags relative z-10 grid min-h-[640px] gap-12 py-16 sm:min-h-[700px] lg:grid-cols-[1fr_440px] lg:items-center lg:py-20">
         <motion.div
           initial={reducedMotion ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          style={reducedMotion ? undefined : { y: contentY }}
           className="max-w-2xl"
         >
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-100 backdrop-blur">
@@ -133,6 +178,7 @@ export default function Hero() {
           initial={reducedMotion ? false : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          style={reducedMotion ? undefined : { y: cardY }}
           className="relative hidden lg:block"
         >
           <TiltCard

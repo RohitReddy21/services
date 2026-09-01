@@ -21,7 +21,6 @@ export default function ServiceCard({ service }: { service: ServiceSummary }) {
     <TiltCard
       max={7}
       glare
-      data-cursor="interactive"
       className="h-full"
       bodyClassName="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white ags-depth-md transition-[box-shadow,border-color] duration-300 hover:border-brand-200 hover:ags-depth-xl"
     >

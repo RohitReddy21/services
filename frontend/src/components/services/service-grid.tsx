@@ -16,7 +16,7 @@ export default function ServiceGrid({
 
   return (
     <motion.div
-      className={cn("grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4", className)}
+      className={cn("grid grid-cols-2 gap-4 [perspective:1200px] sm:grid-cols-3 lg:grid-cols-4", className)}
       initial={reducedMotion ? false : "hidden"}
       whileInView="show"
       viewport={{ once: true, margin: "-80px" }}
@@ -34,10 +34,10 @@ export default function ServiceGrid({
           key={service.id}
           className="h-full"
           variants={{
-            hidden: { opacity: 0, y: 18 },
-            show: { opacity: 1, y: 0 },
+            hidden: { opacity: 0, y: 24, rotateX: 7, scale: 0.97 },
+            show: { opacity: 1, y: 0, rotateX: 0, scale: 1 },
           }}
-          transition={{ duration: 0.38, ease: "easeOut" }}
+          transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
         >
           <ServiceCard service={service} />
         </motion.div>

@@ -360,6 +360,8 @@ textarea.input-field {
 .ags-tilt__body {
   --ags-rx: 0deg;
   --ags-ry: 0deg;
+  --ags-mx: 50%;
+  --ags-my: 50%;
   transform-style: preserve-3d;
   transform: rotateX(var(--ags-rx)) rotateY(var(--ags-ry));
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
@@ -378,8 +380,6 @@ textarea.input-field {
 
 /* Moving specular highlight for tilt surfaces. */
 .ags-glare {
-  --ags-mx: 50%;
-  --ags-my: 50%;
   pointer-events: none;
   position: absolute;
   inset: 0;

@@ -1,7 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import dynamic from "next/dynamic";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { Cpu, Fan, Gauge, Snowflake, ThermometerSnowflake } from "lucide-react";
 import FadeInImage from "@/components/ui/fade-in-image";
 import { ThreeDLoader } from "@/components/ui/loaders";
@@ -24,10 +25,26 @@ const labels = [
 
 export default function TechnicalShowcase() {
   const reducedMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const modelY = useSpring(useTransform(scrollYProgress, [0, 1], [52, -42]), {
+    stiffness: 105,
+    damping: 28,
+  });
+  const modelRotate = useSpring(useTransform(scrollYProgress, [0, 1], [4, -4]), {
+    stiffness: 105,
+    damping: 28,
+  });
 
   return (
-    <section className="overflow-hidden bg-linear-to-b from-white via-sky-50 to-white py-16 lg:py-24">
-      <div className="container-ags grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+    <section
+      ref={sectionRef}
+      className="overflow-hidden bg-linear-to-b from-white via-sky-50 to-white py-16 lg:py-24"
+    >
+      <div className="container-ags grid gap-10 [perspective:1200px] lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
         <motion.div
           initial={reducedMotion ? false : { opacity: 0, x: -28 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -63,15 +80,18 @@ export default function TechnicalShowcase() {
         </motion.div>
 
         <motion.div
-          data-cursor="interactive"
-          className="relative min-h-80 overflow-hidden rounded-[2rem] border border-brand-100 bg-white/80 p-4 shadow-2xl shadow-brand-900/10 sm:min-h-96"
+          className="relative min-h-80 overflow-hidden rounded-[2rem] border border-brand-100 bg-white/80 p-4 shadow-2xl shadow-brand-900/10 [transform-style:preserve-3d] sm:min-h-96"
           initial={reducedMotion ? false : { opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-90px" }}
           transition={{ duration: 0.62, ease: "easeOut" }}
+          style={reducedMotion ? undefined : { y: modelY, rotateY: modelRotate }}
         >
           <div className="absolute inset-0 bg-linear-to-br from-brand-50 via-white to-sky-100" />
-          <div className="absolute -right-12 -top-12 size-44 rounded-full bg-accent-gold-400/15 blur-3xl" />
+          <div className="pointer-events-none absolute inset-x-8 top-8 h-px bg-linear-to-r from-transparent via-brand-300/60 to-transparent" />
+          <div className="pointer-events-none absolute right-8 top-7 h-24 w-40 rounded-2xl border border-brand-200/60 ags-float-slow" />
+          <div className="pointer-events-none absolute right-14 top-14 h-12 w-28 rounded-xl border border-accent-gold-400/35 ags-float-delayed" />
+          <div className="pointer-events-none absolute right-28 top-4 h-36 w-px bg-linear-to-b from-transparent via-brand-300/45 to-transparent" />
           <div className="relative hidden h-80 sm:block lg:h-96">
             <TechnicalShowcaseModel />
           </div>
