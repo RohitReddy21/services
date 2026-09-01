@@ -132,6 +132,23 @@ textarea.input-field {
   padding-block: 0.75rem;
 }
 
+/*
+ * iOS Safari zooms the whole page in whenever a form control with a computed
+ * font-size below 16px receives focus — and it never zooms back out. Our
+ * inputs (and the compact text-xs/text-sm selects in the booking flow) are
+ * smaller than that, so tapping "Book a Service" and touching the first field
+ * left the page zoomed in. Forcing 16px on phones stops the zoom without
+ * disabling pinch-to-zoom (which would be an accessibility regression). The
+ * !important is needed to beat Tailwind's text-* utilities on the elements.
+ */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 .container-ags {
   width: 100%;
   max-width: 1280px;

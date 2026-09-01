@@ -92,8 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password: string;
       referralCode?: string;
     }) => {
-      const { user } = await registerRequest(input);
-      setUser(user);
+      // Register no longer starts a session — the caller sends the user to the
+      // login page to sign in.
+      await registerRequest(input);
     },
     []
   );

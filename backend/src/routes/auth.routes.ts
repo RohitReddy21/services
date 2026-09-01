@@ -132,7 +132,8 @@ authRouter.post("/register", credentialLimiter, async (req, res) => {
   const welcome = welcomeEmail(user.name);
   void sendEmail({ to: user.email, subject: welcome.subject, html: welcome.html, template: "welcome" });
 
-  await issueSession(user, res);
+  // No session is issued on register — the user is sent to the login page to
+  // sign in with the credentials they just chose.
   res.status(201).json({ user: toPublicUser(user) });
 });
 

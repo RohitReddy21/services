@@ -37,13 +37,19 @@ export default function RegisterForm() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const redirectTo = searchParams.get("redirect") ?? "/account";
-  const loginHref = searchParams.get("redirect")
-    ? `/login?redirect=${encodeURIComponent(redirectTo)}`
+  const redirectParam = searchParams.get("redirect");
+  const redirectTo = redirectParam ?? "/";
+  const loginHref = redirectParam
+    ? `/login?redirect=${encodeURIComponent(redirectParam)}`
     : "/login";
-  const errorRedirect = searchParams.get("redirect")
-    ? `/register?redirect=${encodeURIComponent(redirectTo)}`
+  const errorRedirect = redirectParam
+    ? `/register?redirect=${encodeURIComponent(redirectParam)}`
     : "/register";
+  // Where to send the user after a successful sign-up: the login page, keeping
+  // any deep-link redirect so they land there once they log in.
+  const afterSignupHref = redirectParam
+    ? `/login?registered=1&redirect=${encodeURIComponent(redirectParam)}`
+    : "/login?registered=1";
   const oauthError = oauthErrorMessage(searchParams.get("error"));
   const referralCode = searchParams.get("ref")?.trim().toUpperCase() || undefined;
 
@@ -68,7 +74,7 @@ export default function RegisterForm() {
     setSubmitting(true);
     try {
       await register({ ...result.data, referralCode });
-      router.push(redirectTo);
+      router.push(afterSignupHref);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {

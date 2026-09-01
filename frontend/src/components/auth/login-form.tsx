@@ -34,14 +34,18 @@ export default function LoginForm() {
   const [submitting, setSubmitting] = useState(false);
   const [pendingToken, setPendingToken] = useState<string | null>(null);
   const [twoFactorCode, setTwoFactorCode] = useState("");
-  const redirectTo = searchParams.get("redirect") ?? "/account";
-  const errorRedirect = searchParams.get("redirect")
-    ? `/login?redirect=${encodeURIComponent(redirectTo)}`
+  // Default landing after login is the home page; an explicit `redirect` (e.g.
+  // from a deep link that bounced through login) is still honoured.
+  const redirectParam = searchParams.get("redirect");
+  const destination = redirectParam ?? "/";
+  const errorRedirect = redirectParam
+    ? `/login?redirect=${encodeURIComponent(redirectParam)}`
     : "/login";
-  const registerHref = searchParams.get("redirect")
-    ? `/register?redirect=${encodeURIComponent(redirectTo)}`
+  const registerHref = redirectParam
+    ? `/register?redirect=${encodeURIComponent(redirectParam)}`
     : "/register";
   const oauthError = oauthErrorMessage(searchParams.get("error"));
+  const justRegistered = searchParams.get("registered") === "1";
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -65,7 +69,7 @@ export default function LoginForm() {
         setPendingToken(loginResult.pendingToken);
         return;
       }
-      router.push(searchParams.get("redirect") ?? "/account");
+      router.push(destination);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
@@ -80,7 +84,7 @@ export default function LoginForm() {
     setSubmitting(true);
     try {
       await completeTwoFactorLogin(pendingToken, twoFactorCode.trim());
-      router.push(searchParams.get("redirect") ?? "/account");
+      router.push(destination);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
@@ -151,7 +155,13 @@ export default function LoginForm() {
         </>
       }
     >
-      <GoogleAuthLink href={googleAuthUrl({ redirect: redirectTo, errorRedirect })}>
+      {justRegistered && (
+        <p className="mb-4 rounded-lg bg-accent-green-50 px-3.5 py-2.5 text-sm font-medium text-accent-green-700">
+          Your account has been created. Please log in to continue.
+        </p>
+      )}
+
+      <GoogleAuthLink href={googleAuthUrl({ redirect: destination, errorRedirect })}>
         Continue with Google
       </GoogleAuthLink>
 

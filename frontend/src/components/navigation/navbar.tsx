@@ -65,16 +65,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Send people back to the page they were on after they log in, rather than
-  // always dumping them on /account.
-  const onAuthPage = ["/login", "/register", "/forgot-password", "/reset-password"].some((p) =>
-    pathname.startsWith(p)
-  );
-  const loginHref =
-    pathname && pathname !== "/" && !onAuthPage
-      ? `/login?redirect=${encodeURIComponent(pathname)}`
-      : "/login";
-
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href.split("?")[0]);
@@ -179,7 +169,7 @@ export default function Navbar() {
           {!loading && !user && (
             <>
               <Link
-                href={loginHref}
+                href="/login"
                 className="ags-focus rounded-lg px-3 py-2 text-sm font-medium text-navy-800 transition-colors hover:bg-slate-100"
               >
                 Log In
@@ -384,7 +374,7 @@ export default function Navbar() {
               {!loading && !user && (
                 <div className="flex gap-2">
                   <Link
-                    href={loginHref}
+                    href="/login"
                     onClick={closeMobileMenu}
                     className="ags-focus flex-1 rounded-lg px-3 py-2.5 text-center text-sm font-medium text-navy-800 transition-colors hover:bg-slate-100"
                   >
