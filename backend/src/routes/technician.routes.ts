@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { Booking } from "../models/Booking";
 import { Notification } from "../models/Notification";
+import { User } from "../models/User";
 import { requireTechnician } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
 import { sendEmail } from "../lib/email";
@@ -71,7 +72,8 @@ technicianRouter.get("/jobs", async (req, res) => {
   }
 
   const jobs = await Booking.find(filter)
-    .sort(scope === "completed" ? { completedAt: -1 } : { date: 1 })
+    // Within a day, run in slot order — that's the order the van drives in.
+    .sort(scope === "completed" ? { completedAt: -1 } : { date: 1, "timeSlot.start": 1 })
     .limit(200);
 
   res.json({ jobs, today });
@@ -168,6 +170,79 @@ technicianRouter.post("/jobs/:reference/completion", async (req, res) => {
   if (complete && wasOpen) await notifyCustomer(booking, "COMPLETED");
 
   res.json({ job: booking });
+});
+
+const issueSchema = z.object({
+  note: z.string().trim().min(3, "Tell the office what the problem is."),
+  needsRevisit: z.boolean().default(false),
+});
+
+/**
+ * The engineer can't finish this visit — no access, parts needed, unsafe.
+ * Deliberately does NOT change the status: the office decides what happens
+ * next. It just puts the problem in front of them.
+ */
+technicianRouter.post("/jobs/:reference/issue", async (req, res) => {
+  const { note, needsRevisit } = issueSchema.parse(req.body);
+  const booking = await loadAssignedJob(req.params.reference, req.userId!, Boolean(req.isAdmin));
+
+  booking.issueNote = note;
+  booking.issueReportedAt = new Date();
+  if (needsRevisit) {
+    booking.rescheduleRequested = true;
+    booking.rescheduleNote = note;
+  }
+  await booking.save();
+
+  // Tell every admin, since jobs aren't owned by one person in the office.
+  const admins = await User.find({ role: "ADMIN", deletedAt: null }).select("_id");
+  await Notification.insertMany(
+    admins.map((admin) => ({
+      userId: admin._id,
+      type: "issue_reported",
+      title: needsRevisit ? "Job needs another visit" : "Issue reported on a job",
+      message: `${booking.bookingReference} — ${note}`,
+      href: `/admin`,
+    }))
+  );
+
+  res.json({ job: booking });
+});
+
+/** Clear a resolved issue (engineer got going again). */
+technicianRouter.delete("/jobs/:reference/issue", async (req, res) => {
+  const booking = await loadAssignedJob(req.params.reference, req.userId!, Boolean(req.isAdmin));
+  booking.issueNote = null;
+  booking.issueReportedAt = null;
+  booking.rescheduleRequested = false;
+  booking.rescheduleNote = null;
+  await booking.save();
+  res.json({ job: booking });
+});
+
+/**
+ * Previous visits to the same customer — what was done last time is the
+ * context an engineer usually wants and can't get on site today.
+ */
+technicianRouter.get("/jobs/:reference/history", async (req, res) => {
+  const booking = await loadAssignedJob(req.params.reference, req.userId!, Boolean(req.isAdmin));
+
+  const match: Record<string, unknown> = booking.customerId
+    ? { customerId: booking.customerId }
+    : { "customer.email": booking.customer?.email };
+
+  const history = await Booking.find({
+    ...match,
+    bookingReference: { $ne: booking.bookingReference },
+    deletedAt: null,
+  })
+    .select(
+      "bookingReference status date equipmentLabel requirement completionNotes completedAt technicianName"
+    )
+    .sort({ date: -1 })
+    .limit(10);
+
+  res.json({ history });
 });
 
 /** Mirrors the admin status-change side effects so the customer sees the same thing. */

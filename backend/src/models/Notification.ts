@@ -10,6 +10,7 @@ const NOTIFICATION_TYPES = [
   "service_completed",
   "review_request",
   "support_response",
+  "issue_reported",
   "welcome",
 ] as const;
 

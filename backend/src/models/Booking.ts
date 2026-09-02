@@ -82,6 +82,11 @@ const bookingSchema = new Schema(
     completionPhotos: { type: [photoSchema], default: [] },
     completedAt: { type: Date, default: null },
 
+    // Raised by the engineer when a job can't be finished on this visit —
+    // no access, parts needed, unsafe, etc. Surfaces to the office.
+    issueNote: { type: String, default: null },
+    issueReportedAt: { type: Date, default: null },
+
     // Soft delete — archived bookings are hidden from the admin lists by
     // default but can be restored.
     deletedAt: { type: Date, default: null, index: true },

@@ -67,6 +67,41 @@ export function completeJobRequest(
   ).then((res) => mapBookingDoc(res.job));
 }
 
+/** A past visit to the same customer, shown for context on site. */
+export interface PastVisit {
+  id: string;
+  bookingReference: string;
+  status: BookingRecord["status"];
+  date: string;
+  equipmentLabel: string;
+  requirement: string;
+  completionNotes?: string;
+  completedAt?: string | null;
+  technicianName?: string | null;
+}
+
+export function reportIssueRequest(
+  reference: string,
+  input: { note: string; needsRevisit: boolean }
+) {
+  return send<{ job: Record<string, unknown> }>(
+    `/api/technician/jobs/${reference}/issue`,
+    "POST",
+    input
+  ).then((res) => mapBookingDoc(res.job));
+}
+
+export function clearIssueRequest(reference: string) {
+  return send<{ job: Record<string, unknown> }>(
+    `/api/technician/jobs/${reference}/issue`,
+    "DELETE"
+  ).then((res) => mapBookingDoc(res.job));
+}
+
+export function fetchJobHistory(reference: string) {
+  return get<{ history: PastVisit[] }>(`/api/technician/jobs/${reference}/history`);
+}
+
 /** The next status an engineer can move a job to, or null if it's their last step. */
 export function nextStatus(current: BookingRecord["status"]): TechnicianStatus | null {
   switch (current) {

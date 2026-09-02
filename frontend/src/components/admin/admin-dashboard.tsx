@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  AlertTriangle,
   CalendarClock,
   LayoutDashboard,
   LifeBuoy,
@@ -777,6 +778,18 @@ function BookingsPanel() {
                         </span>
                       )}
                     </div>
+
+                    {b.issueNote && (
+                      <p className="mt-2 flex items-start gap-1.5 rounded-lg bg-amber-50 px-2.5 py-1.5 text-xs text-amber-900">
+                        <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-amber-600" />
+                        <span>
+                          <span className="font-semibold">
+                            {b.rescheduleRequested ? "Needs another visit" : "Engineer reported"}:
+                          </span>{" "}
+                          {b.issueNote}
+                        </span>
+                      </p>
+                    )}
                   </div>
                   <div className="flex shrink-0 items-center gap-1">
                     <select

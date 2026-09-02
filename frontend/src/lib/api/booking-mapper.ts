@@ -23,6 +23,8 @@ export function mapBookingDoc(doc: Record<string, unknown>): BookingRecord {
       ? (doc.completionPhotos as { name: string; url: string }[])
       : [],
     completedAt: (doc.completedAt as string | null) ?? null,
+    issueNote: (doc.issueNote as string | null) ?? null,
+    issueReportedAt: (doc.issueReportedAt as string | null) ?? null,
     deletedAt: (doc.deletedAt as string | null) ?? null,
     createdAt: doc.createdAt as string,
     updatedAt: doc.updatedAt as string,

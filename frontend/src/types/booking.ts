@@ -92,6 +92,9 @@ export interface BookingRecord {
   completionNotes?: string;
   completionPhotos?: { name: string; url: string }[];
   completedAt?: string | null;
+  /** Raised by the engineer when a visit can't be finished. */
+  issueNote?: string | null;
+  issueReportedAt?: string | null;
   deletedAt?: string | null;
   createdAt: string;
   updatedAt: string;
