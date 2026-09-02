@@ -26,6 +26,16 @@ import {
 
 const ROLES: AdminUserSummary["role"][] = ["CUSTOMER", "TECHNICIAN", "ADMIN"];
 
+/** What each role actually means, in the language the office uses. */
+const ROLE_LABELS: Record<AdminUserSummary["role"], string> = {
+  CUSTOMER: "Customer",
+  TECHNICIAN: "Technician",
+  ADMIN: "Admin",
+};
+
+const ROLE_HINT =
+  "Customer — books services. Technician — gets the engineer portal at /technician. Admin — full access to this console.";
+
 const emptyCreate = {
   name: "",
   email: "",
@@ -81,6 +91,9 @@ export default function UsersPanel() {
       setUsers((prev) => prev?.map((u) => (u.id === id ? { ...u, role: res.user.role } : u)) ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't update role.");
+      // The <select> is showing the role the server just rejected — reload so
+      // it goes back to the truth instead of silently lying.
+      await load();
     } finally {
       setSavingId(null);
     }
@@ -188,15 +201,15 @@ export default function UsersPanel() {
         onRefresh={load}
         refreshing={refreshing}
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
             <ArchiveToggle value={showArchived} onChange={setShowArchived} />
-            <label className="relative block">
+            <label className="relative min-w-0 flex-1 sm:flex-none">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Name, email or phone…"
-                className="input-field h-9 w-48 pl-8 text-xs"
+                className="input-field h-9 w-full pl-8 text-xs sm:w-48"
               />
             </label>
             <Button size="sm" onClick={() => setShowCreate(true)}>
@@ -216,109 +229,124 @@ export default function UsersPanel() {
       ) : users.length === 0 ? (
         <EmptyState message="No users match this search." variant="card" />
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white ags-depth-sm">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
-                <th className="px-4 py-3 font-semibold">User</th>
-                <th className="px-4 py-3 font-semibold">Phone</th>
-                <th className="px-4 py-3 font-semibold">Role</th>
-                <th className="px-4 py-3 font-semibold">Points</th>
-                <th className="px-4 py-3 font-semibold">Joined</th>
-                <th className="px-4 py-3 text-right font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr
-                  key={u.id}
-                  className={`border-b border-slate-50 last:border-0 ${u.deletedAt ? "opacity-55" : ""}`}
-                >
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2.5">
-                      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
-                        {u.name.charAt(0).toUpperCase()}
-                      </span>
-                      <div className="min-w-0">
-                        <p className="flex items-center gap-1.5 font-semibold text-navy-900">
-                          {u.name}
-                          {u.deletedAt && (
-                            <StatusBadge tone="neutral" size="sm">
-                              Archived
-                            </StatusBadge>
-                          )}
-                        </p>
-                        <p className="truncate text-xs text-slate-500">{u.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">{u.phone || "—"}</td>
-                  <td className="px-4 py-3">
-                    <select
-                      value={u.role}
-                      disabled={savingId === u.id || Boolean(u.deletedAt)}
-                      onChange={(e) => changeRole(u.id, e.target.value as AdminUserSummary["role"])}
-                      className="input-field h-8 w-auto text-xs"
-                    >
-                      {ROLES.map((r) => (
-                        <option key={r} value={r}>
-                          {r}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">{u.loyaltyPoints}</td>
-                  <td className="px-4 py-3 text-slate-500">
-                    {new Date(u.createdAt).toLocaleDateString("en-GB")}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        type="button"
-                        onClick={() => openEdit(u)}
-                        disabled={savingId === u.id}
-                        className="ags-focus flex size-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-navy-700 disabled:opacity-50"
-                        aria-label="Edit user"
-                      >
-                        <Pencil className="size-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setError(null);
-                          setPwUser(u);
-                          setPwValue("");
-                        }}
-                        disabled={savingId === u.id}
-                        className="ags-focus flex size-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-navy-700 disabled:opacity-50"
-                        aria-label="Set password"
-                      >
-                        <KeyRound className="size-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => toggleArchive(u)}
-                        disabled={savingId === u.id}
-                        className={`ags-focus flex size-8 items-center justify-center rounded-lg transition-colors disabled:opacity-50 ${
-                          u.deletedAt
-                            ? "text-brand-600 hover:bg-brand-50"
-                            : "text-red-500 hover:bg-red-50"
-                        }`}
-                        aria-label={u.deletedAt ? "Restore user" : "Archive user"}
-                      >
-                        {u.deletedAt ? (
-                          <RotateCcw className="size-4" />
-                        ) : (
-                          <Trash2 className="size-4" />
-                        )}
-                      </button>
-                    </div>
-                  </td>
+        <>
+          {/* Phones get cards — in the table layout the Role and Actions
+              columns sit off the right edge and are easy to miss entirely. */}
+          <div className="space-y-3 sm:hidden">
+            {users.map((u) => (
+              <div
+                key={u.id}
+                className={`rounded-2xl border border-slate-200 bg-white p-4 ags-depth-sm ${
+                  u.deletedAt ? "opacity-55" : ""
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+                    {u.name.charAt(0).toUpperCase()}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="flex flex-wrap items-center gap-1.5 font-semibold text-navy-900">
+                      {u.name}
+                      {u.deletedAt && (
+                        <StatusBadge tone="neutral" size="sm">
+                          Archived
+                        </StatusBadge>
+                      )}
+                    </p>
+                    <p className="truncate text-xs text-slate-500">{u.email}</p>
+                    <p className="mt-1 text-xs text-slate-400">
+                      {u.phone || "No phone"} · {u.loyaltyPoints} pts · joined{" "}
+                      {new Date(u.createdAt).toLocaleDateString("en-GB")}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
+                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+                    Role
+                    <RoleSelect user={u} savingId={savingId} onChange={changeRole} />
+                  </label>
+                  <RowActions
+                    user={u}
+                    savingId={savingId}
+                    onEdit={openEdit}
+                    onPassword={(target) => {
+                      setError(null);
+                      setPwUser(target);
+                      setPwValue("");
+                    }}
+                    onArchive={toggleArchive}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="hidden overflow-x-auto rounded-2xl border border-slate-200 bg-white ags-depth-sm sm:block">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
+                  <th className="px-4 py-3 font-semibold">User</th>
+                  <th className="px-4 py-3 font-semibold">Phone</th>
+                  <th className="px-4 py-3 font-semibold">Role</th>
+                  <th className="px-4 py-3 font-semibold">Points</th>
+                  <th className="px-4 py-3 font-semibold">Joined</th>
+                  <th className="px-4 py-3 text-right font-semibold">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <tr
+                    key={u.id}
+                    className={`border-b border-slate-50 last:border-0 ${u.deletedAt ? "opacity-55" : ""}`}
+                  >
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
+                          {u.name.charAt(0).toUpperCase()}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="flex items-center gap-1.5 font-semibold text-navy-900">
+                            {u.name}
+                            {u.deletedAt && (
+                              <StatusBadge tone="neutral" size="sm">
+                                Archived
+                              </StatusBadge>
+                            )}
+                          </p>
+                          <p className="truncate text-xs text-slate-500">{u.email}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">{u.phone || "—"}</td>
+                    <td className="px-4 py-3">
+                      <RoleSelect user={u} savingId={savingId} onChange={changeRole} />
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">{u.loyaltyPoints}</td>
+                    <td className="px-4 py-3 text-slate-500">
+                      {new Date(u.createdAt).toLocaleDateString("en-GB")}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-1">
+                        <RowActions
+                          user={u}
+                          savingId={savingId}
+                          onEdit={openEdit}
+                          onPassword={(target) => {
+                            setError(null);
+                            setPwUser(target);
+                            setPwValue("");
+                          }}
+                          onArchive={toggleArchive}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {showCreate && (
@@ -362,7 +390,7 @@ export default function UsersPanel() {
               />
             </Field>
             <FieldGrid>
-              <Field label="Role">
+              <Field label="Role" hint={ROLE_HINT}>
                 <select
                   className="input-field h-9 text-sm"
                   value={createForm.role}
@@ -375,7 +403,7 @@ export default function UsersPanel() {
                 >
                   {ROLES.map((r) => (
                     <option key={r} value={r}>
-                      {r}
+                      {ROLE_LABELS[r]}
                     </option>
                   ))}
                 </select>
@@ -444,7 +472,7 @@ export default function UsersPanel() {
               />
             </Field>
             <FieldGrid>
-              <Field label="Role">
+              <Field label="Role" hint={ROLE_HINT}>
                 <select
                   className="input-field h-9 text-sm"
                   value={editDraft.role}
@@ -456,7 +484,7 @@ export default function UsersPanel() {
                 >
                   {ROLES.map((r) => (
                     <option key={r} value={r}>
-                      {r}
+                      {ROLE_LABELS[r]}
                     </option>
                   ))}
                 </select>
@@ -524,5 +552,82 @@ export default function UsersPanel() {
         </AdminModal>
       )}
     </div>
+  );
+}
+
+/** Role picker shared by the mobile card and desktop table layouts. */
+function RoleSelect({
+  user,
+  savingId,
+  onChange,
+}: {
+  user: AdminUserSummary;
+  savingId: string | null;
+  onChange: (id: string, role: AdminUserSummary["role"]) => void;
+}) {
+  return (
+    <select
+      value={user.role}
+      disabled={savingId === user.id || Boolean(user.deletedAt)}
+      onChange={(e) => onChange(user.id, e.target.value as AdminUserSummary["role"])}
+      className="input-field h-9 w-auto text-xs"
+      aria-label={`Role for ${user.name}`}
+    >
+      {ROLES.map((r) => (
+        <option key={r} value={r}>
+          {ROLE_LABELS[r]}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+/** Edit / set password / archive-restore, shared by both layouts. */
+function RowActions({
+  user,
+  savingId,
+  onEdit,
+  onPassword,
+  onArchive,
+}: {
+  user: AdminUserSummary;
+  savingId: string | null;
+  onEdit: (user: AdminUserSummary) => void;
+  onPassword: (user: AdminUserSummary) => void;
+  onArchive: (user: AdminUserSummary) => void;
+}) {
+  const busy = savingId === user.id;
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => onEdit(user)}
+        disabled={busy}
+        className="ags-focus flex size-9 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-navy-700 disabled:opacity-50"
+        aria-label="Edit user"
+      >
+        <Pencil className="size-4" />
+      </button>
+      <button
+        type="button"
+        onClick={() => onPassword(user)}
+        disabled={busy}
+        className="ags-focus flex size-9 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-navy-700 disabled:opacity-50"
+        aria-label="Set password"
+      >
+        <KeyRound className="size-4" />
+      </button>
+      <button
+        type="button"
+        onClick={() => onArchive(user)}
+        disabled={busy}
+        className={`ags-focus flex size-9 items-center justify-center rounded-lg transition-colors disabled:opacity-50 ${
+          user.deletedAt ? "text-brand-600 hover:bg-brand-50" : "text-red-500 hover:bg-red-50"
+        }`}
+        aria-label={user.deletedAt ? "Restore user" : "Archive user"}
+      >
+        {user.deletedAt ? <RotateCcw className="size-4" /> : <Trash2 className="size-4" />}
+      </button>
+    </>
   );
 }

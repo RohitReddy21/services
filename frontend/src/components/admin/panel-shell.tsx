@@ -22,7 +22,7 @@ export function PanelHeader({
 }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
-      <div>
+      <div className="min-w-0">
         <h2 className="flex items-center gap-2 font-display text-lg font-bold text-navy-900">
           {title}
           {count !== undefined && (
@@ -33,7 +33,9 @@ export function PanelHeader({
         </h2>
         {subtitle && <p className="mt-0.5 text-sm text-slate-500">{subtitle}</p>}
       </div>
-      <div className="flex items-center gap-2">
+      {/* Full width on phones so search boxes and buttons wrap instead of
+          pushing the whole console sideways. */}
+      <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
         {actions}
         {onRefresh && (
           <button

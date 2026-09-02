@@ -692,15 +692,15 @@ function BookingsPanel() {
         onRefresh={load}
         refreshing={refreshing}
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
             <ArchiveToggle value={showArchived} onChange={setShowArchived} />
-            <label className="relative block">
+            <label className="relative min-w-0 flex-1 sm:flex-none">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search ref, name, email…"
-                className="input-field h-9 w-48 pl-8 text-xs"
+                className="input-field h-9 w-full pl-8 text-xs sm:w-48"
               />
             </label>
             <Button size="sm" onClick={openCreate}>
