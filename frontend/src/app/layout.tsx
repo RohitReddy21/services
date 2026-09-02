@@ -4,6 +4,7 @@ import Navbar from "@/components/navigation/navbar";
 import Footer from "@/components/navigation/footer";
 import { AuthProvider } from "@/components/auth/auth-context";
 import AppShell from "@/components/layout/app-shell";
+import SiteChrome from "@/components/layout/site-chrome";
 import ChatWidget from "@/components/chat/chat-widget";
 import JsonLd from "@/components/seo/json-ld";
 import Analytics from "@/components/analytics/analytics";
@@ -106,12 +107,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <JsonLd id="ld-site" data={siteGraph()} />
         <Analytics />
         <AuthProvider>
-          <Navbar />
+          <SiteChrome>
+            <Navbar />
+          </SiteChrome>
           <main className="flex-1">
             <AppShell>{children}</AppShell>
           </main>
-          <Footer />
-          <ChatWidget />
+          <SiteChrome>
+            <Footer />
+            <ChatWidget />
+          </SiteChrome>
           <CookieConsent />
         </AuthProvider>
       </body>

@@ -22,9 +22,11 @@ import {
 import {
   archiveBookingRequest,
   archiveSupportTicketRequest,
+  assignTechnicianRequest,
   createBookingRequest,
   createSupportTicketRequest,
   fetchAdminBookings,
+  fetchAdminTechnicians,
   fetchAdminStats,
   fetchAdminSupportTickets,
   reopenSupportTicketRequest,
@@ -36,6 +38,7 @@ import {
   updateSupportTicketRequest,
   updateTechnicianRequest,
   type AdminBookingInput,
+  type AdminTechnician,
 } from "@/lib/api/admin-client";
 import { useAuth } from "@/components/auth/auth-context";
 import { statusMeta } from "@/lib/data/booking-status";
@@ -536,6 +539,7 @@ function BookingsPanel() {
   const [savingRef, setSavingRef] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [techDraft, setTechDraft] = useState<Record<string, { name: string; phone: string }>>({});
+  const [technicians, setTechnicians] = useState<AdminTechnician[]>([]);
 
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<BookingFormState>(emptyBookingForm);
@@ -572,8 +576,27 @@ function BookingsPanel() {
     return () => clearTimeout(handle);
   }, [load, search]);
 
+  useEffect(() => {
+    fetchAdminTechnicians()
+      .then((res) => setTechnicians(res.technicians))
+      .catch(() => setTechnicians([]));
+  }, []);
+
   const set = <K extends keyof BookingFormState>(key: K, value: BookingFormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  const handleAssign = async (reference: string, technicianId: string) => {
+    setSavingRef(reference);
+    setError(null);
+    try {
+      await assignTechnicianRequest(reference, technicianId || null);
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't assign that engineer.");
+    } finally {
+      setSavingRef(null);
+    }
+  };
 
   const handleStatusChange = async (reference: string, status: BookingStatus) => {
     setSavingRef(reference);
@@ -791,8 +814,33 @@ function BookingsPanel() {
                 </div>
 
                 {!b.deletedAt && (
-                  <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
-                    <span className="text-xs font-semibold text-slate-400">Technician</span>
+                  <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-400">Engineer</span>
+                      <select
+                        value={b.technicianId ?? ""}
+                        disabled={savingRef === b.bookingReference}
+                        onChange={(e) => handleAssign(b.bookingReference, e.target.value)}
+                        className="input-field h-9 w-auto text-xs"
+                        aria-label="Assign engineer"
+                      >
+                        <option value="">Unassigned</option>
+                        {technicians.map((t) => (
+                          <option key={t.id} value={t.id}>
+                            {t.name}
+                          </option>
+                        ))}
+                      </select>
+                      {technicians.length === 0 && (
+                        <span className="text-xs text-slate-400">
+                          No engineer accounts yet — create one under Users with the TECHNICIAN
+                          role.
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-semibold text-slate-400">Or by name</span>
                     <input
                       value={draft.name}
                       onChange={(e) =>
@@ -830,6 +878,7 @@ function BookingsPanel() {
                     >
                       Save
                     </Button>
+                    </div>
                   </div>
                 )}
               </div>

@@ -20,6 +20,7 @@ import { equipmentRouter } from "./routes/equipment.routes";
 import { loyaltyRouter } from "./routes/loyalty.routes";
 import { referralsRouter } from "./routes/referrals.routes";
 import { adminRouter } from "./routes/admin.routes";
+import { technicianRouter } from "./routes/technician.routes";
 import { twoFactorRouter } from "./routes/twofa.routes";
 import { couponsRouter } from "./routes/coupons.routes";
 
@@ -84,6 +85,7 @@ export function createApp() {
   app.use("/api/loyalty", loyaltyRouter);
   app.use("/api/referrals", referralsRouter);
   app.use("/api/admin", adminRouter);
+  app.use("/api/technician", technicianRouter);
   app.use("/api/2fa", twoFactorRouter);
   app.use("/api/coupons", couponsRouter);
 

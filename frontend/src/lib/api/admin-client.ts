@@ -98,6 +98,26 @@ export function updateBookingStatusRequest(reference: string, status: BookingSta
   }).then(mapBookingDoc);
 }
 
+export interface AdminTechnician {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+}
+
+/** Engineer accounts available to assign to a job. */
+export function fetchAdminTechnicians() {
+  return get<{ technicians: AdminTechnician[] }>("/api/admin/technicians");
+}
+
+/** Assign a real engineer account — also moves the job to TECHNICIAN_ASSIGNED. */
+export function assignTechnicianRequest(reference: string, technicianId: string | null) {
+  return send<Record<string, unknown>>(`/api/admin/bookings/${reference}/technician`, "PATCH", {
+    technicianId,
+  }).then(mapBookingDoc);
+}
+
+/** Fallback for assigning someone who doesn't have an account yet. */
 export function updateTechnicianRequest(
   reference: string,
   technicianName: string | null,

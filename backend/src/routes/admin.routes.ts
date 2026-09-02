@@ -327,21 +327,61 @@ adminRouter.patch("/bookings/:reference/status", async (req, res) => {
   res.json(booking);
 });
 
+/** Engineers who can be assigned jobs — populates the assignment dropdown. */
+adminRouter.get("/technicians", async (_req, res) => {
+  const technicians = await User.find({ role: "TECHNICIAN", ...NOT_DELETED })
+    .select("name email phone")
+    .sort({ name: 1 });
+  res.json({ technicians });
+});
+
 const technicianSchema = z.object({
-  technicianName: z.string().trim().nullable(),
-  technicianPhone: z.string().trim().nullable().default(null),
+  /** Real engineer account. Null clears the assignment. */
+  technicianId: z.string().trim().nullable().optional(),
+  /** Kept for assigning someone who has no account yet. */
+  technicianName: z.string().trim().nullable().optional(),
+  technicianPhone: z.string().trim().nullable().optional(),
 });
 
 adminRouter.patch("/bookings/:reference/technician", async (req, res) => {
-  const { technicianName, technicianPhone } = technicianSchema.parse(req.body);
+  const input = technicianSchema.parse(req.body);
 
   const booking = await Booking.findOne({ bookingReference: req.params.reference });
   if (!booking) throw new ApiError(404, "Booking not found");
 
-  booking.technicianName = technicianName;
-  booking.technicianPhone = technicianPhone;
-  await booking.save();
+  if (input.technicianId) {
+    const technician = await User.findOne({
+      _id: input.technicianId,
+      role: "TECHNICIAN",
+      ...NOT_DELETED,
+    });
+    if (!technician) throw new ApiError(400, "That engineer account no longer exists.");
 
+    booking.technicianId = technician._id;
+    // Denormalised so the job still reads correctly if the account changes later.
+    booking.technicianName = technician.name;
+    booking.technicianPhone = technician.phone || null;
+
+    // Move the job into the assigned state so it shows up in the engineer's list.
+    if (booking.status === "BOOKING_RECEIVED" || booking.status === "CONFIRMED") {
+      booking.status = "TECHNICIAN_ASSIGNED";
+      booking.statusHistory.push({ status: "TECHNICIAN_ASSIGNED", at: new Date() });
+    }
+
+    await Notification.create({
+      userId: technician._id,
+      type: "technician_assigned",
+      title: "New job assigned",
+      message: `${booking.bookingReference} — ${booking.equipmentLabel} on ${booking.date}.`,
+      href: `/technician/jobs/${booking.bookingReference}`,
+    });
+  } else {
+    if (input.technicianId === null) booking.technicianId = null;
+    if (input.technicianName !== undefined) booking.technicianName = input.technicianName;
+    if (input.technicianPhone !== undefined) booking.technicianPhone = input.technicianPhone;
+  }
+
+  await booking.save();
   res.json(booking);
 });
 

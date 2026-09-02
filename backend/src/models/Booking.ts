@@ -70,9 +70,17 @@ const bookingSchema = new Schema(
     rescheduleRequested: { type: Boolean, default: false },
     rescheduleNote: { type: String, default: null },
 
-    technicianId: { type: Schema.Types.ObjectId, ref: "User", default: null },
+    // technicianId is the real link to a TECHNICIAN user; name/phone stay as
+    // denormalised display fields so existing bookings (and any assignment
+    // made before engineers had accounts) keep rendering.
+    technicianId: { type: Schema.Types.ObjectId, ref: "User", default: null, index: true },
     technicianName: { type: String, default: null },
     technicianPhone: { type: String, default: null },
+
+    // Filled in by the engineer on site when they close the job.
+    completionNotes: { type: String, default: "" },
+    completionPhotos: { type: [photoSchema], default: [] },
+    completedAt: { type: Date, default: null },
 
     // Soft delete — archived bookings are hidden from the admin lists by
     // default but can be restored.

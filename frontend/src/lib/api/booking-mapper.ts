@@ -15,8 +15,14 @@ export function mapBookingDoc(doc: Record<string, unknown>): BookingRecord {
     statusHistory: (doc.statusHistory as BookingRecord["statusHistory"]) ?? [],
     rescheduleRequested: !!doc.rescheduleRequested,
     rescheduleNote: (doc.rescheduleNote as string | null) ?? null,
+    technicianId: (doc.technicianId as string | null) ?? null,
     technicianName: (doc.technicianName as string | null) ?? null,
     technicianPhone: (doc.technicianPhone as string | null) ?? null,
+    completionNotes: (doc.completionNotes as string) ?? "",
+    completionPhotos: Array.isArray(doc.completionPhotos)
+      ? (doc.completionPhotos as { name: string; url: string }[])
+      : [],
+    completedAt: (doc.completedAt as string | null) ?? null,
     deletedAt: (doc.deletedAt as string | null) ?? null,
     createdAt: doc.createdAt as string,
     updatedAt: doc.updatedAt as string,

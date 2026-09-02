@@ -9,6 +9,7 @@ declare global {
     interface Request {
       userId?: string;
       isAdmin?: boolean;
+      isTechnician?: boolean;
     }
   }
 }
@@ -49,5 +50,22 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
     return res.status(404).json({ error: "Not found" });
   }
   req.isAdmin = true;
+  next();
+}
+
+/**
+ * Blocks unless the caller is an engineer (or an admin, so the office can see
+ * exactly what a technician sees while supporting them on the phone).
+ */
+export async function requireTechnician(req: Request, res: Response, next: NextFunction) {
+  if (!req.userId) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const user = await User.findById(req.userId);
+  if (!user || (user.role !== "TECHNICIAN" && user.role !== "ADMIN")) {
+    return res.status(403).json({ error: "Engineer access only" });
+  }
+  req.isTechnician = user.role === "TECHNICIAN";
+  req.isAdmin = user.role === "ADMIN";
   next();
 }
