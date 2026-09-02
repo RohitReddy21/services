@@ -276,34 +276,39 @@ export default function AdminDashboard({ adminName }: { adminName: string }) {
 
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row">
         <nav className="lg:w-56 lg:shrink-0">
-          <ul className="flex gap-1.5 overflow-x-auto pb-1 lg:flex-col lg:gap-1 lg:overflow-visible lg:pb-0">
+          {/* A grid on small screens rather than a horizontal scroller: seven
+              tabs fit on two rows, so every section is visible and tappable
+              without swiping past a scrollbar. Back to a sidebar list at lg. */}
+          <ul className="grid grid-cols-3 gap-1.5 sm:grid-cols-4 lg:flex lg:flex-col lg:gap-1">
             {NAV.map(({ id, label, icon: Icon }) => {
               const active = tab === id;
               const n = badge[id];
               return (
-                <li key={id} className="shrink-0">
+                <li key={id}>
                   <button
                     type="button"
                     onClick={() => setTab(id)}
                     className={cn(
-                      "ags-focus flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
+                      "ags-focus flex h-full w-full flex-col items-center justify-center gap-1 rounded-lg px-2 py-2.5 text-center text-xs font-semibold leading-tight transition-colors lg:flex-row lg:justify-start lg:gap-2.5 lg:px-3 lg:py-2 lg:text-left lg:text-sm",
                       active
                         ? "bg-brand-600 text-white ags-depth-sm"
                         : "text-slate-500 hover:bg-white hover:text-navy-800"
                     )}
                   >
                     <Icon className="size-4 shrink-0" />
-                    <span>{label}</span>
-                    {n !== undefined && (
-                      <span
-                        className={cn(
-                          "ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-bold",
-                          active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
-                        )}
-                      >
-                        {n}
-                      </span>
-                    )}
+                    <span className="flex items-center gap-1.5 lg:min-w-0 lg:flex-1">
+                      <span className="lg:truncate">{label}</span>
+                      {n !== undefined && (
+                        <span
+                          className={cn(
+                            "rounded-full px-1.5 py-0.5 text-[10px] font-bold lg:ml-auto",
+                            active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
+                          )}
+                        >
+                          {n}
+                        </span>
+                      )}
+                    </span>
                   </button>
                 </li>
               );
