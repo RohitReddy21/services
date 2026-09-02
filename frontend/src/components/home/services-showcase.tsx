@@ -42,7 +42,7 @@ export default function ServicesShowcase() {
           eyebrow="Air conditioning"
           title="Comfort systems for homes, offices and commercial spaces."
           description="Installation, repairs, servicing, maintenance and diagnostics for wall-mounted, cassette, multi-split, VRV and VRF systems."
-          image="/images/services/wall-mounted-ac.png"
+          image="/images/services/wall-mounted-ac.webp"
           imageAlt="Wall mounted air conditioning installation"
           icon={Snowflake}
           services={airConditioning}
@@ -54,7 +54,7 @@ export default function ServicesShowcase() {
           eyebrow="Refrigeration"
           title="Commercial cold storage and display refrigeration kept reliable."
           description="Support for fridges, freezers, cold rooms, walk-ins, display cabinets, ice machines and industrial refrigeration plant."
-          image="/images/services/cold-storage.png"
+          image="/images/services/cold-storage.webp"
           imageAlt="Cold room refrigeration environment"
           icon={Refrigerator}
           services={refrigeration}
@@ -66,7 +66,7 @@ export default function ServicesShowcase() {
           eyebrow="Electrical"
           title="Certified electrical work, tested and signed off."
           description="Consumer units, lighting and power circuits, EV chargers, rewiring, EICR testing, fault finding and emergency callouts for homes and businesses."
-          image="/images/services/electrical-installation.png"
+          image="/images/services/electrical-installation.webp"
           imageAlt="Electrician working on a consumer unit"
           icon={Zap}
           services={electrical}

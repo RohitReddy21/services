@@ -19,9 +19,15 @@ import { useEffect, useRef, useState, type RefObject } from "react";
  * both of which reveal the element if it is actually on screen.
  */
 export function useRevealInView<T extends Element = HTMLDivElement>(
-  options: { amount?: number; once?: boolean; rootMargin?: string } = {}
+  options: {
+    /** Accepted for call-site compatibility; the observer always uses a
+     *  0 threshold and tunes the trigger point with `rootMargin` instead. */
+    amount?: number;
+    once?: boolean;
+    rootMargin?: string;
+  } = {}
 ): [RefObject<T | null>, boolean] {
-  const { amount = 0.15, once = true, rootMargin = "0px 0px -8% 0px" } = options;
+  const { once = true, rootMargin = "0px 0px -8% 0px" } = options;
   const ref = useRef<T>(null);
   const [inView, setInView] = useState(false);
 
@@ -46,14 +52,12 @@ export function useRevealInView<T extends Element = HTMLDivElement>(
       teardown();
     };
 
-    // An element taller than the viewport can never reach a fractional
-    // threshold — a 3700px card grid on a 844px phone tops out around 0.22, so
-    // asking for 0.15 with a negative root margin left it permanently
-    // "not intersecting" and the content stuck at opacity 0. Fall back to
-    // "any pixel visible" for anything that can't physically satisfy `amount`.
-    const tallerThanViewport = el.getBoundingClientRect().height > window.innerHeight;
-    const threshold = tallerThanViewport ? 0 : Math.min(amount, 0.5);
-
+    // Always trigger on "any pixel visible" and let `rootMargin` decide how
+    // early the reveal fires. A fractional threshold is unusable here: an
+    // element taller than the viewport can never reach it (a 3700px card grid
+    // on an 844px phone tops out around 0.22), and heights aren't even known
+    // up front because images are still loading — which left whole card grids
+    // stuck at opacity 0.
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -61,7 +65,7 @@ export function useRevealInView<T extends Element = HTMLDivElement>(
           else if (!once) setInView(false);
         }
       },
-      { threshold, rootMargin }
+      { threshold: 0, rootMargin }
     );
     observer.observe(el);
 
@@ -80,7 +84,7 @@ export function useRevealInView<T extends Element = HTMLDivElement>(
     }
 
     return teardown;
-  }, [amount, once, rootMargin, inView]);
+  }, [once, rootMargin, inView]);
 
   return [ref, inView];
 }

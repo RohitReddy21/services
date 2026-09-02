@@ -101,7 +101,7 @@ export default function TechnicalShowcase() {
           <div className="relative block sm:hidden">
             <div className="relative aspect-4/3 overflow-hidden rounded-2xl">
               <FadeInImage
-                src="/images/services/outdoor-condenser-units.png"
+                src="/images/services/outdoor-condenser-units.webp"
                 alt="Outdoor condenser equipment"
                 fill
                 sizes="90vw"

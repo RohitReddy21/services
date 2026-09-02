@@ -30,7 +30,7 @@ export function TechnicianSection() {
         >
           <div className="relative aspect-4/5 overflow-hidden rounded-[2rem] shadow-2xl shadow-navy-900/15 sm:aspect-5/4 lg:aspect-4/5">
             <FadeInImage
-              src="/images/services/hvac-repair-technician.png"
+              src="/images/services/hvac-repair-technician.webp"
               alt="Certified AGS engineer inspecting HVAC equipment"
               fill
               sizes="(min-width: 1024px) 42vw, 92vw"
@@ -128,7 +128,7 @@ export function RefrigerationStory() {
         >
           <div className="relative aspect-16/10 overflow-hidden rounded-[2rem] shadow-2xl shadow-navy-900/15">
               <FadeInImage
-                src="/images/services/commercial-refrigeration.png"
+                src="/images/services/commercial-refrigeration.webp"
                 alt="Commercial refrigeration equipment in a professional kitchen"
                 fill
                 sizes="(min-width: 1024px) 58vw, 92vw"
@@ -236,7 +236,7 @@ export function BookingCtaSection() {
         <div className="relative overflow-hidden rounded-[2rem] bg-ink-950 p-8 text-white shadow-2xl shadow-navy-900/20 sm:p-10 lg:p-12">
           <div className="absolute inset-0 opacity-28">
             <FadeInImage
-              src="/images/services/ac-installation.png"
+              src="/images/services/ac-installation.webp"
               alt=""
               fill
               sizes="100vw"

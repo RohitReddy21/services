@@ -68,7 +68,7 @@ export default function WhyChoose() {
               bodyClassName="relative aspect-16/10 overflow-hidden rounded-[2rem] ags-depth-xl"
             >
               <FadeInImage
-                src="/images/services/outdoor-condenser-units.png"
+                src="/images/services/outdoor-condenser-units.webp"
                 alt="Outdoor condenser units installed for commercial climate control"
                 fill
                 sizes="(min-width: 1024px) 54vw, 92vw"

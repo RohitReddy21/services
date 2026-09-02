@@ -11,6 +11,9 @@ const backendUrl = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000").
 
 const nextConfig: NextConfig = {
   images: {
+    // Source images are WebP; serve AVIF to browsers that take it (typically
+    // another 20-30% smaller) and fall back to WebP everywhere else.
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",

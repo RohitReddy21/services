@@ -11,37 +11,37 @@ import type { ServiceCategoryId } from "@/types/service";
 
 const equipmentImages: Record<ServiceCategoryId, Record<string, string>> = {
   "air-conditioning": {
-    "wall-mounted": "/images/services/wall-mounted-ac.png",
-    cassette: "/images/services/cassette-ac.png",
-    vrv: "/images/services/outdoor-condenser-units.png",
-    vrf: "/images/services/outdoor-condenser-units.png",
-    "multi-split": "/images/services/outdoor-condenser-units.png",
-    "commercial-ac": "/images/services/outdoor-condenser-units.png",
-    "residential-ac": "/images/services/wall-mounted-ac.png",
-    other: "/images/services/ac-installation.png",
+    "wall-mounted": "/images/services/wall-mounted-ac.webp",
+    cassette: "/images/services/cassette-ac.webp",
+    vrv: "/images/services/outdoor-condenser-units.webp",
+    vrf: "/images/services/outdoor-condenser-units.webp",
+    "multi-split": "/images/services/outdoor-condenser-units.webp",
+    "commercial-ac": "/images/services/outdoor-condenser-units.webp",
+    "residential-ac": "/images/services/wall-mounted-ac.webp",
+    other: "/images/services/ac-installation.webp",
   },
   refrigeration: {
-    fridge: "/images/services/commercial-fridge.png",
-    freezer: "/images/services/commercial-freezer.png",
-    "cold-room": "/images/services/cold-storage.png",
-    "blast-chiller": "/images/services/cold-storage.png",
-    "ice-machine": "/images/services/ice-machine.png",
-    "display-fridge": "/images/services/display-fridge.png",
-    "walk-in-fridge": "/images/services/commercial-refrigeration.png",
-    "walk-in-freezer": "/images/services/commercial-freezer.png",
-    "commercial-refrigeration": "/images/services/commercial-refrigeration.png",
-    other: "/images/services/industrial-refrigeration.png",
+    fridge: "/images/services/commercial-fridge.webp",
+    freezer: "/images/services/commercial-freezer.webp",
+    "cold-room": "/images/services/cold-storage.webp",
+    "blast-chiller": "/images/services/cold-storage.webp",
+    "ice-machine": "/images/services/ice-machine.webp",
+    "display-fridge": "/images/services/display-fridge.webp",
+    "walk-in-fridge": "/images/services/commercial-refrigeration.webp",
+    "walk-in-freezer": "/images/services/commercial-freezer.webp",
+    "commercial-refrigeration": "/images/services/commercial-refrigeration.webp",
+    other: "/images/services/industrial-refrigeration.webp",
   },
   electrical: {
-    "consumer-unit": "/images/services/electrical-consumer-unit.png",
-    lighting: "/images/services/electrical-lighting.png",
-    "sockets-power": "/images/services/electrical-sockets.png",
-    "ev-charger": "/images/services/electrical-ev-charger.png",
-    rewiring: "/images/services/electrical-rewiring.png",
-    "eicr-testing": "/images/services/electrical-eicr.png",
-    "wiring-circuit": "/images/services/electrical-repairs.png",
-    "commercial-electrical": "/images/services/electrical-commercial.png",
-    other: "/images/services/electrical-installation.png",
+    "consumer-unit": "/images/services/electrical-consumer-unit.webp",
+    lighting: "/images/services/electrical-lighting.webp",
+    "sockets-power": "/images/services/electrical-sockets.webp",
+    "ev-charger": "/images/services/electrical-ev-charger.webp",
+    rewiring: "/images/services/electrical-rewiring.webp",
+    "eicr-testing": "/images/services/electrical-eicr.webp",
+    "wiring-circuit": "/images/services/electrical-repairs.webp",
+    "commercial-electrical": "/images/services/electrical-commercial.webp",
+    other: "/images/services/electrical-installation.webp",
   },
 };
 
@@ -85,8 +85,8 @@ export default function StageDetails() {
                     src={
                       form.categoryId
                         ? equipmentImages[form.categoryId][option.id] ??
-                          "/images/services/hvac-repair-technician.png"
-                        : "/images/services/hvac-repair-technician.png"
+                          "/images/services/hvac-repair-technician.webp"
+                        : "/images/services/hvac-repair-technician.webp"
                     }
                     alt={option.label}
                     fill

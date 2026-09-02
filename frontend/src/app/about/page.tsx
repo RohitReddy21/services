@@ -88,7 +88,7 @@ export default function AboutPage() {
         >
           <Parallax amount={28} className="absolute inset-0">
             <FadeInImage
-              src="/images/services/hvac-repair-technician.png"
+              src="/images/services/hvac-repair-technician.webp"
               alt="AGS engineer working on HVAC equipment"
               fill
               sizes="(min-width: 1024px) 45vw, 90vw"

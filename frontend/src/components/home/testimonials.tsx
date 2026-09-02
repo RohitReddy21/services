@@ -37,7 +37,7 @@ export default function Testimonials() {
         >
           <div className="relative aspect-4/5 overflow-hidden rounded-[2rem] shadow-2xl shadow-navy-900/15 sm:aspect-16/10 lg:aspect-4/5">
             <FadeInImage
-              src="/images/services/display-fridge.png"
+              src="/images/services/display-fridge.webp"
               alt="Display refrigeration installed in a commercial environment"
               fill
               sizes="(min-width: 1024px) 40vw, 92vw"

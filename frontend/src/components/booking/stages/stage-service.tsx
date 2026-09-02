@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
 
 const icons = { snowflake: Snowflake, fridge: Refrigerator, bolt: Zap } as const;
 const categoryImages = {
-  "air-conditioning": "/images/services/wall-mounted-ac.png",
-  refrigeration: "/images/services/commercial-refrigeration.png",
-  electrical: "/images/services/electrical-installation.png",
+  "air-conditioning": "/images/services/wall-mounted-ac.webp",
+  refrigeration: "/images/services/commercial-refrigeration.webp",
+  electrical: "/images/services/electrical-installation.webp",
 } as const;
 
 export default function StageService() {

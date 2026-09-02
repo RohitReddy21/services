@@ -124,7 +124,7 @@ function categoryMeta(categoryId: ServiceCategoryId) {
 }
 
 function categoryHeroImage(categoryId: ServiceCategoryId) {
-  if (categoryId === "refrigeration") return "/images/services/commercial-refrigeration.png";
-  if (categoryId === "electrical") return "/images/services/electrical-installation.png";
-  return "/images/services/outdoor-condenser-units.png";
+  if (categoryId === "refrigeration") return "/images/services/commercial-refrigeration.webp";
+  if (categoryId === "electrical") return "/images/services/electrical-installation.webp";
+  return "/images/services/outdoor-condenser-units.webp";
 }

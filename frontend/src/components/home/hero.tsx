@@ -73,7 +73,7 @@ export default function Hero() {
       <div className="absolute inset-0">
         <div className="ags-ken-burns absolute inset-0">
           <FadeInImage
-            src="/images/services/hvac-repair-technician.png"
+            src="/images/services/hvac-repair-technician.webp"
             alt="AGS engineer servicing commercial HVAC equipment"
             fill
             priority
@@ -88,7 +88,7 @@ export default function Hero() {
             muted
             loop
             playsInline
-            poster="/images/services/outdoor-condenser-units.png"
+            poster="/images/services/outdoor-condenser-units.webp"
             className="absolute inset-0 size-full object-cover opacity-25 saturate-[0.7]"
             aria-hidden="true"
           >
@@ -192,7 +192,7 @@ export default function Hero() {
           >
             <div className="relative aspect-4/5 overflow-hidden rounded-xl">
               <FadeInImage
-                src="/images/services/ac-installation.png"
+                src="/images/services/ac-installation.webp"
                 alt="AGS engineers installing an air conditioning system"
                 fill
                 priority

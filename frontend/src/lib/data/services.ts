@@ -32,7 +32,7 @@ export const serviceCategories: ServiceCategory[] = [
   },
 ];
 
-const serviceImage = (name: string) => `/images/services/${name}.png`;
+const serviceImage = (name: string) => `/images/services/${name}.webp`;
 
 const img = {
   // Air conditioning
