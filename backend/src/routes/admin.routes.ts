@@ -13,6 +13,7 @@ import { requireAdmin } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
 import { assignReferralCode } from "../lib/referral";
 import { sendEmail } from "../lib/email";
+import { requestReview } from "../lib/review-request";
 import { bookingStatusUpdatedEmail } from "../emails/booking-status-updated";
 import { subscriptionInvoiceEmail } from "../emails/subscription-invoice";
 import { renderSubscriptionInvoice, streamSubscriptionInvoice } from "../lib/pdf";
@@ -324,15 +325,67 @@ adminRouter.patch("/bookings/:reference/status", async (req, res) => {
     });
   }
 
+  if (status === "COMPLETED") {
+    if (!booking.completedAt) booking.completedAt = new Date();
+    await booking.save();
+    void requestReview(booking);
+  }
+
   res.json(booking);
 });
 
-/** Engineers who can be assigned jobs — populates the assignment dropdown. */
+/**
+ * Engineers who can be assigned jobs — populates the assignment dropdown, and
+ * carries each one's workload and customer rating so the office can see who is
+ * performing and who is busy.
+ */
 adminRouter.get("/technicians", async (_req, res) => {
   const technicians = await User.find({ role: "TECHNICIAN", ...NOT_DELETED })
     .select("name email phone")
-    .sort({ name: 1 });
-  res.json({ technicians });
+    .sort({ name: 1 })
+    .lean();
+
+  const ids = technicians.map((t) => t._id);
+
+  const [ratings, workload] = await Promise.all([
+    Review.aggregate<{ _id: unknown; avg: number; count: number }>([
+      { $match: { technicianId: { $in: ids }, deletedAt: null } },
+      { $group: { _id: "$technicianId", avg: { $avg: "$rating" }, count: { $sum: 1 } } },
+    ]),
+    Booking.aggregate<{ _id: unknown; open: number; completed: number }>([
+      { $match: { technicianId: { $in: ids }, deletedAt: null } },
+      {
+        $group: {
+          _id: "$technicianId",
+          open: {
+            $sum: { $cond: [{ $in: ["$status", ["COMPLETED", "CANCELLED"]] }, 0, 1] },
+          },
+          completed: { $sum: { $cond: [{ $eq: ["$status", "COMPLETED"] }, 1, 0] } },
+        },
+      },
+    ]),
+  ]);
+
+  const ratingBy = new Map(ratings.map((r) => [String(r._id), r]));
+  const workloadBy = new Map(workload.map((w) => [String(w._id), w]));
+
+  res.json({
+    technicians: technicians.map((t) => {
+      const id = String(t._id);
+      const rating = ratingBy.get(id);
+      const load = workloadBy.get(id);
+      return {
+        id,
+        name: t.name,
+        email: t.email,
+        phone: t.phone,
+        avgRating: rating?.avg ? Math.round(rating.avg * 10) / 10 : null,
+        reviewCount: rating?.count ?? 0,
+        openJobs: load?.open ?? 0,
+        completedJobs: load?.completed ?? 0,
+      };
+    }),
+  });
 });
 
 const technicianSchema = z.object({

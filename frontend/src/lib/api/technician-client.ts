@@ -98,6 +98,28 @@ export function clearIssueRequest(reference: string) {
   ).then((res) => mapBookingDoc(res.job));
 }
 
+export interface EngineerReview {
+  id: string;
+  rating: number;
+  text: string;
+  serviceName: string;
+  bookingReference: string;
+  createdAt: string;
+}
+
+export interface EngineerStats {
+  jobsCompleted: number;
+  reviewCount: number;
+  /** Null until the engineer has been rated at least once. */
+  avgRating: number | null;
+  recentReviews: EngineerReview[];
+}
+
+/** The signed-in engineer's own scorecard. */
+export function fetchEngineerStats() {
+  return get<EngineerStats>("/api/technician/me");
+}
+
 export function fetchJobHistory(reference: string) {
   return get<{ history: PastVisit[] }>(`/api/technician/jobs/${reference}/history`);
 }

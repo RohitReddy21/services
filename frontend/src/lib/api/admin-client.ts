@@ -103,6 +103,11 @@ export interface AdminTechnician {
   name: string;
   email: string;
   phone: string;
+  /** Null until the engineer has been rated. */
+  avgRating: number | null;
+  reviewCount: number;
+  openJobs: number;
+  completedJobs: number;
 }
 
 /** Engineer accounts available to assign to a job. */

@@ -1,11 +1,14 @@
 import { Router } from "express";
+import { Types } from "mongoose";
 import { z } from "zod";
 import { Booking } from "../models/Booking";
 import { Notification } from "../models/Notification";
+import { Review } from "../models/Review";
 import { User } from "../models/User";
 import { requireTechnician } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
 import { sendEmail } from "../lib/email";
+import { requestReview } from "../lib/review-request";
 import { bookingStatusUpdatedEmail } from "../emails/booking-status-updated";
 
 export const technicianRouter = Router();
@@ -50,6 +53,34 @@ async function loadAssignedJob(reference: string, userId: string, isAdmin: boole
   if (!booking) throw new ApiError(404, "Job not found");
   return booking;
 }
+
+// ---------------- Me ----------------
+
+/**
+ * The engineer's own scorecard: jobs completed and how customers rated them.
+ * Ratings are attributed at review time, so this is "how did I do", not
+ * "how did the company do".
+ */
+technicianRouter.get("/me", async (req, res) => {
+  const [completed, agg, recent] = await Promise.all([
+    Booking.countDocuments({ technicianId: req.userId, status: "COMPLETED", deletedAt: null }),
+    Review.aggregate<{ avg: number; count: number }>([
+      { $match: { technicianId: new Types.ObjectId(String(req.userId)), deletedAt: null } },
+      { $group: { _id: null, avg: { $avg: "$rating" }, count: { $sum: 1 } } },
+    ]),
+    Review.find({ technicianId: req.userId, deletedAt: null })
+      .select("rating text serviceName bookingReference createdAt")
+      .sort({ createdAt: -1 })
+      .limit(5),
+  ]);
+
+  res.json({
+    jobsCompleted: completed,
+    reviewCount: agg[0]?.count ?? 0,
+    avgRating: agg[0]?.avg ? Math.round(agg[0].avg * 10) / 10 : null,
+    recentReviews: recent,
+  });
+});
 
 // ---------------- Jobs ----------------
 
@@ -134,6 +165,7 @@ technicianRouter.patch("/jobs/:reference/status", async (req, res) => {
   await booking.save();
 
   await notifyCustomer(booking, status);
+  if (status === "COMPLETED") void requestReview(booking);
 
   res.json({ job: booking });
 });
@@ -167,7 +199,10 @@ technicianRouter.post("/jobs/:reference/completion", async (req, res) => {
   }
   await booking.save();
 
-  if (complete && wasOpen) await notifyCustomer(booking, "COMPLETED");
+  if (complete && wasOpen) {
+    await notifyCustomer(booking, "COMPLETED");
+    void requestReview(booking);
+  }
 
   res.json({ job: booking });
 });

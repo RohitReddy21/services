@@ -13,6 +13,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { SkeletonRows } from "@/components/admin/panel-shell";
 import TechnicianHeader from "@/components/technician/technician-header";
 import JobCard from "@/components/technician/job-card";
+import EngineerScorecard from "@/components/technician/engineer-scorecard";
 import { cn } from "@/lib/utils";
 
 const TABS: { id: JobScope; label: string }[] = [
@@ -79,6 +80,8 @@ export default function TechnicianPortal({ engineerName }: { engineerName: strin
             <RefreshCw className={cn("size-4", refreshing && "animate-spin")} />
           </button>
         </div>
+
+        <EngineerScorecard />
 
         <nav className="mt-4 grid grid-cols-3 gap-1 rounded-xl border border-slate-200 bg-white p-1">
           {TABS.map((tab) => {

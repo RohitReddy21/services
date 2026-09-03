@@ -846,6 +846,8 @@ function BookingsPanel() {
                         {technicians.map((t) => (
                           <option key={t.id} value={t.id}>
                             {t.name}
+                            {t.avgRating ? ` · ${t.avgRating}★` : ""}
+                            {t.openJobs ? ` · ${t.openJobs} open` : ""}
                           </option>
                         ))}
                       </select>

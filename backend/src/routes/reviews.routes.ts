@@ -29,12 +29,20 @@ reviewsRouter.post("/", requireAuth, async (req, res) => {
     throw new ApiError(400, "You can only review completed services.");
   }
 
+  const existing = await Review.findOne({ bookingReference, userId: req.userId, deletedAt: null });
+  if (existing) {
+    throw new ApiError(409, "You've already reviewed this visit.");
+  }
+
   const review = await Review.create({
     userId: req.userId,
     bookingReference,
     serviceName: booking.equipmentLabel,
     rating,
     text,
+    // Attribute the rating to the engineer who actually attended.
+    technicianId: booking.technicianId ?? null,
+    technicianName: booking.technicianName ?? null,
   });
 
   res.status(201).json({ review });
