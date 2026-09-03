@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, Download, UserRound } from "lucide-react";
+import { ChevronLeft, Download, Navigation, Phone, Star, UserRound, Wrench } from "lucide-react";
 import { getCurrentUser } from "@/lib/server/current-user";
 import { serverFetch } from "@/lib/server/backend-fetch";
 import { mapBookingDoc } from "@/lib/api/booking-mapper";
@@ -76,12 +76,72 @@ export default async function BookingDetailPage({
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-6">
+          {record.status === "TECHNICIAN_ARRIVING" && (
+            <section className="flex items-center gap-3 rounded-2xl border border-brand-300 bg-brand-50 p-4">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white">
+                <Navigation className="size-5" />
+              </span>
+              <div>
+                <p className="text-sm font-bold text-navy-900">
+                  {record.technicianName ?? "Your engineer"} is on the way
+                </p>
+                <p className="text-xs text-slate-600">
+                  Arriving within your {data.timeSlot?.label ?? "booked"} slot.
+                </p>
+              </div>
+            </section>
+          )}
+
+          {record.status === "SERVICE_STARTED" && (
+            <section className="flex items-center gap-3 rounded-2xl border border-brand-300 bg-brand-50 p-4">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white">
+                <Wrench className="size-5" />
+              </span>
+              <div>
+                <p className="text-sm font-bold text-navy-900">Work in progress</p>
+                <p className="text-xs text-slate-600">
+                  {record.technicianName ?? "Your engineer"} is on site now.
+                </p>
+              </div>
+            </section>
+          )}
+
           <section className="rounded-2xl border border-brand-100 bg-white p-5 shadow-sm shadow-brand-100">
             <h2 className="font-display text-base font-bold text-navy-900">Status</h2>
             <div className="mt-4">
-              <BookingTimeline status={record.status} />
+              <BookingTimeline status={record.status} history={record.statusHistory} />
             </div>
           </section>
+
+          {record.status === "COMPLETED" &&
+            (record.completionNotes || (record.completionPhotos?.length ?? 0) > 0) && (
+              <section className="rounded-2xl border border-accent-green-200 bg-accent-green-50 p-5">
+                <h2 className="font-display text-base font-bold text-navy-900">
+                  What the engineer did
+                </h2>
+                {record.completionNotes && (
+                  <p className="mt-2 text-sm text-navy-800">{record.completionNotes}</p>
+                )}
+                {(record.completionPhotos?.length ?? 0) > 0 && (
+                  <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                    {record.completionPhotos!.map((photo) => (
+                      <div
+                        key={photo.url}
+                        className="relative aspect-square overflow-hidden rounded-lg border border-accent-green-200 bg-white"
+                      >
+                        <FadeInImage
+                          src={photo.url}
+                          alt={photo.name}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+            )}
 
           <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-navy-900/5">
             <h2 className="font-display text-base font-bold text-navy-900">Details</h2>
@@ -143,22 +203,62 @@ export default async function BookingDetailPage({
 
         <aside className="space-y-4">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-navy-900/5">
-            <h2 className="font-display text-sm font-bold text-navy-900">Technician</h2>
-            <div className="mt-3 flex items-center gap-3 rounded-xl bg-slate-25 p-3">
-              <span className="flex size-9 items-center justify-center rounded-full bg-slate-200 text-slate-500">
-                <UserRound className="size-4" />
-              </span>
-              {record.technicianName ? (
-                <div>
-                  <p className="text-xs font-semibold text-navy-800">{record.technicianName}</p>
-                  {record.technicianPhone && (
-                    <p className="text-xs text-slate-500">{record.technicianPhone}</p>
-                  )}
+            <h2 className="font-display text-sm font-bold text-navy-900">Your engineer</h2>
+            {record.technicianName ? (
+              <div className="mt-3 rounded-xl bg-slate-25 p-3">
+                <div className="flex items-center gap-3">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-100 text-base font-bold text-brand-700">
+                    {record.technicianName.charAt(0).toUpperCase()}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-navy-900">{record.technicianName}</p>
+                    {record.engineer?.avgRating ? (
+                      <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-600">
+                        <span className="flex items-center gap-0.5">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <Star
+                              key={i}
+                              className={
+                                i < Math.round(record.engineer!.avgRating!)
+                                  ? "size-3 fill-accent-gold-500 text-accent-gold-500"
+                                  : "size-3 text-slate-300"
+                              }
+                            />
+                          ))}
+                        </span>
+                        <span className="font-semibold text-navy-800">
+                          {record.engineer.avgRating.toFixed(1)}
+                        </span>
+                        <span className="text-slate-400">({record.engineer.reviewCount})</span>
+                      </p>
+                    ) : (
+                      <p className="mt-0.5 text-xs text-slate-400">No ratings yet</p>
+                    )}
+                    {record.engineer?.jobsCompleted ? (
+                      <p className="text-xs text-slate-500">
+                        {record.engineer.jobsCompleted} jobs completed with AGS
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
-              ) : (
+                {record.technicianPhone && (
+                  <a
+                    href={`tel:${record.technicianPhone}`}
+                    className="ags-focus mt-3 flex items-center justify-center gap-1.5 rounded-lg border border-brand-200 bg-white py-2 text-xs font-semibold text-brand-700 hover:bg-brand-50"
+                  >
+                    <Phone className="size-3.5" />
+                    Call {record.technicianName.split(" ")[0]}
+                  </a>
+                )}
+              </div>
+            ) : (
+              <div className="mt-3 flex items-center gap-3 rounded-xl bg-slate-25 p-3">
+                <span className="flex size-9 items-center justify-center rounded-full bg-slate-200 text-slate-500">
+                  <UserRound className="size-4" />
+                </span>
                 <p className="text-xs text-slate-500">Not yet assigned</p>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-navy-900/5">

@@ -6,8 +6,16 @@ import { statusMeta, statusTimeline } from "@/lib/data/booking-status";
 import type { BookingStatus } from "@/types/service";
 import { cn } from "@/lib/utils";
 
-export default function BookingTimeline({ status }: { status: BookingStatus }) {
+export default function BookingTimeline({
+  status,
+  history = [],
+}: {
+  status: BookingStatus;
+  /** Real timestamps per status, so each step can show when it happened. */
+  history?: { status: BookingStatus; at: string }[];
+}) {
   const reducedMotion = useReducedMotion();
+  const reachedAt = new Map(history.map((entry) => [entry.status, entry.at]));
 
   if (status === "CANCELLED") {
     return (
@@ -67,8 +75,19 @@ export default function BookingTimeline({ status }: { status: BookingStatus }) {
               >
                 {statusMeta[step].label}
               </p>
-              {isCurrent && (
-                <p className="mt-0.5 text-xs text-slate-500">This is the current status.</p>
+              {reachedAt.has(step) ? (
+                <p className="mt-0.5 text-xs text-slate-500">
+                  {new Date(reachedAt.get(step)!).toLocaleString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+              ) : (
+                isCurrent && (
+                  <p className="mt-0.5 text-xs text-slate-500">This is the current status.</p>
+                )
               )}
             </div>
           </motion.li>

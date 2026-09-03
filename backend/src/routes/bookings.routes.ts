@@ -1,5 +1,8 @@
 import { Router } from "express";
+import { Types } from "mongoose";
 import { Booking } from "../models/Booking";
+import { Review } from "../models/Review";
+import { User } from "../models/User";
 import { SlotReservation } from "../models/SlotReservation";
 import { Notification } from "../models/Notification";
 import { attachUser, requireAuth } from "../middleware/auth";
@@ -109,8 +112,35 @@ bookingsRouter.get("/", attachUser, async (req, res) => {
   }
   const booking = await Booking.findOne({ bookingReference: reference });
   if (!booking) throw new ApiError(404, "Booking not found");
-  res.json(booking);
+
+  // Attach the assigned engineer's public track record so the customer can see
+  // who is coming and how they're rated, the way a marketplace app would.
+  const engineer = booking.technicianId ? await engineerCard(booking.technicianId) : null;
+
+  res.json({ ...booking.toJSON(), engineer });
 });
+
+/** Name, contact and customer rating for an assigned engineer. */
+async function engineerCard(technicianId: Types.ObjectId) {
+  const [technician, agg, jobsCompleted] = await Promise.all([
+    User.findById(technicianId).select("name phone profileImage"),
+    Review.aggregate<{ avg: number; count: number }>([
+      { $match: { technicianId, deletedAt: null } },
+      { $group: { _id: null, avg: { $avg: "$rating" }, count: { $sum: 1 } } },
+    ]),
+    Booking.countDocuments({ technicianId, status: "COMPLETED", deletedAt: null }),
+  ]);
+  if (!technician) return null;
+
+  return {
+    name: technician.name,
+    phone: technician.phone || null,
+    profileImage: technician.profileImage ?? null,
+    avgRating: agg[0]?.avg ? Math.round(agg[0].avg * 10) / 10 : null,
+    reviewCount: agg[0]?.count ?? 0,
+    jobsCompleted,
+  };
+}
 
 bookingsRouter.get("/:reference/certificate", requireAuth, async (req, res) => {
   const booking = await Booking.findOne({ bookingReference: req.params.reference });

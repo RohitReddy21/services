@@ -77,6 +77,16 @@ export interface StatusHistoryEntry {
   at: string;
 }
 
+/** The assigned engineer's public track record, shown to the customer. */
+export interface EngineerCard {
+  name: string;
+  phone: string | null;
+  profileImage: string | null;
+  avgRating: number | null;
+  reviewCount: number;
+  jobsCompleted: number;
+}
+
 export interface BookingRecord {
   bookingReference: string;
   status: BookingStatus;
@@ -95,6 +105,8 @@ export interface BookingRecord {
   /** Raised by the engineer when a visit can't be finished. */
   issueNote?: string | null;
   issueReportedAt?: string | null;
+  /** Present on the single-booking lookup when an engineer is assigned. */
+  engineer?: EngineerCard | null;
   deletedAt?: string | null;
   createdAt: string;
   updatedAt: string;
