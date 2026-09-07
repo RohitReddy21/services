@@ -113,11 +113,40 @@ export interface EngineerStats {
   /** Null until the engineer has been rated at least once. */
   avgRating: number | null;
   recentReviews: EngineerReview[];
+  isAvailable: boolean;
 }
 
 /** The signed-in engineer's own scorecard. */
 export function fetchEngineerStats() {
   return get<EngineerStats>("/api/technician/me");
+}
+
+export function setAvailabilityRequest(isAvailable: boolean) {
+  return send<{ isAvailable: boolean }>("/api/technician/availability", "PATCH", { isAvailable });
+}
+
+export type EarningsRange = "week" | "month" | "all";
+
+export interface EarningsJob {
+  bookingReference: string;
+  equipmentLabel: string;
+  completedAt: string | null;
+  /** Null until an admin sets a price on the job. */
+  amount: number | null;
+}
+
+export interface EarningsSummary {
+  range: EarningsRange;
+  total: number;
+  jobCount: number;
+  /** Completed jobs still waiting on an admin to set a price — not counted in `total`. */
+  jobsWithoutPrice: number;
+  jobs: EarningsJob[];
+}
+
+/** Revenue the engineer generated (gross job price, not a payout/commission figure). */
+export function fetchEarnings(range: EarningsRange) {
+  return get<EarningsSummary>(`/api/technician/earnings?range=${range}`);
 }
 
 export function fetchJobHistory(reference: string) {

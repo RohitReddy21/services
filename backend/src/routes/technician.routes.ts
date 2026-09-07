@@ -62,7 +62,7 @@ async function loadAssignedJob(reference: string, userId: string, isAdmin: boole
  * "how did the company do".
  */
 technicianRouter.get("/me", async (req, res) => {
-  const [completed, agg, recent] = await Promise.all([
+  const [completed, agg, recent, self] = await Promise.all([
     Booking.countDocuments({ technicianId: req.userId, status: "COMPLETED", deletedAt: null }),
     Review.aggregate<{ avg: number; count: number }>([
       { $match: { technicianId: new Types.ObjectId(String(req.userId)), deletedAt: null } },
@@ -72,6 +72,7 @@ technicianRouter.get("/me", async (req, res) => {
       .select("rating text serviceName bookingReference createdAt")
       .sort({ createdAt: -1 })
       .limit(5),
+    User.findById(req.userId).select("isAvailable"),
   ]);
 
   res.json({
@@ -79,6 +80,74 @@ technicianRouter.get("/me", async (req, res) => {
     reviewCount: agg[0]?.count ?? 0,
     avgRating: agg[0]?.avg ? Math.round(agg[0].avg * 10) / 10 : null,
     recentReviews: recent,
+    isAvailable: self?.isAvailable ?? true,
+  });
+});
+
+const availabilitySchema = z.object({ isAvailable: z.boolean() });
+
+/** Lets an engineer flag themselves off-duty so the office knows not to assign new jobs. */
+technicianRouter.patch("/availability", async (req, res) => {
+  const { isAvailable } = availabilitySchema.parse(req.body);
+  const user = await User.findByIdAndUpdate(req.userId, { isAvailable }, { new: true }).select(
+    "isAvailable"
+  );
+  if (!user) throw new ApiError(404, "Account not found");
+  res.json({ isAvailable: user.isAvailable });
+});
+
+const earningsRangeSchema = z.object({
+  range: z.enum(["week", "month", "all"]).default("week"),
+});
+
+/**
+ * Gross revenue attributed to this engineer's completed, priced jobs. Not a
+ * commission/payout figure — there's no pay-rate concept yet, so this is
+ * framed as "revenue you generated", not "what you're owed".
+ */
+technicianRouter.get("/earnings", async (req, res) => {
+  const { range } = earningsRangeSchema.parse(req.query);
+
+  const now = new Date();
+  let since: Date | null = null;
+  if (range === "week") {
+    since = new Date(now);
+    since.setDate(since.getDate() - 7);
+  } else if (range === "month") {
+    since = new Date(now);
+    since.setMonth(since.getMonth() - 1);
+  }
+
+  const filter: Record<string, unknown> = {
+    technicianId: req.userId,
+    status: "COMPLETED",
+    deletedAt: null,
+  };
+  if (since) filter.completedAt = { $gte: since };
+
+  const jobs = await Booking.find(filter)
+    .select("bookingReference equipmentLabel completedAt price")
+    .sort({ completedAt: -1 })
+    .limit(200);
+
+  let total = 0;
+  let jobsWithoutPrice = 0;
+  for (const job of jobs) {
+    if (job.price?.amount != null) total += job.price.amount;
+    else jobsWithoutPrice += 1;
+  }
+
+  res.json({
+    range,
+    total: Math.round(total * 100) / 100,
+    jobCount: jobs.length,
+    jobsWithoutPrice,
+    jobs: jobs.map((j) => ({
+      bookingReference: j.bookingReference,
+      equipmentLabel: j.equipmentLabel,
+      completedAt: j.completedAt,
+      amount: j.price?.amount ?? null,
+    })),
   });
 });
 

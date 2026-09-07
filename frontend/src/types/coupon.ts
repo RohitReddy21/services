@@ -45,6 +45,13 @@ export interface AdminOpenTicket {
   createdAt: string;
 }
 
+export interface AdminRevenuePoint {
+  /** "YYYY-MM" */
+  period: string;
+  revenue: number;
+  jobCount: number;
+}
+
 export interface AdminStats {
   bookings: { total: number; byStatus: Record<string, number> };
   subscriptions: { active: number; paused: number; cancelled: number; monthlyRevenue: number };
@@ -54,4 +61,6 @@ export interface AdminStats {
   coupons: { active: number; total: number };
   recentBookings: AdminRecentBooking[];
   openTickets: AdminOpenTicket[];
+  /** Monthly revenue from priced, completed bookings — last 12 months with data. */
+  revenueSeries: AdminRevenuePoint[];
 }

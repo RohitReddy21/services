@@ -60,6 +60,17 @@ export const env = {
   resendFromEmail: process.env.RESEND_FROM_EMAIL ?? "AGS <onboarding@resend.dev>",
   frontendUrl,
 
+  // Company-wide cap on how many jobs can be booked into the same date+slot.
+  maxJobsPerSlot: Number(process.env.MAX_JOBS_PER_SLOT ?? 3),
+
+  // One-time admin bootstrap — if set and no account with this email exists yet,
+  // the server creates it with the ADMIN role on startup. Never overwrites an
+  // existing account, so it's safe to leave these set permanently. See
+  // lib/bootstrap-admin.ts.
+  initialAdminEmail: process.env.INITIAL_ADMIN_EMAIL,
+  initialAdminPassword: process.env.INITIAL_ADMIN_PASSWORD,
+  initialAdminName: process.env.INITIAL_ADMIN_NAME ?? "Admin",
+
   // Google OAuth sign-in/sign-up. Leave unset to hide/disable the live callback flow.
   googleClientId: process.env.GOOGLE_CLIENT_ID,
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,

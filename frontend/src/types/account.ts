@@ -21,7 +21,8 @@ export type NotificationType =
   | "service_completed"
   | "review_request"
   | "support_response"
-  | "welcome";
+  | "welcome"
+  | "waitlist_spot_open";
 
 export interface Notification {
   id: string;

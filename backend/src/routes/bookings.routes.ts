@@ -16,6 +16,7 @@ import { bookingCancelledEmail } from "../emails/booking-cancelled";
 import { bookingRescheduledEmail } from "../emails/booking-rescheduled";
 import { awardLoyaltyPoints } from "../lib/loyalty";
 import { streamBookingCertificate } from "../lib/pdf";
+import { notifyWaitlistForSlot } from "../lib/waitlist";
 
 const REQUIREMENT_LABELS: Record<string, string> = {
   installation: "Installation",
@@ -185,6 +186,7 @@ bookingsRouter.post("/:reference/cancel", requireAuth, async (req, res) => {
     booking.status = "CANCELLED";
     booking.statusHistory.push({ status: "CANCELLED", at: new Date() });
     await booking.save();
+    void notifyWaitlistForSlot(booking.date, booking.timeSlot.id);
 
     const cancelledEmail = bookingCancelledEmail({
       bookingReference: booking.bookingReference,
@@ -219,12 +221,14 @@ bookingsRouter.post("/:reference/reschedule", requireAuth, async (req, res) => {
 
   const previousDate = booking.date;
   const previousSlotLabel = booking.timeSlot.label;
+  const previousSlotId = booking.timeSlot.id;
 
   booking.date = date;
   booking.timeSlot = timeSlot;
   booking.rescheduleRequested = false;
   booking.rescheduleNote = null;
   await booking.save();
+  void notifyWaitlistForSlot(previousDate, previousSlotId);
 
   await Notification.create({
     userId: req.userId,

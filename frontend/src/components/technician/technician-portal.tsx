@@ -14,12 +14,16 @@ import { SkeletonRows } from "@/components/admin/panel-shell";
 import TechnicianHeader from "@/components/technician/technician-header";
 import JobCard from "@/components/technician/job-card";
 import EngineerScorecard from "@/components/technician/engineer-scorecard";
+import EarningsPanel from "@/components/technician/earnings-panel";
 import { cn } from "@/lib/utils";
 
-const TABS: { id: JobScope; label: string }[] = [
+type PortalTab = JobScope | "earnings";
+
+const TABS: { id: PortalTab; label: string }[] = [
   { id: "today", label: "Today" },
   { id: "upcoming", label: "Upcoming" },
   { id: "completed", label: "Done" },
+  { id: "earnings", label: "Earnings" },
 ];
 
 const EMPTY_COPY: Record<JobScope, string> = {
@@ -29,23 +33,24 @@ const EMPTY_COPY: Record<JobScope, string> = {
 };
 
 export default function TechnicianPortal({ engineerName }: { engineerName: string }) {
-  const [scope, setScope] = useState<JobScope>("today");
+  const [tab, setTab] = useState<PortalTab>("today");
   const [jobs, setJobs] = useState<BookingRecord[] | null>(null);
   const [summary, setSummary] = useState<JobSummary | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
+    if (tab === "earnings") return Promise.resolve();
     setRefreshing(true);
     setError(null);
-    return Promise.all([fetchTechnicianJobs(scope), fetchJobSummary()])
+    return Promise.all([fetchTechnicianJobs(tab), fetchJobSummary()])
       .then(([res, counts]) => {
         setJobs(res.jobs);
         setSummary(counts);
       })
       .catch((err) => setError(err instanceof Error ? err.message : "Couldn't load your jobs."))
       .finally(() => setRefreshing(false));
-  }, [scope]);
+  }, [tab]);
 
   // Deferred a frame so the loading flags aren't set synchronously during the
   // effect (matches the pattern used elsewhere in the app).
@@ -83,25 +88,25 @@ export default function TechnicianPortal({ engineerName }: { engineerName: strin
 
         <EngineerScorecard />
 
-        <nav className="mt-4 grid grid-cols-3 gap-1 rounded-xl border border-slate-200 bg-white p-1">
-          {TABS.map((tab) => {
-            const active = scope === tab.id;
-            const count = summary?.[tab.id];
+        <nav className="mt-4 grid grid-cols-4 gap-1 rounded-xl border border-slate-200 bg-white p-1">
+          {TABS.map((t) => {
+            const active = tab === t.id;
+            const count = t.id === "earnings" ? undefined : summary?.[t.id];
             return (
               <button
-                key={tab.id}
+                key={t.id}
                 type="button"
                 onClick={() => {
-                  if (tab.id === scope) return;
-                  setJobs(null); // show the skeleton while the new tab loads
-                  setScope(tab.id);
+                  if (t.id === tab) return;
+                  if (t.id !== "earnings") setJobs(null); // show the skeleton while the new tab loads
+                  setTab(t.id);
                 }}
                 className={cn(
                   "ags-focus flex items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-sm font-bold transition-colors",
                   active ? "bg-brand-600 text-white" : "text-slate-500 hover:bg-slate-50"
                 )}
               >
-                {tab.label}
+                {t.label}
                 {count !== undefined && count > 0 && (
                   <span
                     className={cn(
@@ -123,15 +128,21 @@ export default function TechnicianPortal({ engineerName }: { engineerName: strin
           </p>
         )}
 
-        <div className="mt-4 space-y-3">
-          {!jobs ? (
-            <SkeletonRows rows={3} />
-          ) : jobs.length === 0 ? (
-            <EmptyState message={EMPTY_COPY[scope]} variant="card" />
-          ) : (
-            jobs.map((job) => <JobCard key={job.bookingReference} job={job} />)
-          )}
-        </div>
+        {tab === "earnings" ? (
+          <div className="mt-4">
+            <EarningsPanel />
+          </div>
+        ) : (
+          <div className="mt-4 space-y-3">
+            {!jobs ? (
+              <SkeletonRows rows={3} />
+            ) : jobs.length === 0 ? (
+              <EmptyState message={EMPTY_COPY[tab]} variant="card" />
+            ) : (
+              jobs.map((job) => <JobCard key={job.bookingReference} job={job} />)
+            )}
+          </div>
+        )}
       </main>
     </>
   );

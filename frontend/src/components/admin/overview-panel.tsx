@@ -11,22 +11,32 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import { fetchAdminStats } from "@/lib/api/admin-client";
+import { fetchAdminStats, fetchAdminTechnicians, type AdminTechnician } from "@/lib/api/admin-client";
 import { statusMeta } from "@/lib/data/booking-status";
 import type { AdminStats } from "@/types/coupon";
 import type { BookingStatus } from "@/types/service";
 import { PanelHeader, StatCard } from "@/components/admin/panel-shell";
 import { EmptyState } from "@/components/ui/empty-state";
 import { InlineLoader } from "@/components/ui/loaders";
+import RevenueChart from "@/components/admin/revenue-chart";
+import TechnicianPerformanceChart from "@/components/admin/technician-performance-chart";
 
 const gbp = (n: number) =>
   `£${n.toLocaleString("en-GB", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 })}`;
 
 export default function OverviewPanel({ onJump }: { onJump: (tab: string) => void }) {
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const [technicians, setTechnicians] = useState<AdminTechnician[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const load = useCallback(() => fetchAdminStats().then(setStats), []);
+  const load = useCallback(
+    () =>
+      Promise.all([
+        fetchAdminStats().then(setStats),
+        fetchAdminTechnicians().then((res) => setTechnicians(res.technicians)),
+      ]),
+    []
+  );
 
   const refresh = useCallback(() => {
     setRefreshing(true);
@@ -161,6 +171,24 @@ export default function OverviewPanel({ onJump }: { onJump: (tab: string) => voi
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 ags-depth-sm">
+          <h3 className="font-display text-sm font-bold text-navy-900">Revenue by month</h3>
+          <p className="text-xs text-slate-400">From priced, completed jobs.</p>
+          <div className="mt-4">
+            <RevenueChart data={stats.revenueSeries} />
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 ags-depth-sm">
+          <h3 className="font-display text-sm font-bold text-navy-900">Engineer performance</h3>
+          <p className="text-xs text-slate-400">Completed jobs and revenue, top 10 by revenue.</p>
+          <div className="mt-4">
+            <TechnicianPerformanceChart technicians={technicians} />
           </div>
         </div>
       </div>

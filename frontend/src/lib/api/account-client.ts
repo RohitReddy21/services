@@ -53,6 +53,7 @@ export function updateProfileRequest(patch: {
   phone?: string;
   profileImage?: string | null;
   notificationPreferences?: { email: boolean; sms: boolean };
+  referralLeaderboardOptIn?: boolean;
 }) {
   return send<{ user: PublicUser }>("/api/account/profile", "PATCH", patch);
 }

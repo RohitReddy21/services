@@ -4,15 +4,32 @@ import { useEffect, useState } from "react";
 import { Check, Copy, Loader2, Share2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchReferralSummary } from "@/lib/api/referral-client";
+import { updateProfileRequest } from "@/lib/api/account-client";
 import type { ReferralSummary } from "@/types/referral";
+import ReferralLeaderboard from "@/components/account/referral-leaderboard";
 
 export default function ReferralManager() {
   const [summary, setSummary] = useState<ReferralSummary | null>(null);
   const [copied, setCopied] = useState(false);
+  const [savingOptIn, setSavingOptIn] = useState(false);
 
   useEffect(() => {
     fetchReferralSummary().then(setSummary);
   }, []);
+
+  const toggleOptIn = async () => {
+    if (!summary || savingOptIn) return;
+    const next = !summary.leaderboardOptIn;
+    setSavingOptIn(true);
+    setSummary({ ...summary, leaderboardOptIn: next }); // optimistic — simple boolean flag
+    try {
+      await updateProfileRequest({ referralLeaderboardOptIn: next });
+    } catch {
+      setSummary((s) => (s ? { ...s, leaderboardOptIn: !next } : s));
+    } finally {
+      setSavingOptIn(false);
+    }
+  };
 
   if (!summary) {
     return (
@@ -70,6 +87,23 @@ export default function ReferralManager() {
           </div>
         </div>
       </div>
+
+      <label className="mt-4 flex items-start gap-2.5 rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
+        <input
+          type="checkbox"
+          checked={summary.leaderboardOptIn}
+          disabled={savingOptIn}
+          onChange={toggleOptIn}
+          className="mt-0.5 size-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+        />
+        <span>
+          <span className="font-semibold text-navy-900">Show me on the referral leaderboard</span>
+          <br />
+          Only your first name and last initial are shown — never your email or full name.
+        </span>
+      </label>
+
+      <ReferralLeaderboard />
     </div>
   );
 }

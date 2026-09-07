@@ -1,13 +1,38 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import Logo from "@/components/navigation/logo";
 import { useAuth } from "@/components/auth/auth-context";
+import { fetchEngineerStats, setAvailabilityRequest } from "@/lib/api/technician-client";
+import { cn } from "@/lib/utils";
 
 export default function TechnicianHeader({ engineerName }: { engineerName: string }) {
   const router = useRouter();
   const { logout } = useAuth();
+  const [available, setAvailable] = useState<boolean | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetchEngineerStats()
+      .then((stats) => setAvailable(stats.isAvailable))
+      .catch(() => setAvailable(null));
+  }, []);
+
+  const toggleAvailable = async () => {
+    if (available === null || saving) return;
+    const next = !available;
+    setSaving(true);
+    setAvailable(next); // optimistic — this is a simple on/off flag
+    try {
+      await setAvailabilityRequest(next);
+    } catch {
+      setAvailable(!next); // revert on failure
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
@@ -19,6 +44,26 @@ export default function TechnicianHeader({ engineerName }: { engineerName: strin
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-2">
+          {available !== null && (
+            <button
+              type="button"
+              onClick={toggleAvailable}
+              disabled={saving}
+              className={cn(
+                "ags-focus inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold transition-colors disabled:opacity-60",
+                available
+                  ? "border-green-200 bg-green-50 text-green-700"
+                  : "border-slate-200 bg-slate-100 text-slate-500"
+              )}
+              aria-pressed={available}
+              title={available ? "Available for new jobs — tap to go off-duty" : "Off-duty — tap to become available"}
+            >
+              <span
+                className={cn("size-1.5 rounded-full", available ? "bg-green-500" : "bg-slate-400")}
+              />
+              {available ? "Available" : "Off-duty"}
+            </button>
+          )}
           <span className="hidden max-w-32 truncate text-sm text-slate-500 sm:inline">
             {engineerName}
           </span>

@@ -107,6 +107,8 @@ export interface BookingRecord {
   issueReportedAt?: string | null;
   /** Present on the single-booking lookup when an engineer is assigned. */
   engineer?: EngineerCard | null;
+  /** Set by an admin once the job is priced (pricing is decided on-site). */
+  price?: { amount: number; currency: string; setAt: string | null } | null;
   deletedAt?: string | null;
   createdAt: string;
   updatedAt: string;

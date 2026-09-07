@@ -98,16 +98,25 @@ export function updateBookingStatusRequest(reference: string, status: BookingSta
   }).then(mapBookingDoc);
 }
 
+export function updateBookingPriceRequest(reference: string, amount: number) {
+  return send<Record<string, unknown>>(`/api/admin/bookings/${reference}/price`, "PATCH", {
+    amount,
+  }).then(mapBookingDoc);
+}
+
 export interface AdminTechnician {
   id: string;
   name: string;
   email: string;
   phone: string;
+  isAvailable: boolean;
   /** Null until the engineer has been rated. */
   avgRating: number | null;
   reviewCount: number;
   openJobs: number;
   completedJobs: number;
+  /** Gross revenue (sum of priced completed jobs) attributed to this engineer. */
+  revenue: number;
 }
 
 /** Engineer accounts available to assign to a job. */

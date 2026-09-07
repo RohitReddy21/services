@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { BellRing, Loader2 } from "lucide-react";
 import StepShell from "@/components/booking/step-shell";
 import { useBooking } from "@/components/booking/booking-context";
 import { fetchDaySlots } from "@/lib/api/booking-client";
+import { joinWaitlistRequest } from "@/lib/api/waitlist-client";
 import type { SlotGroup, TimeSlot } from "@/types/booking";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +18,8 @@ export default function StepTime({ embedded = false }: { embedded?: boolean }) {
     groups: SlotGroup[];
   } | null>(null);
   const [reserving, setReserving] = useState<string | null>(null);
+  const [joiningWaitlist, setJoiningWaitlist] = useState<string | null>(null);
+  const [waitlisted, setWaitlisted] = useState<Record<string, boolean>>({});
   const groups = slotAvailability?.key === requestKey ? slotAvailability.groups : null;
   const loading = Boolean(form.date) && groups === null;
 
@@ -45,6 +48,26 @@ export default function StepTime({ embedded = false }: { embedded?: boolean }) {
     }
   };
 
+  const handleJoinWaitlist = async (slot: TimeSlot) => {
+    if (!form.date || waitlisted[slot.id] || joiningWaitlist) return;
+    setJoiningWaitlist(slot.id);
+    try {
+      await joinWaitlistRequest({
+        date: form.date,
+        slotId: slot.id,
+        slotLabel: slot.label,
+        categoryId: form.categoryId ?? "",
+        equipmentId: form.equipmentId ?? "",
+        equipmentLabel: form.equipmentLabel ?? "",
+      });
+      setWaitlisted((prev) => ({ ...prev, [slot.id]: true }));
+    } catch {
+      // Non-critical — leave the button as-is so the customer can try again.
+    } finally {
+      setJoiningWaitlist(null);
+    }
+  };
+
   const formattedDate = form.date
     ? new Date(`${form.date}T00:00:00`).toLocaleDateString("en-GB", {
         weekday: "long",
@@ -60,7 +83,7 @@ export default function StepTime({ embedded = false }: { embedded?: boolean }) {
           <h3 className="text-xs font-bold text-navy-900">Available Time Slots</h3>
           <p className="mt-1 text-xs leading-relaxed text-slate-500">
             {formattedDate
-              ? `Every listed time slot is available for ${formattedDate}.`
+              ? `Here's what's open for ${formattedDate}.`
               : "Select a date to load appointment windows."}
           </p>
         </div>
@@ -90,29 +113,47 @@ export default function StepTime({ embedded = false }: { embedded?: boolean }) {
                 {group.slots.map((slot) => {
                   const isSelected = form.timeSlot?.id === slot.id;
                   const isReserving = reserving === slot.id;
+                  const isJoiningWaitlist = joiningWaitlist === slot.id;
+                  const onWaitlist = waitlisted[slot.id];
                   return (
-                    <motion.button
-                      key={slot.id}
-                      type="button"
-                      disabled={!slot.available || isReserving}
-                      onClick={() => handleSelect(slot)}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.25, ease: "easeOut" }}
-                      className={cn(
-                        "ags-focus flex min-h-11 items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-semibold transition-all",
-                        !slot.available &&
-                          "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300 line-through",
-                        slot.available &&
-                          !isSelected &&
-                          "border-slate-200 bg-white text-navy-700 hover:-translate-y-0.5 hover:border-brand-200 hover:bg-sky-50 hover:shadow-sm",
-                        isSelected &&
-                          "border-brand-500 bg-brand-50 text-brand-800 shadow-md shadow-brand-100"
+                    <div key={slot.id} className="flex flex-col gap-1">
+                      <motion.button
+                        type="button"
+                        disabled={!slot.available || isReserving}
+                        onClick={() => handleSelect(slot)}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.25, ease: "easeOut" }}
+                        className={cn(
+                          "ags-focus flex min-h-11 items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-semibold transition-all",
+                          !slot.available &&
+                            "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300 line-through",
+                          slot.available &&
+                            !isSelected &&
+                            "border-slate-200 bg-white text-navy-700 hover:-translate-y-0.5 hover:border-brand-200 hover:bg-sky-50 hover:shadow-sm",
+                          isSelected &&
+                            "border-brand-500 bg-brand-50 text-brand-800 shadow-md shadow-brand-100"
+                        )}
+                      >
+                        {isReserving && <Loader2 className="size-3.5 animate-spin" />}
+                        {slot.label}
+                      </motion.button>
+                      {!slot.available && (
+                        <button
+                          type="button"
+                          disabled={isJoiningWaitlist || onWaitlist}
+                          onClick={() => handleJoinWaitlist(slot)}
+                          className="ags-focus flex items-center justify-center gap-1 rounded-md px-2 py-1 text-[11px] font-semibold text-brand-600 transition-colors hover:text-brand-700 disabled:text-slate-400"
+                        >
+                          {isJoiningWaitlist ? (
+                            <Loader2 className="size-3 animate-spin" />
+                          ) : (
+                            <BellRing className="size-3" />
+                          )}
+                          {onWaitlist ? "You're on the waitlist" : "Notify me"}
+                        </button>
                       )}
-                    >
-                      {isReserving && <Loader2 className="size-3.5 animate-spin" />}
-                      {slot.label}
-                    </motion.button>
+                    </div>
                   );
                 })}
               </div>

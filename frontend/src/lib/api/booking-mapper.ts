@@ -26,6 +26,7 @@ export function mapBookingDoc(doc: Record<string, unknown>): BookingRecord {
     issueNote: (doc.issueNote as string | null) ?? null,
     issueReportedAt: (doc.issueReportedAt as string | null) ?? null,
     engineer: (doc.engineer as BookingRecord["engineer"]) ?? null,
+    price: (doc.price as BookingRecord["price"]) ?? null,
     deletedAt: (doc.deletedAt as string | null) ?? null,
     createdAt: doc.createdAt as string,
     updatedAt: doc.updatedAt as string,

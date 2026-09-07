@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Types } from "mongoose";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { randomBytes } from "crypto";
@@ -9,6 +10,7 @@ import { User } from "../models/User";
 import { Subscription } from "../models/Subscription";
 import { Review } from "../models/Review";
 import { Coupon } from "../models/Coupon";
+import { Waitlist } from "../models/Waitlist";
 import { requireAdmin } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
 import { assignReferralCode } from "../lib/referral";
@@ -18,6 +20,7 @@ import { bookingStatusUpdatedEmail } from "../emails/booking-status-updated";
 import { subscriptionInvoiceEmail } from "../emails/subscription-invoice";
 import { renderSubscriptionInvoice, streamSubscriptionInvoice } from "../lib/pdf";
 import { buildSubscriptionInvoiceData } from "../lib/invoice";
+import { notifyWaitlistForSlot } from "../lib/waitlist";
 
 export const adminRouter = Router();
 adminRouter.use(requireAdmin);
@@ -102,6 +105,7 @@ adminRouter.get("/stats", async (_req, res) => {
     couponsTotal,
     recentBookings,
     openTickets,
+    revenueByMonth,
   ] = await Promise.all([
     Booking.countDocuments({ ...NOT_DELETED }),
     Booking.aggregate<{ _id: string; count: number }>([
@@ -121,6 +125,25 @@ adminRouter.get("/stats", async (_req, res) => {
     Coupon.countDocuments({}),
     Booking.find({ ...NOT_DELETED }).sort({ createdAt: -1 }).limit(5),
     SupportTicket.find({ status: "OPEN", ...NOT_DELETED }).sort({ createdAt: -1 }).limit(5),
+    Booking.aggregate<{ _id: string; revenue: number; jobCount: number }>([
+      {
+        $match: {
+          deletedAt: null,
+          status: "COMPLETED",
+          completedAt: { $ne: null },
+          "price.amount": { $ne: null },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m", date: "$completedAt" } },
+          revenue: { $sum: "$price.amount" },
+          jobCount: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: -1 } },
+      { $limit: 12 },
+    ]),
   ]);
 
   const byStatus: Record<string, number> = {};
@@ -160,6 +183,11 @@ adminRouter.get("/stats", async (_req, res) => {
     coupons: { active: couponsActive, total: couponsTotal },
     recentBookings,
     openTickets,
+    revenueSeries: [...revenueByMonth].reverse().map((row) => ({
+      period: row._id,
+      revenue: Math.round(row.revenue * 100) / 100,
+      jobCount: row.jobCount,
+    })),
   });
 });
 
@@ -301,6 +329,8 @@ adminRouter.patch("/bookings/:reference/status", async (req, res) => {
   booking.statusHistory.push({ status, at: new Date() });
   await booking.save();
 
+  if (status === "CANCELLED") void notifyWaitlistForSlot(booking.date, booking.timeSlot.id);
+
   if (booking.customerId) {
     await Notification.create({
       userId: booking.customerId,
@@ -334,6 +364,24 @@ adminRouter.patch("/bookings/:reference/status", async (req, res) => {
   res.json(booking);
 });
 
+const priceUpdateSchema = z.object({ amount: z.number().min(0).max(100000) });
+
+adminRouter.patch("/bookings/:reference/price", async (req, res) => {
+  const { amount } = priceUpdateSchema.parse(req.body);
+
+  const booking = await Booking.findOne({ bookingReference: req.params.reference });
+  if (!booking) throw new ApiError(404, "Booking not found");
+
+  booking.price = {
+    amount,
+    currency: "GBP",
+    setBy: new Types.ObjectId(req.userId!),
+    setAt: new Date(),
+  };
+  await booking.save();
+  res.json(booking);
+});
+
 /**
  * Engineers who can be assigned jobs — populates the assignment dropdown, and
  * carries each one's workload and customer rating so the office can see who is
@@ -341,7 +389,7 @@ adminRouter.patch("/bookings/:reference/status", async (req, res) => {
  */
 adminRouter.get("/technicians", async (_req, res) => {
   const technicians = await User.find({ role: "TECHNICIAN", ...NOT_DELETED })
-    .select("name email phone")
+    .select("name email phone isAvailable")
     .sort({ name: 1 })
     .lean();
 
@@ -352,7 +400,7 @@ adminRouter.get("/technicians", async (_req, res) => {
       { $match: { technicianId: { $in: ids }, deletedAt: null } },
       { $group: { _id: "$technicianId", avg: { $avg: "$rating" }, count: { $sum: 1 } } },
     ]),
-    Booking.aggregate<{ _id: unknown; open: number; completed: number }>([
+    Booking.aggregate<{ _id: unknown; open: number; completed: number; revenue: number }>([
       { $match: { technicianId: { $in: ids }, deletedAt: null } },
       {
         $group: {
@@ -361,6 +409,15 @@ adminRouter.get("/technicians", async (_req, res) => {
             $sum: { $cond: [{ $in: ["$status", ["COMPLETED", "CANCELLED"]] }, 0, 1] },
           },
           completed: { $sum: { $cond: [{ $eq: ["$status", "COMPLETED"] }, 1, 0] } },
+          revenue: {
+            $sum: {
+              $cond: [
+                { $and: [{ $eq: ["$status", "COMPLETED"] }, { $ne: ["$price.amount", null] }] },
+                "$price.amount",
+                0,
+              ],
+            },
+          },
         },
       },
     ]),
@@ -379,10 +436,12 @@ adminRouter.get("/technicians", async (_req, res) => {
         name: t.name,
         email: t.email,
         phone: t.phone,
+        isAvailable: t.isAvailable ?? true,
         avgRating: rating?.avg ? Math.round(rating.avg * 10) / 10 : null,
         reviewCount: rating?.count ?? 0,
         openJobs: load?.open ?? 0,
         completedJobs: load?.completed ?? 0,
+        revenue: Math.round((load?.revenue ?? 0) * 100) / 100,
       };
     }),
   });
@@ -974,4 +1033,18 @@ adminRouter.delete("/coupons/:id", async (req, res) => {
   const result = await Coupon.deleteOne({ _id: req.params.id });
   if (result.deletedCount === 0) throw new ApiError(404, "Coupon not found");
   res.json({ ok: true });
+});
+
+// ==================================================================
+// Waitlist (ops visibility only — customers manage their own via /api/waitlist)
+// ==================================================================
+
+adminRouter.get("/waitlist", async (req, res) => {
+  const { status, date } = req.query;
+  const filter: Record<string, unknown> = { deletedAt: null };
+  if (typeof status === "string" && status) filter.status = status;
+  if (typeof date === "string" && date) filter.date = date;
+
+  const entries = await Waitlist.find(filter).sort({ createdAt: -1 }).limit(200);
+  res.json({ entries });
 });

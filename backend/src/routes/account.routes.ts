@@ -35,6 +35,7 @@ const updateProfileSchema = z.object({
   notificationPreferences: z
     .object({ email: z.boolean(), sms: z.boolean() })
     .optional(),
+  referralLeaderboardOptIn: z.boolean().optional(),
 });
 
 accountRouter.patch("/profile", async (req, res) => {

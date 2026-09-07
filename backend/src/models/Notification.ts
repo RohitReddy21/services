@@ -12,6 +12,7 @@ const NOTIFICATION_TYPES = [
   "support_response",
   "issue_reported",
   "welcome",
+  "waitlist_spot_open",
 ] as const;
 
 const notificationSchema = new Schema(

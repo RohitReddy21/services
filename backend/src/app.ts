@@ -23,6 +23,7 @@ import { adminRouter } from "./routes/admin.routes";
 import { technicianRouter } from "./routes/technician.routes";
 import { twoFactorRouter } from "./routes/twofa.routes";
 import { couponsRouter } from "./routes/coupons.routes";
+import { waitlistRouter } from "./routes/waitlist.routes";
 
 export function createApp() {
   const app = express();
@@ -88,6 +89,7 @@ export function createApp() {
   app.use("/api/technician", technicianRouter);
   app.use("/api/2fa", twoFactorRouter);
   app.use("/api/coupons", couponsRouter);
+  app.use("/api/waitlist", waitlistRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

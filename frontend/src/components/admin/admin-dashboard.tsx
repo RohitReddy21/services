@@ -34,6 +34,7 @@ import {
   resolveSupportTicketRequest,
   restoreBookingRequest,
   restoreSupportTicketRequest,
+  updateBookingPriceRequest,
   updateBookingRequest,
   updateBookingStatusRequest,
   updateSupportTicketRequest,
@@ -247,8 +248,8 @@ export default function AdminDashboard({ adminName }: { adminName: string }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+    <div className="flex min-h-screen flex-col bg-slate-50 lg:h-screen lg:overflow-hidden">
+      <header className="sticky top-0 z-30 shrink-0 border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <Logo showTagline={false} className="scale-90 origin-left" />
@@ -275,8 +276,9 @@ export default function AdminDashboard({ adminName }: { adminName: string }) {
         </div>
       </header>
 
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row">
-        <nav className="lg:w-56 lg:shrink-0">
+      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row lg:overflow-hidden">
+        {/* Fixed in place at lg: stays put while the panel on the right scrolls. */}
+        <nav className="lg:w-56 lg:shrink-0 lg:self-stretch lg:overflow-y-auto">
           {/* A grid on small screens rather than a horizontal scroller: seven
               tabs fit on two rows, so every section is visible and tappable
               without swiping past a scrollbar. Back to a sidebar list at lg. */}
@@ -317,7 +319,7 @@ export default function AdminDashboard({ adminName }: { adminName: string }) {
           </ul>
         </nav>
 
-        <main className="min-w-0 flex-1">
+        <main className="min-w-0 flex-1 lg:overflow-y-auto lg:pb-6 lg:pr-1">
           {tab === "overview" && <OverviewPanel onJump={(t) => setTab(t as Tab)} />}
           {tab === "bookings" && <BookingsPanel />}
           {tab === "support" && <SupportPanel />}
@@ -546,6 +548,7 @@ function BookingsPanel() {
   const [error, setError] = useState<string | null>(null);
   const [techDraft, setTechDraft] = useState<Record<string, { name: string; phone: string }>>({});
   const [technicians, setTechnicians] = useState<AdminTechnician[]>([]);
+  const [priceDraft, setPriceDraft] = useState<Record<string, string>>({});
 
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<BookingFormState>(emptyBookingForm);
@@ -570,6 +573,13 @@ function BookingsPanel() {
                 phone: b.technicianPhone ?? "",
               };
             }
+          }
+          return next;
+        });
+        setPriceDraft((prev) => {
+          const next = { ...prev };
+          for (const b of res.bookings) {
+            next[b.bookingReference] = b.price?.amount != null ? String(b.price.amount) : "";
           }
           return next;
         });
@@ -620,6 +630,25 @@ function BookingsPanel() {
     try {
       await updateTechnicianRequest(reference, draft.name || null, draft.phone || null);
       await load();
+    } finally {
+      setSavingRef(null);
+    }
+  };
+
+  const handlePriceSave = async (reference: string) => {
+    const raw = priceDraft[reference] ?? "";
+    const amount = Number(raw);
+    if (raw.trim() === "" || Number.isNaN(amount) || amount < 0) {
+      setError("Enter a valid, non-negative job price.");
+      return;
+    }
+    setSavingRef(reference);
+    setError(null);
+    try {
+      await updateBookingPriceRequest(reference, amount);
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't save the price.");
     } finally {
       setSavingRef(null);
     }
@@ -760,6 +789,14 @@ function BookingsPanel() {
                     </p>
                     <p className="text-xs text-slate-500">
                       {b.data.date} &middot; {b.data.timeSlot?.label}
+                      {" · "}
+                      {b.price?.amount != null ? (
+                        <span className="font-semibold text-navy-900">
+                          £{b.price.amount.toLocaleString("en-GB")}
+                        </span>
+                      ) : (
+                        <span className="text-slate-400">no price set</span>
+                      )}
                     </p>
                     <div className="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-slate-400">
                       <span>{b.data.customer.email}</span>
@@ -845,9 +882,11 @@ function BookingsPanel() {
                         <option value="">Unassigned</option>
                         {technicians.map((t) => (
                           <option key={t.id} value={t.id}>
+                            {t.isAvailable ? "" : "🚫 "}
                             {t.name}
                             {t.avgRating ? ` · ${t.avgRating}★` : ""}
                             {t.openJobs ? ` · ${t.openJobs} open` : ""}
+                            {!t.isAvailable ? " · off-duty" : ""}
                           </option>
                         ))}
                       </select>
@@ -898,6 +937,33 @@ function BookingsPanel() {
                     >
                       Save
                     </Button>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-400">Job price (£)</span>
+                      <input
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        value={priceDraft[b.bookingReference] ?? ""}
+                        onChange={(e) =>
+                          setPriceDraft((prev) => ({
+                            ...prev,
+                            [b.bookingReference]: e.target.value,
+                          }))
+                        }
+                        placeholder="e.g. 120"
+                        className="input-field h-9 w-28 text-xs"
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
+                        disabled={savingRef === b.bookingReference}
+                        onClick={() => handlePriceSave(b.bookingReference)}
+                      >
+                        Save
+                      </Button>
                     </div>
                   </div>
                 )}

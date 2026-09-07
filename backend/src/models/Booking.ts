@@ -87,6 +87,15 @@ const bookingSchema = new Schema(
     issueNote: { type: String, default: null },
     issueReportedAt: { type: Date, default: null },
 
+    // Set by an admin once the job is priced (pricing is decided on-site, not
+    // at booking time), so this stays null until someone fills it in.
+    price: {
+      amount: { type: Number, default: null },
+      currency: { type: String, default: "GBP" },
+      setBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
+      setAt: { type: Date, default: null },
+    },
+
     // Soft delete — archived bookings are hidden from the admin lists by
     // default but can be restored.
     deletedAt: { type: Date, default: null, index: true },

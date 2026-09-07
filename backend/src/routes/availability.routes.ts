@@ -23,10 +23,12 @@ availabilityRouter.get("/", async (req, res) => {
   const [year, monthIndex] = month.split("-").map(Number);
   const daysInMonth = new Date(year, monthIndex, 0).getDate();
 
-  const days = Array.from({ length: daysInMonth }, (_, i) => {
-    const dateStr = `${month}-${String(i + 1).padStart(2, "0")}`;
-    return { date: dateStr, hasAvailability: getDayAvailability(dateStr, seed) };
-  });
+  const days = await Promise.all(
+    Array.from({ length: daysInMonth }, async (_, i) => {
+      const dateStr = `${month}-${String(i + 1).padStart(2, "0")}`;
+      return { date: dateStr, hasAvailability: await getDayAvailability(dateStr, seed) };
+    })
+  );
 
   res.json({ days });
 });
