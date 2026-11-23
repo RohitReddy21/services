@@ -29,7 +29,7 @@ export default function StatsBar() {
             whileHover={reducedMotion ? undefined : { y: -6, rotateX: -4 }}
             transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white to-transparent" />
+            <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/40" />
             <div className="transition-transform duration-300 group-hover:-translate-y-1">
               <AnimatedValue {...stat} />
               <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:text-sm">

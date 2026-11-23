@@ -43,7 +43,7 @@ export default function TechnicalShowcase() {
   return (
     <section
       ref={sectionRef}
-      className="overflow-hidden bg-linear-to-b from-white via-sky-50 to-white py-16 lg:py-24"
+      className="overflow-hidden bg-white py-16 lg:py-24"
     >
       <div className="container-ags grid gap-10 [perspective:1200px] lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
         <motion.div
@@ -88,11 +88,11 @@ export default function TechnicalShowcase() {
           transition={{ duration: 0.62, ease: "easeOut" }}
           style={reducedMotion ? undefined : { y: modelY, rotateY: modelRotate }}
         >
-          <div className="absolute inset-0 bg-linear-to-br from-brand-50 via-white to-sky-100" />
-          <div className="pointer-events-none absolute inset-x-8 top-8 h-px bg-linear-to-r from-transparent via-brand-300/60 to-transparent" />
+          <div className="absolute inset-0 bg-brand-50" />
+          <div className="pointer-events-none absolute inset-x-8 top-8 h-px bg-brand-300/60" />
           <div className="pointer-events-none absolute right-8 top-7 h-24 w-40 rounded-2xl border border-brand-200/60 ags-float-slow" />
           <div className="pointer-events-none absolute right-14 top-14 h-12 w-28 rounded-xl border border-accent-gold-400/35 ags-float-delayed" />
-          <div className="pointer-events-none absolute right-28 top-4 h-36 w-px bg-linear-to-b from-transparent via-brand-300/45 to-transparent" />
+          <div className="pointer-events-none absolute right-28 top-4 h-36 w-px bg-brand-300/45" />
           <div className="relative hidden h-80 sm:block lg:h-96">
             <CanvasGuard fallback={<ThreeDLoader />}>
               <TechnicalShowcaseModel />
@@ -107,7 +107,7 @@ export default function TechnicalShowcase() {
                 sizes="90vw"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-ink-950/45 to-transparent" />
+              <div className="absolute inset-0 bg-ink-950/35" />
             </div>
           </div>
           <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/90 p-4 shadow-xl shadow-navy-900/10 backdrop-blur">

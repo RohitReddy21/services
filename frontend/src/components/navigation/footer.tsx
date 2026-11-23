@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import Logo from "@/components/navigation/logo";
+import { ORG } from "@/lib/site";
 import { FacebookIcon, InstagramIcon, LinkedinIcon } from "@/components/ui/social-icons";
 
 const quickLinks = [
@@ -30,14 +31,6 @@ const refrigerationLinks = [
   { label: "All Refrigeration", href: "/services?category=refrigeration" },
 ];
 
-const electricalLinks = [
-  { label: "Consumer Units", href: "/services/electrical/consumer-units" },
-  { label: "EV Chargers", href: "/services/electrical/ev-chargers" },
-  { label: "Rewiring", href: "/services/electrical/rewiring" },
-  { label: "EICR & Testing", href: "/services/electrical/eicr-testing" },
-  { label: "All Electrical", href: "/services?category=electrical" },
-];
-
 const helpLinks = [
   { label: "FAQ", href: "/help" },
   { label: "Support", href: "/account/support" },
@@ -49,8 +42,7 @@ const helpLinks = [
 export default function Footer() {
   return (
     <footer className="relative overflow-hidden bg-ink-950 text-slate-300">
-      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-brand-300/70 to-transparent" />
-      <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-brand-500/10 blur-3xl" />
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-accent-gold-500" />
       <motion.div
         className="container-ags grid grid-cols-2 gap-10 py-14 lg:grid-cols-7"
         initial={{ opacity: 0, y: 24 }}
@@ -61,9 +53,8 @@ export default function Footer() {
         <div className="col-span-2">
           <Logo variant="inverted" />
           <p className="mt-4 text-sm leading-relaxed text-slate-400 max-w-xs">
-            Delivering professional air conditioning, refrigeration and
-            electrical installation, servicing and repair solutions across the
-            UK.
+            Delivering professional air conditioning and refrigeration
+            installation, servicing and repair solutions across the UK.
           </p>
           <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-brand-100">
             <ShieldCheck className="size-3.5 text-accent-gold-400" />
@@ -90,7 +81,6 @@ export default function Footer() {
         <FooterColumn title="Quick Links" links={quickLinks} />
         <FooterColumn title="Air Conditioning" links={acLinks} />
         <FooterColumn title="Refrigeration" links={refrigerationLinks} />
-        <FooterColumn title="Electrical" links={electricalLinks} />
         <FooterColumn title="Help" links={helpLinks} />
 
         <div>
@@ -98,19 +88,23 @@ export default function Footer() {
           <ul className="space-y-3 text-sm text-slate-400">
             <li className="flex items-start gap-2.5">
               <Phone className="size-4 mt-0.5 shrink-0 text-brand-400" />
-              <a href="tel:02079460018" className="hover:text-white">
-                020 7946 0018
-              </a>
+              <div className="flex flex-col gap-1">
+                {ORG.phones.map((phone) => (
+                  <a key={phone.href} href={phone.href} className="hover:text-white">
+                    {phone.display}
+                  </a>
+                ))}
+              </div>
             </li>
             <li className="flex items-start gap-2.5">
               <Mail className="size-4 mt-0.5 shrink-0 text-brand-400" />
-              <a href="mailto:info@agsolutions.co.uk" className="hover:text-white">
-                info@agsolutions.co.uk
+              <a href={`mailto:${ORG.email}`} className="hover:text-white">
+                {ORG.email}
               </a>
             </li>
             <li className="flex items-start gap-2.5">
               <MapPin className="size-4 mt-0.5 shrink-0 text-brand-400" />
-              <span>13 Baker Street, London, W1U 3BW</span>
+              <span>{ORG.addressLine}</span>
             </li>
             <li className="pt-1 text-slate-500">Mon &ndash; Sat, 8:00 AM &ndash; 6:00 PM</li>
           </ul>
@@ -119,7 +113,7 @@ export default function Footer() {
 
       <div className="border-t border-white/10">
         <div className="container-ags py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-          <span>&copy; {new Date().getFullYear()} Advanced Gas Solutions. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} AGS Air Conditioning & Refrigeration Ltd. All rights reserved.</span>
           <div className="flex items-center gap-4">
             <Link href="/legal/terms" className="hover:text-slate-300">Terms</Link>
             <Link href="/legal/privacy" className="hover:text-slate-300">Privacy</Link>

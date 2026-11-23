@@ -99,21 +99,21 @@ function ServiceRig({
         <group ref={(node) => { ringRefs.current[0] = node; }} position={[0, 0, -0.25]}>
           <mesh rotation={[Math.PI / 2, 0, 0]}>
             <torusGeometry args={[1.65, 0.018, 12, 112]} />
-            <meshBasicMaterial color="#8ab5ff" transparent opacity={0.44} />
+            <meshBasicMaterial color="#6ab9ff" transparent opacity={0.44} />
           </mesh>
         </group>
 
         <group ref={(node) => { ringRefs.current[1] = node; }} position={[0.08, 0, -0.18]}>
           <mesh rotation={[Math.PI / 2, 0, Math.PI / 7]}>
             <torusGeometry args={[1.1, 0.014, 12, 96]} />
-            <meshBasicMaterial color="#e8c46a" transparent opacity={0.42} />
+            <meshBasicMaterial color="#ff5a50" transparent opacity={0.42} />
           </mesh>
         </group>
 
         <mesh castShadow receiveShadow position={[0, 0, 0]}>
           <boxGeometry args={[2.35, 1.26, 0.28]} />
           <meshStandardMaterial
-            color="#dbeafe"
+            color="#cfe8fd"
             metalness={0.48}
             roughness={0.24}
             envMapIntensity={1.15}
@@ -123,7 +123,7 @@ function ServiceRig({
         <mesh position={[0, 0, 0.17]} castShadow>
           <boxGeometry args={[2.1, 1.02, 0.08]} />
           <meshStandardMaterial
-            color="#071224"
+            color="#050608"
             metalness={0.58}
             roughness={0.2}
             envMapIntensity={1.2}
@@ -134,13 +134,13 @@ function ServiceRig({
           {Array.from({ length: 9 }).map((_, index) => (
             <mesh key={index} rotation={[0, 0, (index * Math.PI) / 4.5]} position={[0, 0, 0.03]}>
               <boxGeometry args={[0.92, 0.045, 0.045]} />
-              <meshStandardMaterial color="#8ab5ff" metalness={0.65} roughness={0.18} />
+              <meshStandardMaterial color="#6ab9ff" metalness={0.65} roughness={0.18} />
             </mesh>
           ))}
           <mesh rotation={[Math.PI / 2, 0, 0]}>
             <torusGeometry args={[0.47, 0.035, 16, 80]} />
             <meshStandardMaterial
-              color="#e8c46a"
+              color="#ff5a50"
               metalness={0.62}
               roughness={0.18}
               envMapIntensity={1.4}
@@ -156,18 +156,18 @@ function ServiceRig({
           <group key={x} position={[x, -0.82, 0.03]}>
             <mesh castShadow>
               <cylinderGeometry args={[0.13, 0.13, 0.7, 32]} />
-              <meshStandardMaterial color="#2b6bf0" metalness={0.52} roughness={0.2} />
+              <meshStandardMaterial color="#0090f8" metalness={0.52} roughness={0.2} />
             </mesh>
             <mesh position={[0, -0.43, 0]} castShadow>
               <boxGeometry args={[0.48, 0.12, 0.4]} />
-              <meshStandardMaterial color="#122a4d" metalness={0.48} roughness={0.24} />
+              <meshStandardMaterial color="#14181f" metalness={0.48} roughness={0.24} />
             </mesh>
           </group>
         ))}
 
         <mesh position={[0, 0.82, -0.02]} rotation={[0, 0, Math.PI / 2]} castShadow>
           <cylinderGeometry args={[0.09, 0.09, 2.15, 32]} />
-          <meshStandardMaterial color="#e8c46a" metalness={0.58} roughness={0.2} />
+          <meshStandardMaterial color="#ff5a50" metalness={0.58} roughness={0.2} />
         </mesh>
 
         {particles.map((particle) => (
@@ -178,7 +178,7 @@ function ServiceRig({
           >
             <sphereGeometry args={[1, 14, 14]} />
             <meshBasicMaterial
-              color={particle.id % 3 === 0 ? "#e8c46a" : "#8ab5ff"}
+              color={particle.id % 3 === 0 ? "#ff5a50" : "#6ab9ff"}
               transparent
               opacity={0.72}
             />
@@ -215,15 +215,15 @@ export default function HeroMotionScene() {
           intensity={1.45}
           color="#ffffff"
         />
-        <directionalLight position={[-4, 1.2, 1]} intensity={0.62} color="#8ab5ff" />
+        <directionalLight position={[-4, 1.2, 1]} intensity={0.62} color="#6ab9ff" />
         <ServiceRig
           scrollProgress={scrollProgress}
           reducedMotion={Boolean(reducedMotion)}
         />
         <Environment resolution={256}>
           <Lightformer intensity={2.2} position={[0, 3, 4]} scale={[5, 2, 1]} color="#ffffff" />
-          <Lightformer intensity={1.4} position={[-4, 0, 2]} scale={[2, 4, 1]} color="#8ab5ff" />
-          <Lightformer intensity={1.1} position={[4, -1, 2]} scale={[3, 2, 1]} color="#e8c46a" />
+          <Lightformer intensity={1.4} position={[-4, 0, 2]} scale={[2, 4, 1]} color="#6ab9ff" />
+          <Lightformer intensity={1.1} position={[4, -1, 2]} scale={[3, 2, 1]} color="#ff5a50" />
         </Environment>
       </Canvas>
     </div>

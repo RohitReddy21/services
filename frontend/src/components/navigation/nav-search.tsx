@@ -67,7 +67,7 @@ export default function NavSearch() {
         type="button"
         aria-label="Search services"
         onClick={() => setOpen((v) => !v)}
-        className="ags-focus flex size-9 items-center justify-center rounded-lg text-navy-800 transition-colors hover:bg-slate-100"
+        className="ags-focus flex size-9 items-center justify-center rounded-lg text-white/85 transition-colors hover:bg-white/10 hover:text-white"
       >
         <Search className="size-4.5" />
       </button>

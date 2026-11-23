@@ -18,13 +18,13 @@ import { breadcrumbSchema } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Care Plans",
   description:
-    "AGS Care Plans — monthly servicing for your air conditioning, refrigeration or electrical equipment. From £108.25/month with free call-outs and unused visits rolled into 1-month vouchers.",
+    "AGS Care Plans — monthly servicing for your air conditioning or refrigeration equipment. From £108.25/month with free call-outs and unused visits rolled into 1-month vouchers.",
   alternates: { canonical: "/subscriptions" },
   openGraph: {
     url: "/subscriptions",
     title: "Care Plans",
     description:
-      "Monthly servicing plans for AC, refrigeration and electrical equipment — from £108.25/month.",
+      "Monthly servicing plans for AC and refrigeration equipment — from £108.25/month.",
   },
 };
 

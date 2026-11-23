@@ -47,7 +47,7 @@ const FREQUENCIES: SubscriptionFrequency[] = [
   "bi-annual",
   "annual",
 ];
-const CATEGORIES: ServiceCategoryId[] = ["air-conditioning", "refrigeration", "electrical"];
+const CATEGORIES: ServiceCategoryId[] = ["air-conditioning", "refrigeration"];
 const STATUSES: SubscriptionStatus[] = ["ACTIVE", "PAUSED", "CANCELLED"];
 
 type SendState = { loading: boolean; msg: string; tone: "ok" | "err" | "muted" };

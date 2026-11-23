@@ -37,7 +37,7 @@ function CompressorAssembly() {
         <mesh position={[0, -0.15, 0]} castShadow>
           <boxGeometry args={[2.4, 1.25, 1.2]} />
           <meshStandardMaterial
-            color="#dbeafe"
+            color="#cfe8fd"
             metalness={0.4}
             roughness={0.28}
             envMapIntensity={1.1}
@@ -46,7 +46,7 @@ function CompressorAssembly() {
         <mesh position={[0, -0.15, 0.64]}>
           <boxGeometry args={[2.12, 0.92, 0.08]} />
           <meshStandardMaterial
-            color="#0b1b33"
+            color="#0a0d12"
             metalness={0.5}
             roughness={0.16}
             envMapIntensity={1.2}
@@ -56,7 +56,7 @@ function CompressorAssembly() {
           <mesh key={x} position={[x, -0.15, 0.72]} rotation={[Math.PI / 2, 0, 0]}>
             <torusGeometry args={[0.24, 0.025, 12, 36]} />
             <meshStandardMaterial
-              color="#e8c46a"
+              color="#ff5a50"
               metalness={0.6}
               roughness={0.22}
               envMapIntensity={1.3}
@@ -66,7 +66,7 @@ function CompressorAssembly() {
         <mesh position={[-0.72, 0.72, 0]} castShadow>
           <cylinderGeometry args={[0.35, 0.35, 0.74, 36]} />
           <meshStandardMaterial
-            color="#2b6bf0"
+            color="#0090f8"
             metalness={0.55}
             roughness={0.2}
             envMapIntensity={1.2}
@@ -75,7 +75,7 @@ function CompressorAssembly() {
         <mesh position={[0.72, 0.65, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
           <cylinderGeometry args={[0.2, 0.2, 1.18, 32]} />
           <meshStandardMaterial
-            color="#8ab5ff"
+            color="#6ab9ff"
             metalness={0.55}
             roughness={0.2}
             envMapIntensity={1.2}
@@ -83,13 +83,13 @@ function CompressorAssembly() {
         </mesh>
         <mesh position={[0, -0.85, 0]} receiveShadow>
           <boxGeometry args={[2.8, 0.18, 1.45]} />
-          <meshStandardMaterial color="#122a4d" metalness={0.5} roughness={0.26} />
+          <meshStandardMaterial color="#14181f" metalness={0.5} roughness={0.26} />
         </mesh>
 
         {/* Sweeping inspection scan-line */}
         <mesh ref={scanRef} rotation={[Math.PI / 2, 0, 0]}>
           <torusGeometry args={[1.5, 0.012, 8, 64]} />
-          <meshBasicMaterial color="#5390ff" transparent opacity={0.4} />
+          <meshBasicMaterial color="#2ea2fb" transparent opacity={0.4} />
         </mesh>
 
         <Html position={[-1.42, 0.62, 0.08]} center className="pointer-events-none">
@@ -134,7 +134,7 @@ export default function TechnicalShowcaseModel() {
         intensity={1.35}
         color="#ffffff"
       />
-      <directionalLight position={[-4, 1, -2]} intensity={0.45} color="#8ab5ff" />
+      <directionalLight position={[-4, 1, -2]} intensity={0.45} color="#6ab9ff" />
       <CompressorAssembly />
       <ContactShadows
         position={[0, -1.2, 0]}
@@ -144,8 +144,8 @@ export default function TechnicalShowcaseModel() {
       />
       <Environment resolution={256}>
         <Lightformer intensity={2} position={[0, 3, 4]} scale={[5, 2, 1]} color="#ffffff" />
-        <Lightformer intensity={1.5} position={[-4, 0, 2]} scale={[2, 4, 1]} color="#8ab5ff" />
-        <Lightformer intensity={1} position={[4, -1, 2]} scale={[3, 2, 1]} color="#e8c46a" />
+        <Lightformer intensity={1.5} position={[-4, 0, 2]} scale={[2, 4, 1]} color="#6ab9ff" />
+        <Lightformer intensity={1} position={[4, -1, 2]} scale={[3, 2, 1]} color="#ff5a50" />
       </Environment>
       <OrbitControls
         enableZoom={false}

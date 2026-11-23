@@ -43,7 +43,7 @@ const BOOKING_STATUSES = [
   "CANCELLED",
 ] as const;
 
-const CATEGORY_IDS = ["air-conditioning", "refrigeration", "electrical"] as const;
+const CATEGORY_IDS = ["air-conditioning", "refrigeration"] as const;
 const REQUIREMENTS = [
   "installation",
   "repair",

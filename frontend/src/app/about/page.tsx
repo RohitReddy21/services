@@ -9,7 +9,7 @@ import Parallax from "@/components/ui/parallax";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "AGS - Advanced Gas Solutions is a UK air conditioning and refrigeration specialist, delivering certified installation, servicing and repair for homes and businesses.",
+    "AGS Air Conditioning & Refrigeration Ltd is a UK air conditioning and refrigeration specialist, delivering certified installation, servicing and repair for homes and businesses.",
   alternates: { canonical: "/about" },
   openGraph: { url: "/about", title: "About Us" },
 };
@@ -58,7 +58,7 @@ export default function AboutPage() {
             About AGS
           </span>
           <h1 className="mt-5 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
-            Advanced Gas Solutions
+            AGS Air Conditioning & Refrigeration Ltd
           </h1>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
             AGS is a UK-based air conditioning and refrigeration specialist,

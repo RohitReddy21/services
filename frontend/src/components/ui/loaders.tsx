@@ -17,7 +17,7 @@ export function InlineLoader({ className }: { className?: string }) {
 
 export function PageLoader({
   compact = false,
-  label = "Advanced Gas Solutions",
+  label = "AGS Air Conditioning & Refrigeration Ltd",
 }: {
   compact?: boolean;
   label?: string;

@@ -12,6 +12,7 @@ import CookieConsent from "@/components/analytics/cookie-consent";
 import { siteGraph } from "@/lib/seo";
 import {
   GOOGLE_SITE_VERIFICATION,
+  SITE_LEGAL_NAME,
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_TAGLINE,
@@ -36,18 +37,17 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: `${SITE_NAME} | ${SITE_TAGLINE}`,
-    template: `%s | ${SITE_NAME} - Advanced Gas Solutions`,
+    template: `%s | ${SITE_LEGAL_NAME}`,
   },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
-  authors: [{ name: "Advanced Gas Solutions" }],
-  creator: "Advanced Gas Solutions",
-  publisher: "Advanced Gas Solutions",
+  authors: [{ name: "AGS Air Conditioning & Refrigeration Ltd" }],
+  creator: "AGS Air Conditioning & Refrigeration Ltd",
+  publisher: "AGS Air Conditioning & Refrigeration Ltd",
   keywords: [
     "air conditioning",
     "refrigeration",
     "HVAC",
-    "electrical services",
     "commercial refrigeration",
     "AC installation",
     "AC repair",
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
-    siteName: `${SITE_NAME} - Advanced Gas Solutions`,
+    siteName: SITE_LEGAL_NAME,
     locale: "en_GB",
     url: SITE_URL,
     title: `${SITE_NAME} | ${SITE_TAGLINE}`,
@@ -91,7 +91,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b1b33" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0d12" },
   ],
   colorScheme: "light",
 };

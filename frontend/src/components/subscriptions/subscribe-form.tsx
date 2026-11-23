@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Check, Loader2, Refrigerator, Snowflake, Tag, X, Zap } from "lucide-react";
+import { Check, Loader2, Refrigerator, Snowflake, Tag, X } from "lucide-react";
 import { useAuth } from "@/components/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import { serviceCategories } from "@/lib/data/services";
@@ -15,7 +15,7 @@ import type { ServiceCategoryId } from "@/types/service";
 import { cn } from "@/lib/utils";
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i;
-const categoryIcon = { snowflake: Snowflake, fridge: Refrigerator, bolt: Zap } as const;
+const categoryIcon = { snowflake: Snowflake, fridge: Refrigerator } as const;
 
 export default function SubscribeForm({ plan }: { plan: SubscriptionPlan }) {
   const router = useRouter();

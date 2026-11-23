@@ -8,33 +8,39 @@ function stripTrailingSlash(value: string) {
 }
 
 export const SITE_URL = stripTrailingSlash(
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.agsolutions.co.uk"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://agsrefrigeration.uk"
 );
 
 export const SITE_NAME = "AGS";
-export const SITE_LEGAL_NAME = "Advanced Gas Solutions";
+export const SITE_LEGAL_NAME = "AGS Air Conditioning & Refrigeration Ltd";
 export const SITE_TAGLINE = "Advanced Air Conditioning & Refrigeration Solutions";
 
 export const SITE_DESCRIPTION =
-  "Professional air conditioning, refrigeration and electrical installation, servicing, maintenance and repair for commercial and residential customers across the UK. F-Gas certified engineers.";
+  "Professional air conditioning and refrigeration installation, servicing, maintenance and repair for commercial and residential customers across the UK. F-Gas certified engineers.";
 
 export const ORG = {
   name: SITE_NAME,
-  legalName: `${SITE_NAME} - ${SITE_LEGAL_NAME}`,
-  telephone: "+44 20 7946 0018",
-  telephoneHref: "tel:+442079460018",
-  email: "info@agsolutions.co.uk",
+  legalName: SITE_LEGAL_NAME,
+  /** Primary number, international format (used in structured data). */
+  telephone: "+44 7904 858877",
+  telephoneHref: "tel:+447904858877",
+  /** All public numbers, in the order they should be shown. */
+  phones: [
+    { display: "07904 858877", href: "tel:+447904858877" },
+    { display: "07904 858881", href: "tel:+447904858881" },
+  ],
+  email: "support@agsrefrigeration.uk",
   foundingDate: "2014",
   priceRange: "££",
   address: {
-    street: "13 Baker Street",
-    city: "London",
-    region: "Greater London",
-    postalCode: "W1U 3BW",
+    street: "79 Cameron Street",
+    city: "Liverpool",
+    region: "Merseyside",
+    postalCode: "L7 0EN",
     country: "GB",
   },
-  /** Approx. coordinates for 13 Baker Street, London. */
-  geo: { latitude: 51.5169, longitude: -0.1573 },
+  /** One-line address for display. */
+  addressLine: "79 Cameron Street, Liverpool, L7 0EN",
   openingHours: [
     { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], opens: "08:00", closes: "18:00" },
   ],

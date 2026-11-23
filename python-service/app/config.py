@@ -11,6 +11,8 @@ class Settings(BaseSettings):
         "http://localhost:3000,"
         "http://localhost:4000,"
         "https://frontend-silk-seven-87.vercel.app,"
+        "https://agsrefrigeration.uk,"
+        "https://www.agsrefrigeration.uk,"
         "https://services-xehg.onrender.com"
     )
 

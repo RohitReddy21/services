@@ -33,7 +33,7 @@ export default function WhyChoose() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="overflow-hidden bg-linear-to-b from-sky-50 to-white py-16 lg:py-24">
+    <section className="overflow-hidden bg-sky-50 py-16 lg:py-24">
       <div className="container-ags">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <motion.div
@@ -74,7 +74,7 @@ export default function WhyChoose() {
                 sizes="(min-width: 1024px) 54vw, 92vw"
                 className="object-cover ags-image-reveal"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-ink-950/55 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-ink-950/40" />
               <div
                 className="ags-tilt-layer absolute bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/90 p-4 ags-depth-md backdrop-blur"
                 style={{ "--ags-z": "70px" } as CSSProperties}

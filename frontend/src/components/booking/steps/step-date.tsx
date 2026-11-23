@@ -55,7 +55,7 @@ export default function StepDate({ embedded = false }: { embedded?: boolean }) {
         </div>
       )}
 
-      <div className="rounded-lg border border-slate-200 bg-linear-to-b from-white to-sky-50 p-4 shadow-inner shadow-brand-100 sm:p-5">
+      <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-inner shadow-brand-100 sm:p-5">
         <div className="flex items-center justify-between">
           <button
             type="button"

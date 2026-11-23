@@ -58,8 +58,8 @@ export default function PrivacyPage() {
             </Section>
             <Section title="7. Contact">
               For privacy questions or data requests, contact{" "}
-              <a href="mailto:info@agsolutions.co.uk" className="font-semibold text-brand-600 hover:text-brand-700">
-                info@agsolutions.co.uk
+              <a href="mailto:support@agsrefrigeration.uk" className="font-semibold text-brand-600 hover:text-brand-700">
+                support@agsrefrigeration.uk
               </a>
               .
             </Section>

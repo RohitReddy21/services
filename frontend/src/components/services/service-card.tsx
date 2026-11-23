@@ -13,9 +13,7 @@ export default function ServiceCard({ service }: { service: ServiceSummary }) {
   const tone =
     service.categoryId === "air-conditioning"
       ? { label: "Climate control", metric: "Cooling + heating" }
-      : service.categoryId === "electrical"
-        ? { label: "Electrical", metric: "Tested + certified" }
-        : { label: "Cold chain", metric: "Temperature stable" };
+      : { label: "Cold chain", metric: "Temperature stable" };
 
   return (
     <TiltCard
@@ -32,7 +30,7 @@ export default function ServiceCard({ service }: { service: ServiceSummary }) {
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-ink-950/50 via-ink-950/5 to-transparent opacity-80 transition-opacity group-hover:opacity-95" />
+        <div className="absolute inset-0 bg-ink-950/40 opacity-80 transition-opacity group-hover:opacity-95" />
         <div
           className="ags-tilt-layer absolute left-3 top-3 rounded-full border border-white/50 bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-700 shadow-sm backdrop-blur"
           style={{ "--ags-z": "26px" } as CSSProperties}

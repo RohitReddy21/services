@@ -5,10 +5,11 @@ import ContactForm from "@/components/contact/contact-form";
 import JsonLd from "@/components/seo/json-ld";
 import Reveal from "@/components/ui/reveal";
 import { breadcrumbSchema, webPageSchema } from "@/lib/seo";
+import { ORG } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "Get in touch with AGS - Advanced Gas Solutions for air conditioning and refrigeration enquiries across the UK.",
+  description: "Get in touch with AGS Air Conditioning & Refrigeration Ltd for air conditioning and refrigeration enquiries across the UK.",
   alternates: { canonical: "/contact" },
   openGraph: { url: "/contact", title: "Contact Us" },
 };
@@ -20,7 +21,7 @@ export default function ContactPage() {
         id="ld-page"
         data={webPageSchema({
           name: "Contact AGS",
-          description: "Contact Advanced Gas Solutions for AC, refrigeration and electrical enquiries.",
+          description: "Contact AGS Air Conditioning & Refrigeration Ltd for AC and refrigeration enquiries.",
           path: "/contact",
           type: "ContactPage",
         })}
@@ -54,15 +55,21 @@ export default function ContactPage() {
         <div className="mt-10 grid gap-8 lg:grid-cols-[320px_1fr]">
           <Reveal variant="left" className="space-y-4">
             <ContactInfoCard icon={Phone} title="Phone">
-              <a href="tel:02079460018" className="hover:text-brand-600">020 7946 0018</a>
+              <div className="flex flex-col gap-1">
+                {ORG.phones.map((phone) => (
+                  <a key={phone.href} href={phone.href} className="hover:text-brand-600">
+                    {phone.display}
+                  </a>
+                ))}
+              </div>
             </ContactInfoCard>
             <ContactInfoCard icon={Mail} title="Email">
-              <a href="mailto:info@agsolutions.co.uk" className="hover:text-brand-600">
-                info@agsolutions.co.uk
+              <a href={`mailto:${ORG.email}`} className="hover:text-brand-600">
+                {ORG.email}
               </a>
             </ContactInfoCard>
             <ContactInfoCard icon={MapPin} title="Business Address">
-              13 Baker Street, London, W1U 3BW
+              {ORG.addressLine}
             </ContactInfoCard>
             <ContactInfoCard icon={Clock3} title="Opening Hours">
               Mon &ndash; Sat, 8:00 AM &ndash; 6:00 PM

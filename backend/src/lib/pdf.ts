@@ -1,7 +1,7 @@
 import PDFDocument from "pdfkit";
 import type { Response } from "express";
 
-const BRAND = "#1a4fd1";
+const BRAND = "#0075d0";
 const NAVY = "#0b1b33";
 const SLATE = "#64748b";
 const GOLD = "#cf9f3d";
@@ -47,7 +47,7 @@ function footer(doc: PDFKit.PDFDocument) {
     .fillColor(SLATE)
     .font("Helvetica")
     .text(
-      "AGS — Advanced Gas Solutions · Service details and any applicable charges are confirmed directly with our team.",
+      "AGS Air Conditioning & Refrigeration Ltd · Service details and any applicable charges are confirmed directly with our team.",
       50,
       y + 12,
       { width: doc.page.width - 100, align: "center" }

@@ -28,8 +28,8 @@ export default function RevenueChart({ data }: { data: AdminRevenuePoint[] }) {
         <AreaChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
           <defs>
             <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#2b6bf0" stopOpacity={0.25} />
-              <stop offset="100%" stopColor="#2b6bf0" stopOpacity={0} />
+              <stop offset="0%" stopColor="#0090f8" stopOpacity={0.25} />
+              <stop offset="100%" stopColor="#0090f8" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
@@ -56,7 +56,7 @@ export default function RevenueChart({ data }: { data: AdminRevenuePoint[] }) {
           <Area
             type="monotone"
             dataKey="revenue"
-            stroke="#2b6bf0"
+            stroke="#0090f8"
             strokeWidth={2}
             fill="url(#revenueFill)"
           />

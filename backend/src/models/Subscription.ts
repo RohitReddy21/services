@@ -10,7 +10,7 @@ const subscriptionSchema = new Schema(
     planId: { type: String, required: true },
     planName: { type: String, required: true },
     frequency: { type: String, enum: FREQUENCIES, required: true },
-    categoryId: { type: String, enum: ["air-conditioning", "refrigeration", "electrical"], required: true },
+    categoryId: { type: String, enum: ["air-conditioning", "refrigeration"], required: true },
     equipmentId: { type: String, required: true },
     equipmentLabel: { type: String, required: true },
     status: { type: String, enum: SUBSCRIPTION_STATUSES, default: "ACTIVE" },

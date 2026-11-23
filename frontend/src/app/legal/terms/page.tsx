@@ -25,7 +25,7 @@ export default function TermsPage() {
 
           <div className="mt-8 space-y-7 text-sm leading-relaxed text-slate-600">
             <Section title="1. About These Terms">
-              These terms govern your use of the AGS (Advanced Gas Solutions)
+              These terms govern your use of the AGS Air Conditioning & Refrigeration Ltd (AGS)
               website and booking platform. By submitting a booking request
               or creating an account, you agree to these terms.
             </Section>
@@ -59,8 +59,8 @@ export default function TermsPage() {
             </Section>
             <Section title="7. Contact">
               Questions about these terms can be sent to{" "}
-              <a href="mailto:info@agsolutions.co.uk" className="font-semibold text-brand-600 hover:text-brand-700">
-                info@agsolutions.co.uk
+              <a href="mailto:support@agsrefrigeration.uk" className="font-semibold text-brand-600 hover:text-brand-700">
+                support@agsrefrigeration.uk
               </a>
               .
             </Section>

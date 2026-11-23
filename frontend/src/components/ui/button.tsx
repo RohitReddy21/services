@@ -3,13 +3,13 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const variantStyles = {
-  primary: "bg-brand-600 text-white hover:bg-brand-700 ags-extrude",
+  primary: "bg-brand-500 text-white hover:bg-brand-600 ags-extrude",
   secondary:
     "bg-white text-navy-900 border border-slate-200 hover:border-brand-300 hover:bg-brand-50 ags-depth-sm ags-lift-sm",
   outline:
     "bg-transparent text-white border border-white/40 hover:bg-white/10 hover:shadow-lg hover:shadow-white/10",
   ghost: "bg-transparent text-navy-700 hover:bg-slate-100 hover:text-brand-700",
-  gold: "bg-accent-gold-500 text-navy-950 hover:bg-accent-gold-600 ags-extrude ags-extrude-gold",
+  gold: "bg-accent-gold-500 text-white hover:bg-accent-gold-600 ags-extrude ags-extrude-gold",
 } as const;
 
 const sizeStyles = {

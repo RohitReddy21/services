@@ -7,6 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-context";
 import { BookingProvider, STEP_LABELS, useBooking } from "@/components/booking/booking-context";
 import BookingConfirmation from "@/components/booking/booking-confirmation";
+import { ORG } from "@/lib/site";
 import BookingStepper from "@/components/booking/booking-stepper";
 import ReservationTimer from "@/components/booking/reservation-timer";
 import StageAddressContact from "@/components/booking/stages/stage-address-contact";
@@ -169,11 +170,11 @@ function BookingHeader() {
       <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-xs shadow-sm shadow-navy-900/5 md:min-w-64">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Need Help?</p>
         <a
-          href="tel:02079460018"
+          href={ORG.phones[0].href}
           className="mt-2 flex items-center gap-2 font-bold text-navy-900 hover:text-brand-700"
         >
           <Phone className="size-4 text-brand-600" />
-          020 7946 0018
+          {ORG.phones[0].display}
         </a>
         <p className="mt-1.5 flex items-center gap-2 text-xs font-semibold text-slate-500">
           <Clock className="size-4 text-brand-600" />

@@ -17,14 +17,12 @@ export default async function BookPage({ searchParams }: PageProps<"/book">) {
   const params = await searchParams;
   const categoryParam = Array.isArray(params.category) ? params.category[0] : params.category;
   const initialCategory: ServiceCategoryId | undefined =
-    categoryParam === "air-conditioning" ||
-    categoryParam === "refrigeration" ||
-    categoryParam === "electrical"
+    categoryParam === "air-conditioning" || categoryParam === "refrigeration"
       ? categoryParam
       : undefined;
 
   return (
-    <div className="min-h-[calc(100vh-4.5rem)] bg-linear-to-b from-sky-50 via-white to-slate-25">
+    <div className="min-h-[calc(100vh-4.5rem)] bg-sky-50">
       <BookingFlow initialCategory={initialCategory} />
     </div>
   );

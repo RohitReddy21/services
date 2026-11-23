@@ -16,7 +16,7 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "72px",
-          background: "linear-gradient(135deg, #071224 0%, #0b1b33 45%, #142f6b 100%)",
+          background: "#050608",
           fontFamily: "sans-serif",
         }}
       >
@@ -27,7 +27,7 @@ export default function OpengraphImage() {
               height: "64px",
               borderRadius: "9999px",
               background: "#ffffff",
-              color: "#0b1b33",
+              color: "#0a0d12",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -42,16 +42,16 @@ export default function OpengraphImage() {
               fontSize: "20px",
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "#8ab5ff",
+              color: "#6ab9ff",
               fontWeight: 600,
             }}
           >
-            Advanced Gas Solutions
+            AGS Air Conditioning & Refrigeration Ltd
           </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ width: "88px", height: "6px", background: "#cf9f3d", borderRadius: "3px" }} />
+          <div style={{ width: "88px", height: "6px", background: "#f02424", borderRadius: "3px" }} />
           <div
             style={{
               marginTop: "28px",
@@ -64,7 +64,7 @@ export default function OpengraphImage() {
           >
             {SITE_TAGLINE}
           </div>
-          <div style={{ marginTop: "24px", fontSize: "28px", color: "#dce9ff", maxWidth: "820px" }}>
+          <div style={{ marginTop: "24px", fontSize: "28px", color: "#d2eaff", maxWidth: "820px" }}>
             F&#8209;Gas certified engineers · Installation · Servicing · Repairs · UK-wide
           </div>
         </div>

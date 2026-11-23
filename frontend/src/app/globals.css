@@ -2,38 +2,38 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #0b1b33;
+  --foreground: #0a0d12;
 
   /* AGS Brand palette */
-  --color-navy-950: #071224;
-  --color-navy-900: #0b1b33;
-  --color-navy-800: #122a4d;
-  --color-navy-700: #1a3766;
-  --color-navy-600: #234580;
+  --color-navy-950: #050608;
+  --color-navy-900: #0a0d12;
+  --color-navy-800: #14181f;
+  --color-navy-700: #222833;
+  --color-navy-600: #333b49;
 
-  --color-brand-50: #eef4ff;
-  --color-brand-100: #dce9ff;
-  --color-brand-200: #b9d3ff;
-  --color-brand-300: #8ab5ff;
-  --color-brand-400: #5390ff;
-  --color-brand-500: #2b6bf0;
-  --color-brand-600: #1a4fd1;
-  --color-brand-700: #163fa8;
-  --color-brand-800: #143585;
-  --color-brand-900: #142f6b;
+  --color-brand-50: #eaf5ff;
+  --color-brand-100: #d2eaff;
+  --color-brand-200: #a6d4ff;
+  --color-brand-300: #6ab9ff;
+  --color-brand-400: #2ea2fb;
+  --color-brand-500: #0090f8;
+  --color-brand-600: #0075d0;
+  --color-brand-700: #005da6;
+  --color-brand-800: #004a85;
+  --color-brand-900: #003a68;
 
-  --color-sky-50: #f4f8fd;
-  --color-sky-100: #eaf2fb;
-  --color-sky-200: #dbeafe;
+  --color-sky-50: #f3f9ff;
+  --color-sky-100: #e4f2fe;
+  --color-sky-200: #cfe8fd;
 
   --color-accent-green-50: #eefcf3;
   --color-accent-green-100: #d7f5e2;
   --color-accent-green-500: #16a066;
   --color-accent-green-600: #0f8a56;
 
-  --color-accent-gold-400: #e8c46a;
-  --color-accent-gold-500: #cf9f3d;
-  --color-accent-gold-600: #b0842a;
+  --color-accent-gold-400: #ff5a50;
+  --color-accent-gold-500: #f02424;
+  --color-accent-gold-600: #c81a1a;
 
   --color-slate-25: #f8fafc;
 
@@ -41,9 +41,9 @@
      photo overlays, chat header) that must stay dark in both themes — kept
      separate from navy-900/950 so those can act as invertible text-ink
      tokens without breaking the sections that are dark by design. */
-  --color-ink-800: #122a4d;
-  --color-ink-900: #0b1b33;
-  --color-ink-950: #071224;
+  --color-ink-800: #14181f;
+  --color-ink-900: #0a0d12;
+  --color-ink-950: #050608;
 }
 
 @theme inline {
@@ -178,21 +178,21 @@ body {
 }
 
 .ags-surface {
-  border: 1px solid rgba(185, 211, 255, 0.65);
+  border: 1px solid rgba(168, 217, 255, 0.65);
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 24px 60px rgba(11, 27, 51, 0.08);
+  box-shadow: 0 24px 60px rgba(5, 6, 8, 0.08);
 }
 
 .ags-card-depth {
   box-shadow:
-    0 1px 2px rgba(11, 27, 51, 0.05),
-    0 18px 42px rgba(11, 27, 51, 0.08);
+    0 1px 2px rgba(5, 6, 8, 0.05),
+    0 18px 42px rgba(5, 6, 8, 0.08);
 }
 
 .ags-card-depth-strong {
   box-shadow:
-    0 8px 20px rgba(11, 27, 51, 0.08),
-    0 28px 70px rgba(11, 27, 51, 0.14);
+    0 8px 20px rgba(5, 6, 8, 0.08),
+    0 28px 70px rgba(5, 6, 8, 0.14);
 }
 
 .ags-image-reveal {
@@ -205,13 +205,6 @@ body {
 }
 
 .ags-shimmer {
-  background-image: linear-gradient(
-    90deg,
-    rgba(226, 232, 240, 0.55) 0%,
-    rgba(255, 255, 255, 0.92) 46%,
-    rgba(226, 232, 240, 0.55) 100%
-  );
-  background-size: 220% 100%;
   animation: ags-shimmer 1.35s ease-in-out infinite;
 }
 
@@ -220,10 +213,7 @@ body {
 }
 
 .ags-cinematic-bg {
-  background:
-    linear-gradient(105deg, rgba(7, 18, 36, 0.78) 0%, rgba(11, 27, 51, 0.58) 34%, rgba(234, 242, 251, 0.18) 100%),
-    radial-gradient(circle at 76% 24%, rgba(232, 196, 106, 0.22), transparent 28%),
-    radial-gradient(circle at 28% 76%, rgba(43, 107, 240, 0.22), transparent 34%);
+  background: rgba(5, 6, 8, 0.72);
 }
 
 .ags-uk-map {
@@ -258,11 +248,12 @@ body {
 }
 
 @keyframes ags-shimmer {
-  0% {
-    background-position: 180% 0;
-  }
+  0%,
   100% {
-    background-position: -80% 0;
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
   }
 }
 
@@ -270,11 +261,11 @@ body {
   0%,
   100% {
     transform: scale(0.92);
-    box-shadow: 0 0 0 0 rgba(43, 107, 240, 0.22);
+    box-shadow: 0 0 0 0 rgba(0, 144, 248, 0.22);
   }
   50% {
     transform: scale(1);
-    box-shadow: 0 0 0 16px rgba(43, 107, 240, 0);
+    box-shadow: 0 0 0 16px rgba(0, 144, 248, 0);
   }
 }
 
@@ -310,33 +301,33 @@ body {
    and a tight contact shadow, so surfaces read as lifted off the page. */
 .ags-depth-sm {
   box-shadow:
-    0 1px 1px rgba(11, 27, 51, 0.04),
-    0 3px 6px rgba(11, 27, 51, 0.06),
-    0 8px 16px rgba(11, 27, 51, 0.06);
+    0 1px 1px rgba(5, 6, 8, 0.04),
+    0 3px 6px rgba(5, 6, 8, 0.06),
+    0 8px 16px rgba(5, 6, 8, 0.06);
 }
 
 .ags-depth-md {
   box-shadow:
-    0 1px 1px rgba(11, 27, 51, 0.05),
-    0 4px 10px rgba(11, 27, 51, 0.07),
-    0 14px 28px rgba(11, 27, 51, 0.09),
-    0 28px 50px rgba(11, 27, 51, 0.08);
+    0 1px 1px rgba(5, 6, 8, 0.05),
+    0 4px 10px rgba(5, 6, 8, 0.07),
+    0 14px 28px rgba(5, 6, 8, 0.09),
+    0 28px 50px rgba(5, 6, 8, 0.08);
 }
 
 .ags-depth-lg {
   box-shadow:
-    0 2px 4px rgba(11, 27, 51, 0.06),
-    0 8px 18px rgba(11, 27, 51, 0.09),
-    0 22px 44px rgba(11, 27, 51, 0.12),
-    0 44px 80px rgba(11, 27, 51, 0.12);
+    0 2px 4px rgba(5, 6, 8, 0.06),
+    0 8px 18px rgba(5, 6, 8, 0.09),
+    0 22px 44px rgba(5, 6, 8, 0.12),
+    0 44px 80px rgba(5, 6, 8, 0.12);
 }
 
 .ags-depth-xl {
   box-shadow:
-    0 2px 6px rgba(11, 27, 51, 0.08),
-    0 12px 28px rgba(11, 27, 51, 0.12),
-    0 34px 64px rgba(11, 27, 51, 0.16),
-    0 64px 110px rgba(11, 27, 51, 0.18);
+    0 2px 6px rgba(5, 6, 8, 0.08),
+    0 12px 28px rgba(5, 6, 8, 0.12),
+    0 34px 64px rgba(5, 6, 8, 0.16),
+    0 64px 110px rgba(5, 6, 8, 0.18);
 }
 
 /* Hover lift — pairs a translate with a jump to a deeper shadow tier. */
@@ -348,10 +339,10 @@ body {
 .ags-lift:hover {
   transform: translateY(-6px);
   box-shadow:
-    0 2px 6px rgba(11, 27, 51, 0.08),
-    0 12px 28px rgba(11, 27, 51, 0.12),
-    0 34px 64px rgba(11, 27, 51, 0.16),
-    0 64px 110px rgba(11, 27, 51, 0.18);
+    0 2px 6px rgba(5, 6, 8, 0.08),
+    0 12px 28px rgba(5, 6, 8, 0.12),
+    0 34px 64px rgba(5, 6, 8, 0.16),
+    0 64px 110px rgba(5, 6, 8, 0.18);
 }
 
 .ags-lift-sm {
@@ -362,10 +353,10 @@ body {
 .ags-lift-sm:hover {
   transform: translateY(-4px);
   box-shadow:
-    0 1px 1px rgba(11, 27, 51, 0.05),
-    0 4px 10px rgba(11, 27, 51, 0.07),
-    0 14px 28px rgba(11, 27, 51, 0.09),
-    0 28px 50px rgba(11, 27, 51, 0.08);
+    0 1px 1px rgba(5, 6, 8, 0.05),
+    0 4px 10px rgba(5, 6, 8, 0.07),
+    0 14px 28px rgba(5, 6, 8, 0.09),
+    0 28px 50px rgba(5, 6, 8, 0.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -410,11 +401,7 @@ body {
   border-radius: inherit;
   opacity: 0;
   transition: opacity 0.35s ease;
-  background: radial-gradient(
-    circle at var(--ags-mx) var(--ags-my),
-    rgba(255, 255, 255, 0.5),
-    rgba(255, 255, 255, 0) 45%
-  );
+  background: rgba(255, 255, 255, 0.14);
   mix-blend-mode: soft-light;
 }
 
@@ -426,47 +413,47 @@ body {
    element looks like a physical key that depresses when pressed. */
 .ags-extrude {
   box-shadow:
-    0 2px 0 rgba(20, 47, 133, 0.55),
-    0 4px 6px rgba(11, 27, 51, 0.18),
-    0 10px 22px rgba(26, 79, 209, 0.28);
+    0 2px 0 rgba(0, 74, 133, 0.55),
+    0 4px 6px rgba(5, 6, 8, 0.18),
+    0 10px 22px rgba(0, 117, 208, 0.28);
   transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.16s ease;
 }
 
 .ags-extrude:hover {
   box-shadow:
-    0 3px 0 rgba(20, 47, 133, 0.55),
-    0 8px 12px rgba(11, 27, 51, 0.2),
-    0 16px 34px rgba(26, 79, 209, 0.32);
+    0 3px 0 rgba(0, 74, 133, 0.55),
+    0 8px 12px rgba(5, 6, 8, 0.2),
+    0 16px 34px rgba(0, 117, 208, 0.32);
 }
 
 .ags-extrude:active {
   transform: translateY(2px);
   box-shadow:
-    0 1px 0 rgba(20, 47, 133, 0.55),
-    0 2px 4px rgba(11, 27, 51, 0.2),
-    0 4px 10px rgba(26, 79, 209, 0.24);
+    0 1px 0 rgba(0, 74, 133, 0.55),
+    0 2px 4px rgba(5, 6, 8, 0.2),
+    0 4px 10px rgba(0, 117, 208, 0.24);
 }
 
 .ags-extrude-gold {
   box-shadow:
-    0 2px 0 rgba(176, 132, 42, 0.7),
-    0 4px 6px rgba(11, 27, 51, 0.16),
-    0 10px 22px rgba(207, 159, 61, 0.3);
+    0 2px 0 rgba(200, 26, 26, 0.7),
+    0 4px 6px rgba(5, 6, 8, 0.16),
+    0 10px 22px rgba(240, 36, 36, 0.3);
 }
 
 .ags-extrude-gold:hover {
   box-shadow:
-    0 3px 0 rgba(176, 132, 42, 0.7),
-    0 8px 12px rgba(11, 27, 51, 0.18),
-    0 16px 34px rgba(207, 159, 61, 0.34);
+    0 3px 0 rgba(200, 26, 26, 0.7),
+    0 8px 12px rgba(5, 6, 8, 0.18),
+    0 16px 34px rgba(240, 36, 36, 0.34);
 }
 
 .ags-extrude-gold:active {
   transform: translateY(2px);
   box-shadow:
-    0 1px 0 rgba(176, 132, 42, 0.7),
-    0 2px 4px rgba(11, 27, 51, 0.18),
-    0 4px 10px rgba(207, 159, 61, 0.26);
+    0 1px 0 rgba(200, 26, 26, 0.7),
+    0 2px 4px rgba(5, 6, 8, 0.18),
+    0 4px 10px rgba(240, 36, 36, 0.26);
 }
 
 /* Gentle idle motion for floating accents. */
@@ -499,8 +486,8 @@ body {
   bottom: -30%;
   height: 85%;
   background-image:
-    linear-gradient(rgba(138, 181, 255, 0.22) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(138, 181, 255, 0.22) 1px, transparent 1px);
+    linear-gradient(rgba(106, 185, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(106, 185, 255, 0.22) 1px, transparent 1px);
   background-size: 46px 46px;
   transform: perspective(520px) rotateX(64deg);
   transform-origin: bottom center;
@@ -594,19 +581,7 @@ body {
 }
 
 .ags-hero-sweep::after {
-  content: "";
-  position: absolute;
-  inset: -40% -60%;
-  background: linear-gradient(
-    68deg,
-    transparent 42%,
-    rgba(138, 181, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0.16) 52%,
-    rgba(138, 181, 255, 0.1) 54%,
-    transparent 62%
-  );
-  transform: translateX(-30%);
-  animation: ags-hero-sweep 11s cubic-bezier(0.5, 0, 0.2, 1) infinite;
+  content: none;
 }
 
 @keyframes ags-ken-burns {

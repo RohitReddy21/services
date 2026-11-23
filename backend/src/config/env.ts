@@ -30,6 +30,8 @@ const frontendUrl = process.env.FRONTEND_URL ?? "http://localhost:3000";
 const defaultCorsOrigins = [
   "http://localhost:3000",
   "https://frontend-silk-seven-87.vercel.app",
+  "https://agsrefrigeration.uk",
+  "https://www.agsrefrigeration.uk",
 ];
 
 export const env = {

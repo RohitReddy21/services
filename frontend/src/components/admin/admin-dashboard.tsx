@@ -83,7 +83,6 @@ const BOOKING_TONE: Record<BookingStatus, BadgeTone> = {
 const CATEGORY_OPTIONS: ServiceCategoryId[] = [
   "air-conditioning",
   "refrigeration",
-  "electrical",
 ];
 const REQUIREMENT_OPTIONS: RequirementType[] = [
   "installation",

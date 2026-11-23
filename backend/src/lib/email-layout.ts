@@ -40,7 +40,7 @@ export function emailLayout({
                   </td>
                   <td style="vertical-align:middle;padding-left:10px;">
                     <div style="font-weight:800;font-size:16px;color:#0b1b33;">AGS</div>
-                    <div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:#1a4fd1;font-weight:600;">Advanced Gas Solutions</div>
+                    <div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:#0075d0;font-weight:600;">AGS Air Conditioning &amp; Refrigeration Ltd</div>
                   </td>
                 </tr>
               </table>
@@ -55,7 +55,7 @@ export function emailLayout({
               ${
                 ctaLabel && ctaUrl
                   ? `<div style="margin-top:28px;">
-                      <a href="${ctaUrl}" style="display:inline-block;background-color:#1a4fd1;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:12px 24px;border-radius:8px;">${ctaLabel}</a>
+                      <a href="${ctaUrl}" style="display:inline-block;background-color:#0075d0;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:12px 24px;border-radius:8px;">${ctaLabel}</a>
                     </div>`
                   : ""
               }
@@ -64,8 +64,8 @@ export function emailLayout({
           <tr>
             <td style="padding:20px 32px;background-color:#f8fafc;border-top:1px solid #eef4ff;">
               <p style="margin:0;font-size:12px;color:#94a3b8;">
-                AGS &ndash; Advanced Gas Solutions &middot; 13 Baker Street, London, W1U 3BW<br/>
-                020 7946 0018 &middot; info@agsolutions.co.uk
+                AGS Air Conditioning &amp; Refrigeration Ltd &middot; 79 Cameron Street, Liverpool, L7 0EN<br/>
+                07904 858877 &middot; 07904 858881 &middot; support@agsrefrigeration.uk
               </p>
             </td>
           </tr>

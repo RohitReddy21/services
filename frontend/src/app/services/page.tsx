@@ -12,13 +12,13 @@ import type { ServiceCategoryId } from "@/types/service";
 export const metadata: Metadata = {
   title: "Our Services",
   description:
-    "Browse all AGS air conditioning, refrigeration and electrical services — installation, repairs, servicing and maintenance for homes and businesses across the UK.",
+    "Browse all AGS air conditioning and refrigeration services — installation, repairs, servicing and maintenance for homes and businesses across the UK.",
   alternates: { canonical: "/services" },
   openGraph: {
     url: "/services",
     title: "Our Services",
     description:
-      "Air conditioning, refrigeration and electrical services — installation, repairs, servicing and maintenance across the UK.",
+      "Air conditioning and refrigeration services — installation, repairs, servicing and maintenance across the UK.",
   },
 };
 
@@ -28,7 +28,7 @@ export default async function ServicesPage({
   const params = await searchParams;
   const requested = Array.isArray(params.category) ? params.category[0] : params.category;
   const activeCategory: ServiceCategoryId =
-    requested === "refrigeration" || requested === "electrical"
+    requested === "refrigeration"
       ? requested
       : "air-conditioning";
   const requestedQuery = Array.isArray(params.q) ? params.q[0] : params.q;
@@ -60,7 +60,7 @@ export default async function ServicesPage({
               Our Services
             </h1>
             <p className="mt-3 text-slate-600">
-              Professional air conditioning, refrigeration and electrical
+              Professional air conditioning and refrigeration
               services tailored to your needs. No prices are shown online; AGS
               confirms scope and requirements before work begins.
             </p>
@@ -78,7 +78,7 @@ export default async function ServicesPage({
               sizes="420px"
               className="object-cover ags-image-reveal"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-ink-950/45 to-transparent" />
+            <div className="absolute inset-0 bg-ink-950/35" />
           </Reveal>
         </div>
 
@@ -119,12 +119,10 @@ export default async function ServicesPage({
 
 function categoryMeta(categoryId: ServiceCategoryId) {
   if (categoryId === "refrigeration") return "Refrigeration";
-  if (categoryId === "electrical") return "Electrical";
   return "Air conditioning";
 }
 
 function categoryHeroImage(categoryId: ServiceCategoryId) {
   if (categoryId === "refrigeration") return "/images/services/commercial-refrigeration.webp";
-  if (categoryId === "electrical") return "/images/services/electrical-installation.webp";
   return "/images/services/outdoor-condenser-units.webp";
 }

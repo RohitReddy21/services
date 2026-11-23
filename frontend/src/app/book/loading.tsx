@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="min-h-[calc(100vh-4.5rem)] bg-linear-to-b from-sky-50 via-white to-slate-25">
+    <div className="min-h-[calc(100vh-4.5rem)] bg-sky-50">
       <div className="container-ags py-6 lg:py-8">
         <header className="grid gap-5 border-b border-brand-100 pb-5 md:grid-cols-[minmax(0,1fr)_auto]">
           <div>

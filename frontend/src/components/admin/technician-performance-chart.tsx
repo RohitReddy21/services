@@ -62,7 +62,7 @@ export default function TechnicianPerformanceChart({
             contentStyle={{ borderRadius: 12, borderColor: "#e2e8f0", fontSize: 12 }}
           />
           <Bar yAxisId="jobs" dataKey="completedJobs" fill="#94a3b8" radius={[4, 4, 0, 0]} barSize={14} />
-          <Bar yAxisId="revenue" dataKey="revenue" fill="#2b6bf0" radius={[4, 4, 0, 0]} barSize={14} />
+          <Bar yAxisId="revenue" dataKey="revenue" fill="#0090f8" radius={[4, 4, 0, 0]} barSize={14} />
         </BarChart>
       </ResponsiveContainer>
     </div>

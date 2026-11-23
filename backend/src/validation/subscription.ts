@@ -4,7 +4,7 @@ export const createSubscriptionSchema = z.object({
   planId: z.string().min(1),
   planName: z.string().min(1),
   frequency: z.enum(["monthly", "annual", "bi-annual", "quarterly", "quarterly-bundle"]),
-  categoryId: z.enum(["air-conditioning", "refrigeration", "electrical"]),
+  categoryId: z.enum(["air-conditioning", "refrigeration"]),
   equipmentId: z.string().min(1),
   equipmentLabel: z.string().min(1),
   address: z.object({

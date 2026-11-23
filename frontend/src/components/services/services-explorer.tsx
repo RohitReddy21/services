@@ -2,12 +2,12 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Refrigerator, Search, Snowflake, X, Zap } from "lucide-react";
+import { Refrigerator, Search, Snowflake, X } from "lucide-react";
 import ServiceGrid from "@/components/services/service-grid";
 import type { ServiceCategoryId, ServiceCategory, ServiceSummary } from "@/types/service";
 import { cn } from "@/lib/utils";
 
-const categoryIcon = { snowflake: Snowflake, fridge: Refrigerator, bolt: Zap } as const;
+const categoryIcon = { snowflake: Snowflake, fridge: Refrigerator } as const;
 
 function matchesQuery(service: ServiceSummary, query: string) {
   const haystack = `${service.name} ${service.shortDescription}`.toLowerCase();
@@ -43,7 +43,7 @@ export default function ServicesExplorer({
   return (
     <div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="grid w-full grid-cols-3 gap-1 rounded-xl border border-slate-200 bg-slate-25 p-1 sm:inline-flex sm:w-auto sm:gap-0">
+        <div className="grid w-full grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-slate-25 p-1 sm:inline-flex sm:w-auto sm:gap-0">
           {categories.map((c) => {
             const Icon = categoryIcon[c.icon];
             const isActive = !isSearching && c.id === category;

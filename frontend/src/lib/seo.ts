@@ -72,11 +72,6 @@ export function siteGraph(): Graph {
     email: ORG.email,
     priceRange: ORG.priceRange,
     address: postalAddress,
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: ORG.geo.latitude,
-      longitude: ORG.geo.longitude,
-    },
     areaServed: { "@type": "Country", name: "United Kingdom" },
     parentOrganization: { "@id": ORG_ID },
     openingHoursSpecification: ORG.openingHours.map((slot) => ({

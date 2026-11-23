@@ -20,7 +20,6 @@ const navLinks = [
       { label: "All Services", href: "/services" },
       { label: "Air Conditioning", href: "/services?category=air-conditioning" },
       { label: "Refrigeration", href: "/services?category=refrigeration" },
-      { label: "Electrical", href: "/services?category=electrical" },
     ],
   },
   {
@@ -78,8 +77,8 @@ export default function Navbar() {
       className={cn(
         "sticky top-0 z-50 border-b transition-all duration-300",
         scrolled
-          ? "border-slate-200 bg-white/90 shadow-sm shadow-navy-900/5 backdrop-blur-xl"
-          : "border-transparent bg-white/72 backdrop-blur-md"
+          ? "border-white/10 bg-ink-950 shadow-lg shadow-black/30"
+          : "border-white/5 bg-ink-950"
       )}
     >
       <div
@@ -88,7 +87,7 @@ export default function Navbar() {
           scrolled ? "h-16 py-2" : "h-18 py-3"
         )}
       >
-        <Logo />
+        <Logo variant="inverted" />
 
         <nav className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) =>
@@ -104,15 +103,15 @@ export default function Navbar() {
                   className={cn(
                     "ags-focus group relative flex items-center gap-1 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors",
                     isLinkActive(link)
-                      ? "text-brand-700"
-                      : "text-navy-800 hover:text-brand-600"
+                      ? "text-brand-400"
+                      : "text-white/85 hover:text-white"
                   )}
                 >
                   {link.label}
                   <ChevronDown className="size-3.5" />
                   <span
                     className={cn(
-                      "absolute inset-x-3 -bottom-0.5 h-0.5 origin-left rounded-full bg-brand-500 transition-transform",
+                      "absolute inset-x-3 -bottom-0.5 h-0.5 origin-left rounded-full bg-accent-gold-500 transition-transform",
                       isLinkActive(link) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                     )}
                   />
@@ -148,14 +147,14 @@ export default function Navbar() {
                 className={cn(
                   "ags-focus group relative rounded-lg px-3.5 py-2 text-sm font-medium transition-colors",
                   isLinkActive(link)
-                    ? "text-brand-700"
-                    : "text-navy-800 hover:text-brand-600"
+                    ? "text-brand-400"
+                    : "text-white/85 hover:text-white"
                 )}
               >
                 {link.label}
                 <span
                   className={cn(
-                    "absolute inset-x-3 -bottom-0.5 h-0.5 origin-left rounded-full bg-brand-500 transition-transform",
+                    "absolute inset-x-3 -bottom-0.5 h-0.5 origin-left rounded-full bg-accent-gold-500 transition-transform",
                     isLinkActive(link) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                   )}
                 />
@@ -170,7 +169,7 @@ export default function Navbar() {
             <>
               <Link
                 href="/login"
-                className="ags-focus rounded-lg px-3 py-2 text-sm font-medium text-navy-800 transition-colors hover:bg-slate-100"
+                className="ags-focus rounded-lg px-3 py-2 text-sm font-medium text-white/85 transition-colors hover:bg-white/10 hover:text-white"
               >
                 Log In
               </Link>
@@ -188,7 +187,7 @@ export default function Navbar() {
               <button
                 type="button"
                 aria-expanded={accountOpen}
-                className="ags-focus flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-navy-800 transition-colors hover:bg-slate-100"
+                className="ags-focus flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-white/85 transition-colors hover:bg-white/10 hover:text-white"
               >
                 <span className="flex size-7 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
                   {user.name.charAt(0).toUpperCase()}
@@ -244,7 +243,7 @@ export default function Navbar() {
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen((v) => !v)}
-          className="ags-focus relative lg:hidden inline-flex size-10 items-center justify-center rounded-full text-navy-800 transition-colors hover:bg-slate-100 active:scale-95"
+          className="ags-focus relative lg:hidden inline-flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 active:scale-95"
         >
           <AnimatePresence mode="wait" initial={false}>
             {mobileOpen ? (

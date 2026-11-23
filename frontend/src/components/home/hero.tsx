@@ -97,8 +97,7 @@ export default function Hero() {
         )}
 
         {/* Directional scrim — dark on the left for headline contrast. */}
-        <div className="absolute inset-0 bg-linear-to-r from-ink-950 via-ink-950/85 to-ink-950/35" />
-        <div className="absolute inset-0 bg-linear-to-t from-ink-950/90 via-ink-950/10 to-ink-950/50" />
+        <div className="absolute inset-0 bg-ink-950/65" />
         <div className="ags-hero-sweep absolute inset-0" aria-hidden="true" />
         <motion.div
           className="pointer-events-none absolute right-[-48vw] top-16 z-[1] h-[54vh] w-[118vw] opacity-35 sm:right-[-36vw] sm:w-[98vw] sm:opacity-45 lg:inset-y-0 lg:right-[-16vw] lg:h-auto lg:w-[72vw] lg:opacity-80 xl:opacity-95"
@@ -109,8 +108,6 @@ export default function Hero() {
             <HeroMotionScene />
           </CanvasGuard>
         </motion.div>
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-[2] hidden w-1/2 bg-linear-to-l from-brand-500/10 via-transparent to-transparent lg:block" />
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-white to-transparent" />
       </div>
 
       <div className="container-ags relative z-10 grid min-h-[640px] gap-12 py-16 sm:min-h-[700px] lg:grid-cols-[1fr_440px] lg:items-center lg:py-20">
@@ -123,7 +120,7 @@ export default function Hero() {
         >
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-100 backdrop-blur">
             <span className="size-1.5 rounded-full bg-accent-gold-400" />
-            AGS · Advanced Gas Solutions
+            AGS Air Conditioning & Refrigeration Ltd
           </span>
 
           <h1 className="mt-6 font-display text-[2.5rem] font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-[4rem]">
@@ -199,7 +196,7 @@ export default function Hero() {
                 sizes="440px"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-ink-950/85 via-ink-950/10 to-transparent" />
+              <div className="absolute inset-0 bg-ink-950/65" />
 
               <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-ink-950/55 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-100 backdrop-blur">
                 Serving the UK since 2014

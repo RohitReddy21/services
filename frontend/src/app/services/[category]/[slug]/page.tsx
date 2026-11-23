@@ -131,8 +131,7 @@ export default async function ServiceDetailPage({
             className="scale-110 object-cover opacity-65"
           />
         </Parallax>
-        <div className="absolute inset-0 bg-linear-to-r from-ink-950 via-ink-950/80 to-ink-950/30" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-white to-transparent" />
+        <div className="absolute inset-0 bg-ink-950/65" />
 
         <div className="container-ags relative grid gap-10 py-16 lg:grid-cols-[1fr_360px] lg:items-end lg:py-24">
           <Reveal className="max-w-3xl">
@@ -307,7 +306,7 @@ export default async function ServiceDetailPage({
                 sizes="360px"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-ink-950/55 to-transparent" />
+              <div className="absolute inset-0 bg-ink-950/40" />
             </div>
             <div className="p-6">
               <h2 className="font-display text-base font-bold text-navy-900">Ideal For</h2>
