@@ -1,29 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
-import dynamic from "next/dynamic";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, BadgeCheck, MapPin, ShieldCheck, Star, Timer } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, BadgeCheck, MapPin, ShieldCheck, Timer } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
-import LoopVideo from "@/components/ui/loop-video";
-import TiltCard from "@/components/ui/tilt-card";
-import CanvasGuard from "@/components/three/canvas-guard";
 import { trackEvent } from "@/lib/analytics";
-
-const HeroSceneFallback = () => (
-  <div className="relative size-full opacity-50" aria-hidden="true">
-    <div className="absolute left-1/2 top-1/2 h-56 w-72 -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-brand-300/25" />
-    <div className="absolute left-1/2 top-1/2 h-px w-80 -translate-x-1/2 bg-brand-300/25" />
-    <div className="absolute left-1/2 top-1/2 h-64 w-px -translate-y-1/2 bg-brand-300/20" />
-  </div>
-);
-
-const HeroMotionScene = dynamic(() => import("@/components/three/hero-motion-scene"), {
-  ssr: false,
-  loading: () => <HeroSceneFallback />,
-});
 
 const trustBadges = [
   { icon: ShieldCheck, label: "Certified Engineers" },
@@ -35,28 +18,6 @@ export default function Hero() {
   const [postcode, setPostcode] = useState("");
   const router = useRouter();
   const reducedMotion = useReducedMotion();
-  const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-  const contentY = useSpring(useTransform(scrollYProgress, [0, 1], [0, -62]), {
-    stiffness: 110,
-    damping: 28,
-  });
-  const sceneY = useSpring(useTransform(scrollYProgress, [0, 1], [0, 130]), {
-    stiffness: 95,
-    damping: 26,
-  });
-  const sceneRotate = useSpring(useTransform(scrollYProgress, [0, 1], [0, -8]), {
-    stiffness: 100,
-    damping: 28,
-  });
-  const cardY = useSpring(useTransform(scrollYProgress, [0, 1], [0, 46]), {
-    stiffness: 95,
-    damping: 26,
-  });
-
   const handlePostcodeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = postcode.trim();
@@ -66,45 +27,32 @@ export default function Hero() {
   };
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative min-h-[640px] overflow-hidden bg-ink-950 text-white sm:min-h-[700px]"
-    >
-      {/* Background: one photo, one ambient video, cinematic scrims. */}
-      <div className="absolute inset-0">
-        <div className="ags-ken-burns absolute inset-0">
-          <FadeInImage
-            src="/images/services/hvac-repair-technician.webp"
-            alt="AGS engineer servicing commercial HVAC equipment"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+    <section className="relative min-h-[640px] overflow-hidden bg-ink-950 text-white sm:min-h-[700px]">
+      {/* Photo: behind the text on phones, a clean full-height panel on desktop. */}
+      <div className="absolute inset-0 lg:left-auto lg:w-[46%]">
+        <FadeInImage
+          src="/images/services/hvac-repair-technician.webp"
+          alt="AGS engineer checking pressures on an outdoor air conditioning unit"
+          fill
+          priority
+          sizes="(min-width: 1024px) 46vw, 100vw"
+          className="object-cover object-[30%_center]"
+        />
+        <div className="absolute inset-0 bg-ink-950/75 lg:hidden" />
+        <div className="absolute bottom-8 left-8 hidden rounded-lg bg-ink-950 px-4 py-3 lg:block">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-brand-300">
+            F&#8209;Gas certified
+          </p>
+          <p className="mt-0.5 text-sm font-semibold text-white">Compliant &amp; documented</p>
         </div>
-
-
-        {/* Directional scrim — dark on the left for headline contrast. */}
-        <div className="absolute inset-0 bg-ink-950/65" />
-        <div className="ags-hero-sweep absolute inset-0" aria-hidden="true" />
-        <motion.div
-          className="pointer-events-none absolute right-[-48vw] top-16 z-[1] h-[54vh] w-[118vw] opacity-35 sm:right-[-36vw] sm:w-[98vw] sm:opacity-45 lg:inset-y-0 lg:right-[-16vw] lg:h-auto lg:w-[72vw] lg:opacity-80 xl:opacity-95"
-          style={reducedMotion ? undefined : { y: sceneY, rotateZ: sceneRotate }}
-          aria-hidden="true"
-        >
-          <CanvasGuard fallback={<HeroSceneFallback />}>
-            <HeroMotionScene />
-          </CanvasGuard>
-        </motion.div>
       </div>
 
-      <div className="container-ags relative z-10 grid min-h-[640px] gap-12 py-16 sm:min-h-[700px] lg:grid-cols-[1fr_440px] lg:items-center lg:py-20">
+      <div className="container-ags relative z-10 flex min-h-[640px] items-center py-16 sm:min-h-[700px] lg:py-20">
         <motion.div
           initial={reducedMotion ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          style={reducedMotion ? undefined : { y: contentY }}
-          className="max-w-2xl"
+          className="max-w-2xl lg:max-w-[48%]"
         >
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-100">
             <span className="size-1.5 rounded-full bg-accent-gold-400" />
@@ -165,43 +113,6 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          style={reducedMotion ? undefined : { y: cardY }}
-          className="relative hidden lg:block"
-        >
-          <TiltCard
-            max={4}
-            bodyClassName="relative overflow-hidden rounded-2xl border border-white/12 bg-white/5 p-3 ags-depth-xl"
-          >
-            <div className="relative aspect-4/5 overflow-hidden rounded-xl">
-              <LoopVideo src="/videos/ags-ac-install" />
-              <div className="absolute inset-0 bg-ink-950/65" />
-
-              <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-ink-950/55 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-brand-100">
-                Serving the UK since 2014
-              </span>
-
-              <div className="absolute inset-x-4 bottom-4 flex items-center justify-between rounded-xl border border-white/12 bg-ink-950/55 px-4 py-3">
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-brand-200">
-                    F&#8209;Gas certified
-                  </p>
-                  <p className="mt-0.5 text-sm font-semibold text-white">
-                    Compliant &amp; documented
-                  </p>
-                </div>
-                <div className="flex items-center gap-1.5 border-l border-white/15 pl-4">
-                  <Star className="size-4 fill-accent-gold-400 text-accent-gold-400" />
-                  <span className="font-display text-lg font-extrabold text-white">4.9</span>
-                  <span className="text-[10px] text-brand-100">/ 5</span>
-                </div>
-              </div>
-            </div>
-          </TiltCard>
-        </motion.div>
       </div>
     </section>
   );
