@@ -1,23 +1,31 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, BadgeCheck, MapPin, ShieldCheck, Timer } from "lucide-react";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { ArrowRight, BadgeCheck, MapPin, Phone, ShieldCheck, Timer, Wrench } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
 import { trackEvent } from "@/lib/analytics";
+import { ORG } from "@/lib/site";
 
-const trustBadges = [
-  { icon: ShieldCheck, label: "Certified Engineers" },
-  { icon: Timer, label: "Fast Response" },
-  { icon: BadgeCheck, label: "Quality Guaranteed" },
+const trustItems = [
+  { icon: ShieldCheck, label: "F-Gas certified engineers" },
+  { icon: Timer, label: "Fast response" },
+  { icon: Wrench, label: "Installation, servicing and repair" },
+  { icon: BadgeCheck, label: "Work documented and guaranteed" },
+];
+
+const serviceChoices = [
+  { href: "/services?category=air-conditioning", label: "Air conditioning" },
+  { href: "/services?category=refrigeration", label: "Refrigeration" },
 ];
 
 export default function Hero() {
   const [postcode, setPostcode] = useState("");
   const router = useRouter();
-  const reducedMotion = useReducedMotion();
+  const phone = ORG.phones[0];
+
   const handlePostcodeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = postcode.trim();
@@ -27,92 +35,92 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-[640px] overflow-hidden bg-ink-950 text-white sm:min-h-[700px]">
-      {/* Photo: behind the text on phones, a clean full-height panel on desktop. */}
-      <div className="absolute inset-0 lg:left-auto lg:w-[46%]">
-        <FadeInImage
-          src="/images/services/hvac-repair-technician.webp"
-          alt="AGS engineer checking pressures on an outdoor air conditioning unit"
-          fill
-          priority
-          sizes="(min-width: 1024px) 46vw, 100vw"
-          className="object-cover object-[30%_center]"
-        />
-        <div className="absolute inset-0 bg-ink-950/75 lg:hidden" />
-        <div className="absolute bottom-8 left-8 hidden rounded-lg bg-ink-950 px-4 py-3 lg:block">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-brand-300">
-            F&#8209;Gas certified
-          </p>
-          <p className="mt-0.5 text-sm font-semibold text-white">Compliant &amp; documented</p>
-        </div>
-      </div>
+    <section className="bg-white">
+      <div className="container-ags py-5 lg:py-8">
+        <div className="grid overflow-hidden rounded-2xl bg-ink-950 text-white lg:grid-cols-[1.05fr_1fr]">
+          <div className="px-6 py-10 sm:px-10 sm:py-12 lg:px-12 lg:py-16">
+            <p className="text-sm font-semibold text-brand-300">
+              AGS Air Conditioning &amp; Refrigeration Ltd
+            </p>
 
-      <div className="container-ags relative z-10 flex min-h-[640px] items-center py-16 sm:min-h-[700px] lg:py-20">
-        <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-2xl lg:max-w-[48%]"
-        >
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-100">
-            <span className="size-1.5 rounded-full bg-accent-gold-400" />
-            AGS Air Conditioning & Refrigeration Ltd
-          </span>
+            <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.4rem]">
+              Air conditioning and refrigeration engineers you can rely on.
+            </h1>
 
-          <h1 className="mt-6 font-display text-[2.5rem] font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-[4.25rem]">
-            Advanced Air Conditioning &amp;{" "}
-            <span className="ags-gradient-text">Refrigeration Solutions</span>
-          </h1>
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-slate-300 sm:text-lg">
+              Installation, servicing, maintenance and repair for homes and
+              businesses across the UK.
+            </p>
 
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-brand-50/90 sm:text-lg">
-            Professional installation, servicing, maintenance and repair for
-            commercial and residential customers across the UK.
-          </p>
-
-          <form
-            onSubmit={handlePostcodeSubmit}
-            className="mt-9 flex max-w-lg flex-col gap-2.5 rounded-2xl border border-white/15 bg-white/6 p-2 sm:flex-row"
-          >
-            <label className="relative flex-1">
-              <span className="sr-only">Enter your postcode</span>
-              <MapPin className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-brand-200" />
-              <input
-                value={postcode}
-                onChange={(e) => setPostcode(e.target.value.toUpperCase())}
-                type="text"
-                placeholder="Enter your postcode"
-                aria-label="Enter your postcode"
-                className="h-12 w-full rounded-xl border border-white/10 bg-white px-11 text-sm font-semibold text-navy-900 placeholder:text-slate-400 outline-none focus:border-brand-300 focus:ring-2 focus:ring-brand-200"
-              />
-            </label>
-            <Button type="submit" size="lg" className="shrink-0">
-              Check Availability
-            </Button>
-          </form>
-
-          <div className="mt-7 flex flex-wrap gap-3">
-            <ButtonLink href="/book" size="lg">
-              Book a Service
-              <ArrowRight className="size-4" />
-            </ButtonLink>
-            <ButtonLink href="/services" variant="outline" size="lg">
-              Explore Services
-            </ButtonLink>
-          </div>
-
-          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3">
-            {trustBadges.map(({ icon: Icon, label }) => (
-              <div
-                key={label}
-                className="flex items-center gap-2 text-sm font-medium text-brand-50/80"
-              >
-                <Icon className="size-4 text-accent-gold-400" />
-                {label}
+            <div className="mt-8">
+              <p className="text-sm font-semibold text-white">What do you need help with?</p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {serviceChoices.map((choice) => (
+                  <Link
+                    key={choice.href}
+                    href={choice.href}
+                    className="ags-focus group flex items-center justify-between rounded-lg border border-white/20 px-4 py-3.5 text-sm font-semibold transition-colors hover:border-white hover:bg-white hover:text-ink-950"
+                  >
+                    {choice.label}
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                ))}
               </div>
-            ))}
-          </div>
-        </motion.div>
+            </div>
 
+            <form
+              onSubmit={handlePostcodeSubmit}
+              className="mt-4 flex max-w-xl flex-col gap-2.5 sm:flex-row"
+            >
+              <label className="relative flex-1">
+                <span className="sr-only">Enter your postcode</span>
+                <MapPin className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  value={postcode}
+                  onChange={(e) => setPostcode(e.target.value.toUpperCase())}
+                  type="text"
+                  placeholder="Check we cover your postcode"
+                  aria-label="Check we cover your postcode"
+                  className="h-12 w-full rounded-lg bg-white px-11 text-sm font-semibold text-navy-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-brand-300"
+                />
+              </label>
+              <Button type="submit" size="lg" className="shrink-0">
+                Check availability
+              </Button>
+            </form>
+
+            <p className="mt-6 flex flex-wrap items-center gap-x-2 text-sm text-slate-300">
+              <Phone className="size-4 text-accent-gold-400" />
+              Urgent breakdown? Call
+              <a
+                href={phone.href}
+                className="font-bold text-white underline decoration-accent-gold-500 decoration-2 underline-offset-4"
+              >
+                {phone.display}
+              </a>
+            </p>
+          </div>
+
+          <div className="relative min-h-72 lg:min-h-full">
+            <FadeInImage
+              src="/images/services/hvac-repair-technician.webp"
+              alt="AGS engineer checking pressures on an outdoor air conditioning unit"
+              fill
+              priority
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              className="object-cover object-[35%_center]"
+            />
+          </div>
+        </div>
+
+        <ul className="mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
+          {trustItems.map(({ icon: Icon, label }) => (
+            <li key={label} className="flex items-center gap-2.5 text-sm font-medium text-navy-800">
+              <Icon className="size-5 shrink-0 text-brand-500" />
+              {label}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
