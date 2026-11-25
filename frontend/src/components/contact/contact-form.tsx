@@ -44,7 +44,7 @@ export default function ContactForm() {
         <CheckCircle2 className="mx-auto size-8 text-accent-green-600" />
         <p className="mt-3 text-sm font-semibold text-accent-green-800">Message sent</p>
         <p className="mt-1 text-sm text-accent-green-700">
-          Thanks for reaching out — our team will get back to you shortly.
+          Thanks for reaching out, our team will get back to you shortly.
         </p>
       </div>
     );

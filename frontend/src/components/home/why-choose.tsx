@@ -65,7 +65,7 @@ export default function WhyChoose() {
             <TiltCard
               max={8}
               glare
-              bodyClassName="relative aspect-16/10 overflow-hidden rounded-[2rem] ags-depth-xl"
+              bodyClassName="relative aspect-16/10 overflow-hidden rounded-2xl ags-depth-xl"
             >
               <FadeInImage
                 src="/images/services/outdoor-condenser-units.webp"
@@ -76,10 +76,10 @@ export default function WhyChoose() {
               />
               <div className="absolute inset-0 bg-ink-950/40" />
               <div
-                className="ags-tilt-layer absolute bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/90 p-4 ags-depth-md backdrop-blur"
+                className="ags-tilt-layer absolute bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/90 p-4 ags-depth-md"
                 style={{ "--ags-z": "70px" } as CSSProperties}
               >
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">
+                <p className="text-xs font-bold uppercase tracking-[0.1em] text-brand-600">
                   Quality check
                 </p>
                 <p className="mt-1 text-sm font-semibold text-navy-900">

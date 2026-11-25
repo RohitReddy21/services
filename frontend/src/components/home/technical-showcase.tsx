@@ -81,7 +81,7 @@ export default function TechnicalShowcase() {
         </motion.div>
 
         <motion.div
-          className="relative min-h-80 overflow-hidden rounded-[2rem] border border-brand-100 bg-white/80 p-4 shadow-2xl shadow-brand-900/10 [transform-style:preserve-3d] sm:min-h-96"
+          className="relative min-h-80 overflow-hidden rounded-2xl border border-brand-100 bg-white/80 p-4 shadow-2xl shadow-brand-900/10 [transform-style:preserve-3d] sm:min-h-96"
           initial={reducedMotion ? false : { opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-90px" }}
@@ -110,8 +110,8 @@ export default function TechnicalShowcase() {
               <div className="absolute inset-0 bg-ink-950/35" />
             </div>
           </div>
-          <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/90 p-4 shadow-xl shadow-navy-900/10 backdrop-blur">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">
+          <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/90 p-4 shadow-xl shadow-navy-900/10">
+            <p className="text-xs font-bold uppercase tracking-[0.1em] text-brand-600">
               Performance check
             </p>
             <p className="mt-1 text-sm font-semibold text-navy-900">

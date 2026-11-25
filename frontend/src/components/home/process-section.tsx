@@ -29,20 +29,12 @@ export default function ProcessSection() {
   return (
     <section className="relative overflow-hidden bg-ink-950 py-20 text-white lg:py-28">
       <div aria-hidden="true" className="ags-blueprint absolute inset-0" />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-32 top-0 size-136 rounded-full bg-brand-500/20 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-24 bottom-0 size-104 rounded-full bg-accent-gold-500/10 blur-3xl"
-      />
 
       <div className="container-ags relative">
         <Reveal className="mx-auto max-w-3xl text-center">
           <span className="ags-eyebrow text-brand-300">How it works</span>
           <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
-            From first click to <span className="ags-gradient-text">cold air</span> in four steps.
+            How a booking works, <span className="ags-gradient-text">start to finish</span>.
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-slate-300">
             A simple, transparent process built around clear communication and
@@ -57,7 +49,7 @@ export default function ProcessSection() {
           />
           {steps.map(({ icon: Icon, title, text }, index) => (
             <RevealItem key={title} distance={28}>
-              <div className="group relative h-full rounded-3xl border border-white/10 bg-white/4 p-6 backdrop-blur transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-400/50 hover:bg-white/8">
+              <div className="group relative h-full rounded-2xl border border-white/10 bg-white/4 p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-400/50 hover:bg-white/8">
                 <div className="flex items-center justify-between">
                   <span className="relative flex size-14 items-center justify-center rounded-2xl bg-brand-400 shadow-lg shadow-brand-500/30">
                     <Icon className="size-6 text-white" />

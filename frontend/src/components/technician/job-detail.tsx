@@ -210,7 +210,7 @@ export default function JobDetail({ reference }: { reference: string }) {
             disabled={busy}
             className="ags-focus mt-3 text-xs font-semibold text-amber-800 underline disabled:opacity-50"
           >
-            Clear — I&apos;m back on it
+            Clear, I&apos;m back on it
           </button>
         </section>
       )}
@@ -425,7 +425,7 @@ export default function JobDetail({ reference }: { reference: string }) {
             value={issueNote}
             onChange={(e) => setIssueNote(e.target.value)}
             rows={3}
-            placeholder="e.g. No access — nobody on site. Or: needs a replacement fan motor, not on the van."
+            placeholder="e.g. No access, nobody on site. Or: needs a replacement fan motor, not on the van."
             className="input-field mt-3 min-h-20"
           />
           <label className="mt-3 flex items-center gap-2 text-sm text-slate-700">
@@ -462,7 +462,7 @@ export default function JobDetail({ reference }: { reference: string }) {
       )}
 
       {(next || canReportIssue) && (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 p-4 backdrop-blur">
+        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 p-4">
           <div className="mx-auto flex max-w-3xl gap-2">
             {canReportIssue && !showIssue && (
               <Button

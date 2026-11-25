@@ -273,7 +273,7 @@ export default function SubscriptionsPanel() {
         res.status === "sent"
           ? `Invoice ${res.invoiceNumber} emailed to ${res.to}`
           : res.status === "logged"
-            ? `Invoice ${res.invoiceNumber} generated — email logged (no mail provider configured)`
+            ? `Invoice ${res.invoiceNumber} generated, email logged (no mail provider configured)`
             : "Couldn't send the invoice email. Try again.";
       setSendState((s) => ({
         ...s,

@@ -95,7 +95,7 @@ export default function RewardsManager() {
       <h2 className="mt-8 font-display text-base font-bold text-navy-900">Activity</h2>
       {transactions.length === 0 ? (
         <p className="mt-3 text-sm text-slate-500">
-          No activity yet — book a service or subscribe to a Care Plan to start earning points.
+          No activity yet, book a service or subscribe to a Care Plan to start earning points.
         </p>
       ) : (
         <div className="mt-3 divide-y divide-slate-100 rounded-2xl border border-slate-200 bg-white">

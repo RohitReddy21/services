@@ -230,7 +230,7 @@ export default function TwoFactorSettings() {
             </h2>
             <p className="mt-1 text-sm text-slate-500">
               {enabled
-                ? "Enabled — an authenticator app code is required to log in."
+                ? "Enabled, an authenticator app code is required to log in."
                 : "Add an extra layer of security with an authenticator app."}
             </p>
           </div>

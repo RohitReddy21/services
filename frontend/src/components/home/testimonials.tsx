@@ -35,7 +35,7 @@ export default function Testimonials() {
           viewport={{ once: true, margin: "-90px" }}
           transition={{ duration: 0.58, ease: "easeOut" }}
         >
-          <div className="relative aspect-4/5 overflow-hidden rounded-[2rem] shadow-2xl shadow-navy-900/15 sm:aspect-16/10 lg:aspect-4/5">
+          <div className="relative aspect-4/5 overflow-hidden rounded-2xl shadow-2xl shadow-navy-900/15 sm:aspect-16/10 lg:aspect-4/5">
             <FadeInImage
               src="/images/services/display-fridge.webp"
               alt="Display refrigeration installed in a commercial environment"

@@ -280,7 +280,7 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.24, ease: "easeOut" }}
-            className="overflow-hidden border-t border-slate-200 bg-white/95 shadow-lg shadow-navy-900/5 backdrop-blur-xl lg:hidden"
+            className="overflow-hidden border-t border-slate-200 bg-white/95 shadow-lg shadow-navy-900/5 lg:hidden"
           >
             <div className="container-ags flex max-h-[calc(100dvh-4rem)] flex-col gap-1 overflow-y-auto py-4">
               <MobileSearch onNavigate={closeMobileMenu} />

@@ -230,7 +230,7 @@ export default function CouponsPanel() {
       {!coupons ? (
         <SkeletonRows />
       ) : coupons.length === 0 ? (
-        <EmptyState message="No coupons yet — create one above." variant="card" />
+        <EmptyState message="No coupons yet, create one above." variant="card" />
       ) : (
         <div className="space-y-3">
           {coupons.map((c) => {

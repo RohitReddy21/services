@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import FadeInImage from "@/components/ui/fade-in-image";
+import LoopVideo from "@/components/ui/loop-video";
 import Reveal from "@/components/ui/reveal";
 
 interface PageHeroProps {
@@ -33,15 +34,8 @@ export default function PageHero({
 }: PageHeroProps) {
   return (
     <header className="relative overflow-hidden bg-ink-950 text-white">
+      {!image && <LoopVideo src="/videos/ags-snowflakes" className="opacity-15 mix-blend-screen" />}
       <div aria-hidden="true" className="ags-blueprint absolute inset-0" />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-24 -top-24 size-120 rounded-full bg-brand-500/25 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-32 right-0 size-96 rounded-full bg-accent-gold-500/10 blur-3xl"
-      />
 
       <div className="container-ags relative py-12 lg:py-20">
         <nav aria-label="Breadcrumb" className="text-xs font-medium text-slate-400">
@@ -82,7 +76,7 @@ export default function PageHero({
             <Reveal
               variant="right"
               delay={0.1}
-              className="relative hidden aspect-16/10 overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-black/40 lg:block"
+              className="relative hidden aspect-16/10 overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40 lg:block"
             >
               <FadeInImage
                 src={image.src}

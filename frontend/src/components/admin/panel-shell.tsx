@@ -133,7 +133,7 @@ export function AdminModal({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-navy-950/40 p-4 backdrop-blur-sm sm:p-6"
+      className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-navy-950/40 p-4 sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label={title}

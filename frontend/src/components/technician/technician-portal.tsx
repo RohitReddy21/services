@@ -28,7 +28,7 @@ const TABS: { id: PortalTab; label: string }[] = [
 
 const EMPTY_COPY: Record<JobScope, string> = {
   today: "No jobs booked for today. Enjoy the quiet one.",
-  upcoming: "Nothing scheduled yet — new jobs will appear here once the office assigns them.",
+  upcoming: "Nothing scheduled yet, new jobs will appear here once the office assigns them.",
   completed: "Completed jobs will be listed here.",
 };
 

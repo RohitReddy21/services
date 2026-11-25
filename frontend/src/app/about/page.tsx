@@ -31,13 +31,13 @@ const values = [
     icon: Users,
     title: "Customer Commitment",
     description:
-      "We communicate clearly, turn up when we say we will, and stand behind our work — no surprises, no jargon.",
+      "We communicate clearly, turn up when we say we will, and stand behind our work, no surprises, no jargon.",
   },
   {
     icon: Award,
     title: "Our Approach",
     description:
-      "We treat every job — from a single wall unit to a multi-site refrigeration contract — with the same level of care and attention to detail.",
+      "We treat every job, from a single wall unit to a multi-site refrigeration contract, with the same level of care and attention to detail.",
   },
 ];
 
@@ -82,7 +82,7 @@ export default function AboutPage() {
         <Reveal
           variant="right"
           delay={0.1}
-          className="relative aspect-4/5 overflow-hidden rounded-3xl shadow-xl shadow-navy-900/10 sm:aspect-5/4"
+          className="relative aspect-4/5 overflow-hidden rounded-2xl shadow-xl shadow-navy-900/10 sm:aspect-5/4"
         >
           <Parallax amount={28} className="absolute inset-0">
             <FadeInImage

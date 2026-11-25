@@ -18,9 +18,9 @@ import {
 } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
+import LoopVideo from "@/components/ui/loop-video";
 import JsonLd from "@/components/seo/json-ld";
 import Reveal from "@/components/ui/reveal";
-import Parallax from "@/components/ui/parallax";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
 import {
   categoryContent,
@@ -121,21 +121,15 @@ export default async function ServiceDetailPage({
       </div>
 
       <section className="relative overflow-hidden bg-ink-950 text-white">
-        <Parallax amount={50} className="absolute inset-0">
-          <FadeInImage
-            src={service.heroImage}
-            alt={service.name}
-            fill
-            priority
-            sizes="100vw"
-            className="scale-110 object-cover opacity-65"
-          />
-        </Parallax>
-        <div className="absolute inset-0 bg-ink-950/65" />
+        <LoopVideo
+          src={categoryId === "refrigeration" ? "/videos/ags-fridge-open" : "/videos/ags-ac-install"}
+          className="opacity-100"
+        />
+        <div className="absolute inset-0 bg-ink-950/60" />
 
         <div className="container-ags relative grid gap-10 py-16 lg:grid-cols-[1fr_360px] lg:items-end lg:py-24">
           <Reveal className="max-w-3xl">
-            <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-100 backdrop-blur">
+            <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.1em] text-brand-100">
               {categoryMeta.name}
             </span>
             <h1 className="mt-5 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
@@ -160,14 +154,14 @@ export default async function ServiceDetailPage({
           <Reveal
             variant="right"
             delay={0.12}
-            className="rounded-2xl border border-white/20 bg-white/10 p-5 shadow-2xl shadow-navy-950/30 backdrop-blur"
+            className="rounded-2xl border border-white/20 bg-white/10 p-5 shadow-2xl shadow-navy-950/30"
           >
             <div className="flex items-center gap-3">
               <span className="flex size-11 items-center justify-center rounded-xl bg-white text-brand-600">
                 <Gauge className="size-5" />
               </span>
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-100">
+                <p className="text-xs font-bold uppercase tracking-[0.1em] text-brand-100">
                   Service scope
                 </p>
                 <p className="text-sm font-semibold text-white">Survey, diagnose, repair or install.</p>

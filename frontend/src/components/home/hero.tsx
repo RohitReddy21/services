@@ -7,6 +7,7 @@ import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "fr
 import { ArrowRight, BadgeCheck, MapPin, ShieldCheck, Star, Timer } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
+import LoopVideo from "@/components/ui/loop-video";
 import TiltCard from "@/components/ui/tilt-card";
 import CanvasGuard from "@/components/three/canvas-guard";
 import { trackEvent } from "@/lib/analytics";
@@ -82,19 +83,6 @@ export default function Hero() {
           />
         </div>
 
-        {!reducedMotion && (
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="/images/services/outdoor-condenser-units.webp"
-            className="absolute inset-0 size-full object-cover opacity-25 saturate-[0.7]"
-            aria-hidden="true"
-          >
-            <source src="/videos/hero-skyline.mp4" type="video/mp4" />
-          </video>
-        )}
 
         {/* Directional scrim — dark on the left for headline contrast. */}
         <div className="absolute inset-0 bg-ink-950/65" />
@@ -118,7 +106,7 @@ export default function Hero() {
           style={reducedMotion ? undefined : { y: contentY }}
           className="max-w-2xl"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-100 backdrop-blur">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-100">
             <span className="size-1.5 rounded-full bg-accent-gold-400" />
             AGS Air Conditioning & Refrigeration Ltd
           </span>
@@ -135,7 +123,7 @@ export default function Hero() {
 
           <form
             onSubmit={handlePostcodeSubmit}
-            className="mt-9 flex max-w-lg flex-col gap-2.5 rounded-2xl border border-white/15 bg-white/6 p-2 backdrop-blur sm:flex-row"
+            className="mt-9 flex max-w-lg flex-col gap-2.5 rounded-2xl border border-white/15 bg-white/6 p-2 sm:flex-row"
           >
             <label className="relative flex-1">
               <span className="sr-only">Enter your postcode</span>
@@ -186,26 +174,19 @@ export default function Hero() {
         >
           <TiltCard
             max={4}
-            bodyClassName="relative overflow-hidden rounded-2xl border border-white/12 bg-white/5 p-3 ags-depth-xl backdrop-blur-sm"
+            bodyClassName="relative overflow-hidden rounded-2xl border border-white/12 bg-white/5 p-3 ags-depth-xl"
           >
             <div className="relative aspect-4/5 overflow-hidden rounded-xl">
-              <FadeInImage
-                src="/images/services/ac-installation.webp"
-                alt="AGS engineers installing an air conditioning system"
-                fill
-                priority
-                sizes="440px"
-                className="object-cover"
-              />
+              <LoopVideo src="/videos/ags-ac-install" />
               <div className="absolute inset-0 bg-ink-950/65" />
 
-              <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-ink-950/55 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-100 backdrop-blur">
+              <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-ink-950/55 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-brand-100">
                 Serving the UK since 2014
               </span>
 
-              <div className="absolute inset-x-4 bottom-4 flex items-center justify-between rounded-xl border border-white/12 bg-ink-950/55 px-4 py-3 backdrop-blur">
+              <div className="absolute inset-x-4 bottom-4 flex items-center justify-between rounded-xl border border-white/12 bg-ink-950/55 px-4 py-3">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-200">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-brand-200">
                     F&#8209;Gas certified
                   </p>
                   <p className="mt-0.5 text-sm font-semibold text-white">

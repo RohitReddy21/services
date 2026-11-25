@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     question: "Can I cancel a booking?",
-    answer: "Yes, open the booking and select \"Cancel Request\" — this is available any time before the service is completed.",
+    answer: "Yes, open the booking and select \"Cancel Request\", this is available any time before the service is completed.",
   },
   {
     question: "How is pricing handled?",

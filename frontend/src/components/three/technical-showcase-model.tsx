@@ -108,7 +108,7 @@ function CompressorAssembly() {
 
 function Label({ children }: { children: ReactNode }) {
   return (
-    <span className="whitespace-nowrap rounded-full border border-brand-100 bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-700 shadow-lg shadow-navy-900/10 backdrop-blur">
+    <span className="whitespace-nowrap rounded-full border border-brand-100 bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-700 shadow-lg shadow-navy-900/10">
       {children}
     </span>
   );

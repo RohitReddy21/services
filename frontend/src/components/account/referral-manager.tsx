@@ -21,7 +21,7 @@ export default function ReferralManager() {
     if (!summary || savingOptIn) return;
     const next = !summary.leaderboardOptIn;
     setSavingOptIn(true);
-    setSummary({ ...summary, leaderboardOptIn: next }); // optimistic — simple boolean flag
+    setSummary({ ...summary, leaderboardOptIn: next }); // optimistic, simple boolean flag
     try {
       await updateProfileRequest({ referralLeaderboardOptIn: next });
     } catch {
@@ -50,7 +50,7 @@ export default function ReferralManager() {
       <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-6 text-center">
         <Share2 className="mx-auto size-6 text-brand-600" />
         <p className="mt-3 text-sm text-slate-600">
-          Share your referral link — you&apos;ll earn <strong>50 points</strong> for every friend who
+          Share your referral link, you&apos;ll earn <strong>50 points</strong> for every friend who
           joins, and they get <strong>25 points</strong> to start.
         </p>
         <div className="mx-auto mt-4 flex max-w-md items-center gap-2 rounded-xl border border-brand-200 bg-white px-3 py-2.5">
@@ -99,7 +99,7 @@ export default function ReferralManager() {
         <span>
           <span className="font-semibold text-navy-900">Show me on the referral leaderboard</span>
           <br />
-          Only your first name and last initial are shown — never your email or full name.
+          Only your first name and last initial are shown, never your email or full name.
         </span>
       </label>
 

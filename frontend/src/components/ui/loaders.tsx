@@ -261,7 +261,7 @@ export function ThreeDLoader() {
     >
       <div className="text-center">
         <div className="mx-auto size-14 rounded-full border border-brand-200 bg-brand-50 ags-pulse-ring" />
-        <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-brand-600">
+        <p className="mt-4 text-xs font-semibold uppercase tracking-[0.1em] text-brand-600">
           Loading engineered view
         </p>
       </div>

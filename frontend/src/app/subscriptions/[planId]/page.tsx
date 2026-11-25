@@ -9,7 +9,7 @@ export async function generateMetadata({
 }: PageProps<"/subscriptions/[planId]">): Promise<Metadata> {
   const { planId } = await params;
   const plan = getPlanById(planId);
-  return { title: plan ? `Subscribe — ${plan.name}` : "Subscribe" };
+  return { title: plan ? `Subscribe | ${plan.name}` : "Subscribe" };
 }
 
 export default async function SubscribePlanPage({

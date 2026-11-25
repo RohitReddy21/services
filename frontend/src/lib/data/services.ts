@@ -91,7 +91,7 @@ export const services: ServiceDetail[] = [
     image: img.cassette,
     heroImage: img.cassette,
     description:
-      "Cassette air conditioning is fitted flush into a suspended ceiling, distributing air evenly across a room from a compact, unobtrusive grille — ideal where wall space is limited or aesthetics matter.",
+      "Cassette air conditioning is fitted flush into a suspended ceiling, distributing air evenly across a room from a compact, unobtrusive grille, ideal where wall space is limited or aesthetics matter.",
     applications: ["Open-plan offices", "Retail showrooms", "Restaurants", "Reception areas"],
     commonProblems: ["Condensate pump failure & leaks", "Uneven airflow from one or more vanes", "Grille or louvre motor faults", "Reduced cooling capacity"],
   },
@@ -175,7 +175,7 @@ export const services: ServiceDetail[] = [
     image: img.install,
     heroImage: img.install,
     description:
-      "Our F-Gas certified engineers handle every stage of your air conditioning installation — site survey, system sizing, pipework, electrical connection, commissioning and handover.",
+      "Our F-Gas certified engineers handle every stage of your air conditioning installation, site survey, system sizing, pipework, electrical connection, commissioning and handover.",
     applications: ["New system installs", "Extensions & refurbishments", "System upgrades", "New-build fit-outs"],
     commonProblems: ["Incorrectly sized existing system", "Poor pipe routing from previous installs", "Missing commissioning documentation", "Non-compliant electrical isolation"],
   },
@@ -245,7 +245,7 @@ export const services: ServiceDetail[] = [
     image: img.acReplacement,
     heroImage: img.acReplacement,
     description:
-      "We help you replace outdated or inefficient air conditioning with modern, energy-efficient systems — including guidance on the right specification for your space.",
+      "We help you replace outdated or inefficient air conditioning with modern, energy-efficient systems, including guidance on the right specification for your space.",
     applications: ["End-of-life system replacement", "R22 refrigerant phase-out upgrades", "Energy efficiency upgrades", "Capacity upgrades"],
     commonProblems: ["System using obsolete refrigerant", "Rising repair costs on old equipment", "Outdated, inefficient technology", "Capacity no longer meets demand"],
   },
@@ -378,7 +378,7 @@ export const services: ServiceDetail[] = [
     image: img.kitchen,
     heroImage: img.kitchen,
     description:
-      "We deliver complete commercial refrigeration solutions — from single units to full kitchen fit-outs — installed and maintained to keep businesses compliant and running smoothly.",
+      "We deliver complete commercial refrigeration solutions, from single units to full kitchen fit-outs, installed and maintained to keep businesses compliant and running smoothly.",
     applications: ["Restaurants & bars", "Retail & convenience stores", "Hotels", "Catering businesses"],
     commonProblems: ["Multiple units underperforming", "Rising energy costs", "Compliance record gaps", "Ageing estate-wide equipment"],
   },
@@ -391,7 +391,7 @@ export const services: ServiceDetail[] = [
     image: img.refInstall,
     heroImage: img.refInstall,
     description:
-      "Our engineers handle full-scope refrigeration installation — from site survey and system design through to commissioning and compliance documentation.",
+      "Our engineers handle full-scope refrigeration installation, from site survey and system design through to commissioning and compliance documentation.",
     applications: ["New kitchen fit-outs", "Retail refurbishments", "Equipment upgrades", "New-build developments"],
     commonProblems: ["Incorrect unit sizing for the space", "Poor ventilation or drainage planning", "Missing commissioning paperwork", "Non-compliant installation"],
   },
@@ -506,7 +506,7 @@ export const categoryContent: Record<ServiceCategoryId, CategoryContent> = {
       { label: "Businesses", icon: "briefcase" },
     ],
     process: [
-      { step: 1, title: "Enquiry & Assessment", description: "Tell us what you need — our team reviews your request and equipment details." },
+      { step: 1, title: "Enquiry & Assessment", description: "Tell us what you need, our team reviews your request and equipment details." },
       { step: 2, title: "Site Survey", description: "An engineer assesses your space, existing system and requirements where needed." },
       { step: 3, title: "Service Confirmation", description: "We confirm scope, scheduling and any details ahead of your appointment." },
       { step: 4, title: "Professional Service", description: "Our certified engineers carry out the work to industry standards." },
@@ -541,7 +541,7 @@ export const categoryContent: Record<ServiceCategoryId, CategoryContent> = {
       { label: "Businesses", icon: "home" },
     ],
     process: [
-      { step: 1, title: "Enquiry & Assessment", description: "Tell us about your equipment and what you need — we review the details." },
+      { step: 1, title: "Enquiry & Assessment", description: "Tell us about your equipment and what you need, we review the details." },
       { step: 2, title: "Site Survey", description: "An engineer assesses your equipment and site requirements where needed." },
       { step: 3, title: "Service Confirmation", description: "We confirm scope, scheduling and any details ahead of your appointment." },
       { step: 4, title: "Professional Service", description: "Our engineers carry out the work to food-safety and industry standards." },

@@ -683,3 +683,43 @@ body {
   border-radius: 2px;
   background: currentColor;
 }
+
+/* ============================================================
+   RESTRAINED SURFACES
+   Overrides for the depth/extrude helpers above: crisp borders and one
+   soft shadow instead of stacked, tinted, "lifted" shadows and keycap
+   buttons. Kept at the end so these win over the earlier rules.
+   ============================================================ */
+.ags-depth-sm,
+.ags-depth-md,
+.ags-depth-lg,
+.ags-depth-xl,
+.ags-card-depth,
+.ags-card-depth-strong {
+  box-shadow: 0 1px 2px rgba(5, 6, 8, 0.08), 0 4px 14px rgba(5, 6, 8, 0.06);
+}
+
+.ags-lift,
+.ags-lift-sm {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ags-lift:hover,
+.ags-lift-sm:hover {
+  transform: none;
+  box-shadow: 0 2px 4px rgba(5, 6, 8, 0.1), 0 8px 22px rgba(5, 6, 8, 0.1);
+}
+
+.ags-extrude,
+.ags-extrude:hover,
+.ags-extrude:active,
+.ags-extrude-gold,
+.ags-extrude-gold:hover,
+.ags-extrude-gold:active {
+  box-shadow: none;
+}
+
+.ags-extrude:active,
+.ags-extrude-gold:active {
+  transform: none;
+}

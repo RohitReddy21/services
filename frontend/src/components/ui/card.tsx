@@ -10,7 +10,7 @@ export const cardVariantClasses: Record<CardVariant, string> = {
   resting: "rounded-2xl border border-slate-200 bg-white ags-depth-sm",
   interactive:
     "rounded-2xl border border-slate-200 bg-white ags-depth-md ags-lift hover:border-brand-200",
-  glass: "rounded-2xl border border-white/70 bg-white/90 ags-depth-md backdrop-blur",
+  glass: "rounded-2xl border border-white/70 bg-white/90 ags-depth-md",
   elevated: "rounded-2xl border border-slate-200 bg-white ags-depth-lg",
 };
 

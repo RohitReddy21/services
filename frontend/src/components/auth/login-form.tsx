@@ -165,7 +165,7 @@ export default function LoginForm() {
         Continue with Google
       </GoogleAuthLink>
 
-      <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+      <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.1em] text-slate-400">
         <span className="h-px flex-1 bg-slate-200" />
         Or continue with email
         <span className="h-px flex-1 bg-slate-200" />

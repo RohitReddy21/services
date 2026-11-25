@@ -34,7 +34,7 @@ const ROLE_LABELS: Record<AdminUserSummary["role"], string> = {
 };
 
 const ROLE_HINT =
-  "Customer — books services. Technician — gets the engineer portal at /technician. Admin — full access to this console.";
+  "Customer, books services. Technician, gets the engineer portal at /technician. Admin, full access to this console.";
 
 const emptyCreate = {
   name: "",
@@ -518,7 +518,7 @@ export default function UsersPanel() {
 
       {pwUser && (
         <AdminModal
-          title={`Set password — ${pwUser.name}`}
+          title={`Set password | ${pwUser.name}`}
           onClose={() => {
             setPwUser(null);
             setPwValue("");

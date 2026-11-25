@@ -11,7 +11,7 @@ import { helpCenterFaqs, helpCenterTopics } from "@/lib/data/help-center";
 export const metadata: Metadata = {
   title: "Help Center",
   description:
-    "Answers to common questions about bookings, Care Plans, rewards, referrals and more — search the AGS Help Center.",
+    "Answers to common questions about bookings, Care Plans, rewards, referrals and more, search the AGS Help Center.",
   alternates: { canonical: "/help" },
   openGraph: {
     url: "/help",

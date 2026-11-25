@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
+import LoopVideo from "@/components/ui/loop-video";
 import { serviceAreas } from "@/lib/data/service-areas";
 
 export function TechnicianSection() {
@@ -27,7 +28,7 @@ export function TechnicianSection() {
           viewport={{ once: true, margin: "-90px" }}
           transition={{ duration: 0.58, ease: "easeOut" }}
         >
-          <div className="relative aspect-4/5 overflow-hidden rounded-[2rem] shadow-2xl shadow-navy-900/15 sm:aspect-5/4 lg:aspect-4/5">
+          <div className="relative aspect-4/5 overflow-hidden rounded-2xl shadow-2xl shadow-navy-900/15 sm:aspect-5/4 lg:aspect-4/5">
             <FadeInImage
               src="/images/services/hvac-repair-technician.webp"
               alt="Certified AGS engineer inspecting HVAC equipment"
@@ -38,7 +39,7 @@ export function TechnicianSection() {
             <div className="absolute inset-0 bg-ink-950/35" />
           </div>
 
-          <div className="absolute left-4 top-4 rounded-2xl border border-white/70 bg-white/90 px-4 py-3 shadow-xl shadow-navy-900/10 backdrop-blur">
+          <div className="absolute left-4 top-4 rounded-2xl border border-white/70 bg-white/90 px-4 py-3 shadow-xl shadow-navy-900/10">
             <p className="flex items-center gap-2 text-sm font-bold text-navy-900">
               <BadgeCheck className="size-4 text-brand-600" />
               Certified Engineer
@@ -47,7 +48,7 @@ export function TechnicianSection() {
           </div>
 
           <div className="absolute -bottom-5 right-4 max-w-56 rounded-2xl border border-brand-100 bg-white p-4 shadow-2xl shadow-navy-900/15">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">
+            <p className="text-xs font-bold uppercase tracking-[0.1em] text-brand-600">
               Site ready
             </p>
             <p className="mt-1 text-sm font-semibold leading-snug text-navy-900">
@@ -122,7 +123,7 @@ export function ServiceAreaStory() {
         </motion.div>
 
         <motion.div
-          className="relative min-h-96 overflow-hidden rounded-[2rem] border border-brand-100 bg-sky-50 p-6 shadow-xl shadow-brand-900/10"
+          className="relative min-h-96 overflow-hidden rounded-2xl border border-brand-100 bg-sky-50 p-6 shadow-xl shadow-brand-900/10"
           initial={reducedMotion ? false : { opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-90px" }}
@@ -174,21 +175,13 @@ export function BookingCtaSection() {
   return (
     <section className="bg-white py-20 lg:py-28">
       <div className="container-ags">
-        <div className="relative overflow-hidden rounded-[2rem] bg-ink-950 p-8 text-white shadow-2xl shadow-navy-900/20 sm:p-10 lg:p-12">
-          <div className="absolute inset-0 opacity-28">
-            <FadeInImage
-              src="/images/services/ac-installation.webp"
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover"
-            />
-          </div>
+        <div className="relative overflow-hidden rounded-2xl bg-ink-950 p-8 text-white shadow-2xl shadow-navy-900/20 sm:p-10 lg:p-12">
+          <LoopVideo src="/videos/ags-frozen-aisle" />
           <div className="absolute inset-0 bg-ink-950/65" />
           <div aria-hidden="true" className="ags-blueprint absolute inset-0" />
           <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-100">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.1em] text-brand-100">
                 <CalendarCheck className="size-3.5 text-accent-gold-400" />
                 Booking request
               </span>

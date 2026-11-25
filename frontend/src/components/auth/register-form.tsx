@@ -97,7 +97,7 @@ export default function RegisterForm() {
     >
       {referralCode && (
         <p className="mb-4 rounded-lg bg-accent-green-50 px-3.5 py-2.5 text-xs font-semibold text-accent-green-700">
-          You&apos;ve been referred with code {referralCode} — you&apos;ll both earn reward points once you sign up.
+          You&apos;ve been referred with code {referralCode}, you&apos;ll both earn reward points once you sign up.
         </p>
       )}
 
@@ -105,7 +105,7 @@ export default function RegisterForm() {
         Sign up with Google
       </GoogleAuthLink>
 
-      <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+      <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.1em] text-slate-400">
         <span className="h-px flex-1 bg-slate-200" />
         Or use email
         <span className="h-px flex-1 bg-slate-200" />

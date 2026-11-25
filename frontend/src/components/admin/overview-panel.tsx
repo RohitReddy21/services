@@ -206,7 +206,7 @@ export default function OverviewPanel({ onJump }: { onJump: (tab: string) => voi
         </div>
         <div className="mt-3 divide-y divide-slate-100">
           {stats.openTickets.length === 0 && (
-            <EmptyState message="No open tickets — nice and quiet." />
+            <EmptyState message="No open tickets, nice and quiet." />
           )}
           {stats.openTickets.map((t) => (
             <div key={t.id} className="flex items-center justify-between gap-3 py-2.5">

@@ -248,7 +248,7 @@ export default function AdminDashboard({ adminName }: { adminName: string }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 lg:h-screen lg:overflow-hidden">
-      <header className="sticky top-0 z-30 shrink-0 border-b border-slate-200 bg-white/90 backdrop-blur">
+      <header className="sticky top-0 z-30 shrink-0 border-b border-slate-200 bg-white/90">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <Logo showTagline={false} className="scale-90 origin-left" />
@@ -344,7 +344,7 @@ function BookingFormFields({
   return (
     <div className="space-y-3">
       {!isEdit && (
-        <Field label="Customer ID" hint="Optional — link this booking to a user account.">
+        <Field label="Customer ID" hint="Optional, link this booking to a user account.">
           <input
             className="input-field h-9 text-sm"
             value={form.customerId}
@@ -891,7 +891,7 @@ function BookingsPanel() {
                       </select>
                       {technicians.length === 0 && (
                         <span className="text-xs text-slate-400">
-                          No engineer accounts yet — create one under Users with the TECHNICIAN
+                          No engineer accounts yet, create one under Users with the TECHNICIAN
                           role.
                         </span>
                       )}

@@ -32,13 +32,13 @@ export default function ServiceCard({ service }: { service: ServiceSummary }) {
         />
         <div className="absolute inset-0 bg-ink-950/40 opacity-80 transition-opacity group-hover:opacity-95" />
         <div
-          className="ags-tilt-layer absolute left-3 top-3 rounded-full border border-white/50 bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-700 shadow-sm backdrop-blur"
+          className="ags-tilt-layer absolute left-3 top-3 rounded-full border border-white/50 bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-700 shadow-sm"
           style={{ "--ags-z": "26px" } as CSSProperties}
         >
           {tone.label}
         </div>
         <div
-          className="ags-tilt-layer absolute bottom-3 right-3 hidden items-center gap-1.5 rounded-xl border border-white/55 bg-white/90 px-2.5 py-2 text-[10px] font-semibold text-navy-800 shadow-lg backdrop-blur sm:flex"
+          className="ags-tilt-layer absolute bottom-3 right-3 hidden items-center gap-1.5 rounded-xl border border-white/55 bg-white/90 px-2.5 py-2 text-[10px] font-semibold text-navy-800 shadow-lg sm:flex"
           style={{ "--ags-z": "44px" } as CSSProperties}
         >
           <Gauge className="size-3 text-accent-gold-600" />

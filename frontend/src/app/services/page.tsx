@@ -12,13 +12,13 @@ import type { ServiceCategoryId } from "@/types/service";
 export const metadata: Metadata = {
   title: "Our Services",
   description:
-    "Browse all AGS air conditioning and refrigeration services — installation, repairs, servicing and maintenance for homes and businesses across the UK.",
+    "Browse all AGS air conditioning and refrigeration services, installation, repairs, servicing and maintenance for homes and businesses across the UK.",
   alternates: { canonical: "/services" },
   openGraph: {
     url: "/services",
     title: "Our Services",
     description:
-      "Air conditioning and refrigeration services — installation, repairs, servicing and maintenance across the UK.",
+      "Air conditioning and refrigeration services, installation, repairs, servicing and maintenance across the UK.",
   },
 };
 

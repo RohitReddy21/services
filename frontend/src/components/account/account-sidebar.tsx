@@ -38,7 +38,7 @@ export default function AccountSidebar() {
 
   return (
     <nav className="hidden w-64 shrink-0 lg:block">
-      <div className="sticky top-24 flex flex-col gap-1 rounded-2xl border border-brand-100 bg-white/90 p-2 shadow-xl shadow-navy-900/10 backdrop-blur">
+      <div className="sticky top-24 flex flex-col gap-1 rounded-2xl border border-brand-100 bg-white/90 p-2 shadow-xl shadow-navy-900/10">
         {links.map((link) => {
           const isActive =
             link.href === "/account" ? pathname === "/account" : pathname.startsWith(link.href);

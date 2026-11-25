@@ -24,7 +24,7 @@ export default function TechnicianHeader({ engineerName }: { engineerName: strin
     if (available === null || saving) return;
     const next = !available;
     setSaving(true);
-    setAvailable(next); // optimistic — this is a simple on/off flag
+    setAvailable(next); // optimistic, this is a simple on/off flag
     try {
       await setAvailabilityRequest(next);
     } catch {
@@ -35,7 +35,7 @@ export default function TechnicianHeader({ engineerName }: { engineerName: strin
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95">
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
         <div className="flex min-w-0 items-center gap-2.5">
           <Logo showTagline={false} className="scale-90 origin-left" />
@@ -56,7 +56,7 @@ export default function TechnicianHeader({ engineerName }: { engineerName: strin
                   : "border-slate-200 bg-slate-100 text-slate-500"
               )}
               aria-pressed={available}
-              title={available ? "Available for new jobs — tap to go off-duty" : "Off-duty — tap to become available"}
+              title={available ? "Available for new jobs, tap to go off-duty" : "Off-duty, tap to become available"}
             >
               <span
                 className={cn("size-1.5 rounded-full", available ? "bg-green-500" : "bg-slate-400")}

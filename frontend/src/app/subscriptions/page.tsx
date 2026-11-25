@@ -18,13 +18,13 @@ import { breadcrumbSchema } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Care Plans",
   description:
-    "AGS Care Plans — monthly servicing for your air conditioning or refrigeration equipment. From £108.25/month with free call-outs and unused visits rolled into 1-month vouchers.",
+    "AGS Care Plans, monthly servicing for your air conditioning or refrigeration equipment. From £108.25/month with free call-outs and unused visits rolled into 1-month vouchers.",
   alternates: { canonical: "/subscriptions" },
   openGraph: {
     url: "/subscriptions",
     title: "Care Plans",
     description:
-      "Monthly servicing plans for AC and refrigeration equipment — from £108.25/month.",
+      "Monthly servicing plans for AC and refrigeration equipment, from £108.25/month.",
   },
 };
 
@@ -54,7 +54,7 @@ export default function SubscriptionsPage() {
         <PlansHeroBackground />
         <div className="container-ags relative py-16 lg:py-24">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-100 backdrop-blur">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-brand-100">
               <ShieldCheck className="size-3.5" />
               AGS Care Plans
             </span>
@@ -63,7 +63,7 @@ export default function SubscriptionsPage() {
             </h1>
             <p className="mt-4 text-base leading-relaxed text-brand-50">
               Pick a term from one month to a full year. Every plan is one
-              service visit per month with the call-out charge included — and
+              service visit per month with the call-out charge included, and
               any visit you don&apos;t use becomes a voucher.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-semibold text-brand-50">
@@ -175,7 +175,7 @@ export default function SubscriptionsPage() {
         {/* What every service includes */}
         <Reveal className="mt-14 grid gap-8 rounded-2xl border border-slate-200 bg-slate-25 p-8 ags-depth-sm sm:p-10 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <span className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
+            <span className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.1em] text-brand-700">
               Every visit
             </span>
             <h2 className="mt-4 font-display text-2xl font-bold text-navy-900">

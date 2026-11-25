@@ -16,7 +16,7 @@ function formatPeriod(period: string) {
 export default function RevenueChart({ data }: { data: AdminRevenuePoint[] }) {
   if (data.length === 0) {
     return (
-      <EmptyState message="No priced, completed jobs yet — revenue tracking starts once bookings are priced." />
+      <EmptyState message="No priced, completed jobs yet, revenue tracking starts once bookings are priced." />
     );
   }
 

@@ -57,7 +57,7 @@ export default async function ReviewsPage() {
             <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
               <Star className="mx-auto size-6 text-slate-300" />
               <p className="mt-2 text-sm text-slate-500">
-                No reviews yet — you can review a service once it&apos;s completed.
+                No reviews yet, you can review a service once it&apos;s completed.
               </p>
             </div>
           ) : (

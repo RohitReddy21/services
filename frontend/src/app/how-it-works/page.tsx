@@ -22,13 +22,13 @@ const steps = [
     icon: CalendarCheck,
     title: "Pick a Date & Time",
     description:
-      "Choose a date and time slot that works for you from our live availability — no back-and-forth needed.",
+      "Choose a date and time slot that works for you from our live availability, no back-and-forth needed.",
   },
   {
     icon: MessageSquare,
     title: "We Confirm the Details",
     description:
-      "Our team reviews your request and gets in touch to confirm the appointment and any details before the visit — including any applicable charges.",
+      "Our team reviews your request and gets in touch to confirm the appointment and any details before the visit, including any applicable charges.",
   },
   {
     icon: Wrench,

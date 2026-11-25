@@ -53,7 +53,7 @@ export default function StepShell({
               {currentStepNumber}
             </span>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-600">
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-brand-600">
                 {STEP_LABELS[step]}
               </p>
             <h2 className="mt-2 font-display text-lg font-extrabold text-navy-900 sm:text-xl">

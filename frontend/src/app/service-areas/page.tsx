@@ -70,7 +70,7 @@ export default async function ServiceAreasPage({
           <Link href="/contact" className="font-semibold text-brand-600 hover:text-brand-700">
             Get in touch
           </Link>{" "}
-          — we&apos;re expanding our coverage and can often still help.
+         , we&apos;re expanding our coverage and can often still help.
         </p>
       </div>
     </div>

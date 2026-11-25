@@ -20,7 +20,7 @@ const generalFaqs: HelpFaq[] = [
     topic: "Bookings",
     question: "Can I change my appointment date or time?",
     answer:
-      "Yes — open the booking from My Bookings and choose \"Reschedule Booking\" to pick a new date and time from live availability. The change is confirmed immediately, no need to wait for a callback.",
+      "Yes, open the booking from My Bookings and choose \"Reschedule Booking\" to pick a new date and time from live availability. The change is confirmed immediately, no need to wait for a callback.",
   },
   {
     id: "gen-3",
@@ -34,7 +34,7 @@ const generalFaqs: HelpFaq[] = [
     topic: "Pricing & Payment",
     question: "Why don't I see prices for services online?",
     answer:
-      "Most jobs depend on site conditions our engineers need to assess, so AGS confirms scope and any applicable charges directly with you before work begins — never a surprise bill.",
+      "Most jobs depend on site conditions our engineers need to assess, so AGS confirms scope and any applicable charges directly with you before work begins, never a surprise bill.",
   },
   {
     id: "gen-5",
@@ -48,7 +48,7 @@ const generalFaqs: HelpFaq[] = [
     topic: "Care Plans",
     question: "What happens to unused Premium Care visits?",
     answer:
-      "Any of the 3 services not used within a 3-month Premium Care cycle roll over automatically into your next cycle — you never lose a paid-for visit.",
+      "Any of the 3 services not used within a 3-month Premium Care cycle roll over automatically into your next cycle, you never lose a paid-for visit.",
   },
   {
     id: "gen-7",
@@ -76,7 +76,7 @@ const generalFaqs: HelpFaq[] = [
     topic: "Account",
     question: "Can I save my equipment details for faster bookings?",
     answer:
-      "Yes — add your AC units or refrigeration equipment under Account → My Equipment, including brand, serial number, install date and warranty, for a complete service history.",
+      "Yes, add your AC units or refrigeration equipment under Account → My Equipment, including brand, serial number, install date and warranty, for a complete service history.",
   },
   {
     id: "gen-11",

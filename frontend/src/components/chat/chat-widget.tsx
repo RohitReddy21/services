@@ -23,7 +23,7 @@ function nextId() {
 const GREETING: ChatMessage = {
   id: "greeting",
   from: "bot",
-  text: "Hi! I'm the AGS assistant. Ask me about bookings, Care Plans, rewards, or anything else — I'll do my best to help, or point you to the team.",
+  text: "Hi! I'm the AGS assistant. Ask me about bookings, Care Plans, rewards, or anything else, I'll do my best to help, or point you to the team.",
 };
 
 export default function ChatWidget() {

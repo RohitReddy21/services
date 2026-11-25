@@ -29,7 +29,7 @@ export default function PostcodeChecker({ initialPostcode }: { initialPostcode?:
     <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
       <h2 className="font-display text-lg font-bold text-navy-900">Check Your Postcode</h2>
       <p className="mt-1 text-sm text-slate-500">
-        See if AGS covers your area — this is a quick check; our team will
+        See if AGS covers your area, this is a quick check; our team will
         confirm full details when you book.
       </p>
 
@@ -57,7 +57,7 @@ export default function PostcodeChecker({ initialPostcode }: { initialPostcode?:
             <div className="flex items-start gap-2.5 rounded-lg bg-accent-green-50 px-4 py-3 text-sm text-accent-green-800">
               <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
               <span>
-                Good news — we cover <strong>{result.area.city}</strong> and
+                Good news, we cover <strong>{result.area.city}</strong> and
                 the surrounding area.{" "}
                 <ButtonLink href="/book" size="sm" className="mt-2 sm:mt-0 sm:ml-2 sm:inline-flex">
                   Book a Service
@@ -69,7 +69,7 @@ export default function PostcodeChecker({ initialPostcode }: { initialPostcode?:
               <XCircle className="mt-0.5 size-4 shrink-0" />
               <span>
                 We couldn&apos;t automatically match that postcode to a
-                listed area — contact us and we&apos;ll confirm whether we
+                listed area, contact us and we&apos;ll confirm whether we
                 can help.
               </span>
             </div>

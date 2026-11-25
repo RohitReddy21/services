@@ -23,7 +23,7 @@ export default function PrivacyPage() {
               When you create an account, submit a booking, or subscribe to
               a Care Plan, we collect your name, email address, phone
               number, service address, and details about the equipment and
-              service you need — including any photos you choose to upload.
+              service you need, including any photos you choose to upload.
             </Section>
             <Section title="2. How We Use Your Information">
               We use this information to process your booking or
