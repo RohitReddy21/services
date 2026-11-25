@@ -34,7 +34,7 @@ const panels: CategoryPanel[] = [
     eyebrow: "Refrigeration",
     title: "Commercial cold storage and display kept reliable.",
     description:
-      "Fridges, freezers, cold rooms, walk-ins, display cabinets, ice machines and industrial refrigeration plant.",
+      "Fridges, freezers, cold rooms, walk-ins, display cabinets and ice machines.",
     image: "/images/services/cold-storage.webp",
     imageAlt: "Cold room refrigeration environment",
     icon: Refrigerator,
