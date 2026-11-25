@@ -27,7 +27,7 @@ export default function Testimonials() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="bg-white py-16 lg:py-24">
+    <section className="bg-white py-20 lg:py-28">
       <div className="container-ags grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
         <motion.div
           initial={reducedMotion ? false : { opacity: 0, x: -24 }}
@@ -58,7 +58,7 @@ export default function Testimonials() {
               <Star key={i} className="size-5 fill-accent-gold-500 text-accent-gold-500" />
             ))}
           </div>
-          <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
+          <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-navy-900 sm:text-5xl">
             4.9/5 from customers who need systems to keep working.
           </h2>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">

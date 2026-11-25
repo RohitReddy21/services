@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Award, HardHat, ShieldCheck, Users } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
 import Reveal, { RevealStagger, RevealItem } from "@/components/ui/reveal";
 import Parallax from "@/components/ui/parallax";
+import PageHero from "@/components/ui/page-hero";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -44,22 +44,20 @@ const values = [
 export default function AboutPage() {
   return (
     <div className="bg-white">
-      <div className="border-b border-slate-200 bg-sky-50">
-        <div className="container-ags py-4 text-xs font-medium text-slate-500">
-          <Link href="/" className="hover:text-brand-600">Home</Link>
-          <span className="mx-2">/</span>
-          <span className="text-navy-700">About Us</span>
-        </div>
-      </div>
+      <PageHero
+        crumb="About Us"
+        eyebrow="About AGS"
+        title="Qualified engineers."
+        highlight="Clear communication."
+        description="UK-based air conditioning and refrigeration specialists, trusted by homes and businesses across the country."
+      />
 
       <section className="container-ags grid gap-10 py-12 lg:grid-cols-2 lg:items-center lg:py-20">
         <Reveal variant="up">
-          <span className="inline-flex items-center rounded-full bg-brand-100 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-700">
-            About AGS
-          </span>
-          <h1 className="mt-5 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
+          <span className="ags-eyebrow">Who we are</span>
+          <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
             AGS Air Conditioning & Refrigeration Ltd
-          </h1>
+          </h2>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
             AGS is a UK-based air conditioning and refrigeration specialist,
             trusted by homes and businesses across the country. From a single

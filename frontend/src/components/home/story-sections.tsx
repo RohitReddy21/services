@@ -8,7 +8,6 @@ import {
   CalendarCheck,
   CheckCircle2,
   ShieldCheck,
-  Snowflake,
   Wrench,
 } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
@@ -19,7 +18,7 @@ export function TechnicianSection() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="overflow-hidden bg-white py-16 lg:py-24">
+    <section className="overflow-hidden bg-white py-20 lg:py-28">
       <div className="container-ags grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <motion.div
           className="relative order-2 lg:order-1"
@@ -64,10 +63,10 @@ export function TechnicianSection() {
           viewport={{ once: true, margin: "-90px" }}
           transition={{ duration: 0.58, ease: "easeOut" }}
         >
-          <span className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
+          <span className="ags-eyebrow">
             Engineer-led service
           </span>
-          <h2 className="mt-4 max-w-2xl font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
+          <h2 className="mt-4 max-w-2xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-navy-900 sm:text-5xl">
             Tidy engineering work, clear communication, and practical aftercare.
           </h2>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
@@ -93,70 +92,12 @@ export function TechnicianSection() {
   );
 }
 
-export function RefrigerationStory() {
-  const reducedMotion = useReducedMotion();
-
-  return (
-    <section className="overflow-hidden bg-sky-50 py-16 lg:py-24">
-      <div className="container-ags">
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-          <motion.div
-            initial={reducedMotion ? false : { opacity: 0, y: 22 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-90px" }}
-            transition={{ duration: 0.58, ease: "easeOut" }}
-          >
-            <span className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-700 shadow-sm shadow-brand-100">
-              Refrigeration environments
-            </span>
-            <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
-              Cold rooms, displays and kitchens kept consistently in range.
-            </h2>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
-              From walk-in storage to glass-front retail display, the
-              refrigeration experience is designed around uptime, food safety
-              and practical access for maintenance.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="relative"
-            initial={reducedMotion ? false : { opacity: 0, x: 26 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-90px" }}
-            transition={{ duration: 0.62, ease: "easeOut" }}
-        >
-          <div className="relative aspect-16/10 overflow-hidden rounded-[2rem] shadow-2xl shadow-navy-900/15">
-              <FadeInImage
-                src="/images/services/commercial-refrigeration.webp"
-                alt="Commercial refrigeration equipment in a professional kitchen"
-                fill
-                sizes="(min-width: 1024px) 58vw, 92vw"
-                className="object-cover ags-image-reveal"
-              />
-              <div className="absolute inset-0 bg-ink-950/40" />
-            </div>
-            <div className="absolute -bottom-6 left-5 right-5 grid gap-3 rounded-2xl border border-white/70 bg-white/90 p-4 shadow-xl shadow-navy-900/10 backdrop-blur sm:grid-cols-3">
-              {["Cold room", "Display fridge", "Walk-in freezer"].map((item) => (
-                <div key={item} className="flex items-center gap-2 text-sm font-semibold text-navy-800">
-                  <Snowflake className="size-4 text-brand-600" />
-                  {item}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function ServiceAreaStory() {
   const reducedMotion = useReducedMotion();
   const featured = serviceAreas.slice(0, 10);
 
   return (
-    <section className="bg-white py-16 lg:py-24">
+    <section className="bg-white py-20 lg:py-28">
       <div className="container-ags grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-center">
         <motion.div
           initial={reducedMotion ? false : { opacity: 0, y: 22 }}
@@ -164,10 +105,10 @@ export function ServiceAreaStory() {
           viewport={{ once: true, margin: "-90px" }}
           transition={{ duration: 0.58, ease: "easeOut" }}
         >
-          <span className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
+          <span className="ags-eyebrow">
             UK coverage
           </span>
-          <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
+          <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-navy-900 sm:text-5xl">
             Engineers positioned for major UK service areas.
           </h2>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
@@ -231,7 +172,7 @@ export function ServiceAreaStory() {
 
 export function BookingCtaSection() {
   return (
-    <section className="bg-white py-16 lg:py-24">
+    <section className="bg-white py-20 lg:py-28">
       <div className="container-ags">
         <div className="relative overflow-hidden rounded-[2rem] bg-ink-950 p-8 text-white shadow-2xl shadow-navy-900/20 sm:p-10 lg:p-12">
           <div className="absolute inset-0 opacity-28">
@@ -244,14 +185,15 @@ export function BookingCtaSection() {
             />
           </div>
           <div className="absolute inset-0 bg-ink-950/65" />
+          <div aria-hidden="true" className="ags-blueprint absolute inset-0" />
           <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-100">
                 <CalendarCheck className="size-3.5 text-accent-gold-400" />
                 Booking request
               </span>
-              <h2 className="mt-4 max-w-2xl font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Book an AGS engineer with the details they need before arrival.
+              <h2 className="mt-4 max-w-2xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
+                Book an AGS engineer with the <span className="ags-gradient-text">details they need</span> before arrival.
               </h2>
               <div className="mt-5 grid gap-3 text-sm text-brand-50 sm:grid-cols-3">
                 {["Choose service", "Pick date and time", "Review request"].map((step) => (

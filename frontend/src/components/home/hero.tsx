@@ -123,8 +123,9 @@ export default function Hero() {
             AGS Air Conditioning & Refrigeration Ltd
           </span>
 
-          <h1 className="mt-6 font-display text-[2.5rem] font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-[4rem]">
-            Advanced Air Conditioning &amp; Refrigeration Solutions
+          <h1 className="mt-6 font-display text-[2.5rem] font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-[4.25rem]">
+            Advanced Air Conditioning &amp;{" "}
+            <span className="ags-gradient-text">Refrigeration Solutions</span>
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-brand-50/90 sm:text-lg">

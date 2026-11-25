@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
+import { ArrowRight, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import Logo from "@/components/navigation/logo";
+import { ButtonLink } from "@/components/ui/button";
 import { ORG } from "@/lib/site";
 import { FacebookIcon, InstagramIcon, LinkedinIcon } from "@/components/ui/social-icons";
 
@@ -43,8 +44,35 @@ export default function Footer() {
   return (
     <footer className="relative overflow-hidden bg-ink-950 text-slate-300">
       <div className="absolute inset-x-0 top-0 h-0.5 bg-accent-gold-500" />
+      <div aria-hidden="true" className="ags-blueprint pointer-events-none absolute inset-0 opacity-60" />
+
+      <div className="container-ags relative pt-14">
+        <div className="flex flex-col gap-6 rounded-3xl border border-white/10 bg-brand-600/30 p-8 sm:p-10 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+              Need an engineer?
+            </p>
+            <p className="mt-2 max-w-md text-sm text-slate-300">
+              Book online in minutes, or call and speak to the team directly.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <ButtonLink href="/book" size="lg">
+              Book a Service
+              <ArrowRight className="size-4" />
+            </ButtonLink>
+            <a
+              href={ORG.phones[0].href}
+              className="ags-focus inline-flex h-12 items-center gap-2 rounded-xl border border-white/30 px-6 text-base font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-white/10"
+            >
+              <Phone className="size-4" />
+              {ORG.phones[0].display}
+            </a>
+          </div>
+        </div>
+      </div>
       <motion.div
-        className="container-ags grid grid-cols-2 gap-10 py-14 lg:grid-cols-7"
+        className="container-ags relative grid grid-cols-2 gap-10 py-14 lg:grid-cols-7"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}

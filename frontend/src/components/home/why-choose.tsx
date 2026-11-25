@@ -33,7 +33,7 @@ export default function WhyChoose() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="overflow-hidden bg-sky-50 py-16 lg:py-24">
+    <section className="overflow-hidden bg-sky-50 py-20 lg:py-28">
       <div className="container-ags">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <motion.div
@@ -42,10 +42,10 @@ export default function WhyChoose() {
             viewport={{ once: true, margin: "-90px" }}
             transition={{ duration: 0.58, ease: "easeOut" }}
           >
-            <span className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-700 shadow-sm shadow-brand-100">
+            <span className="ags-eyebrow">
               Why AGS
             </span>
-            <h2 className="mt-4 max-w-2xl font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-5xl">
+            <h2 className="mt-4 max-w-2xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-navy-900 sm:text-5xl">
               Premium service is mostly invisible when it is done properly.
             </h2>
             <p className="mt-5 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">

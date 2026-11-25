@@ -1,177 +1,161 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Refrigerator, Snowflake } from "lucide-react";
-import type { ComponentType, CSSProperties } from "react";
-import ServiceGrid from "@/components/services/service-grid";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, Phone, Refrigerator, Snowflake } from "lucide-react";
+import type { ComponentType } from "react";
 import { ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
-import TiltCard from "@/components/ui/tilt-card";
+import Reveal, { RevealItem, RevealStagger } from "@/components/ui/reveal";
 import { getServicesByCategory } from "@/lib/data/services";
+import { ORG } from "@/lib/site";
+import type { ServiceCategoryId } from "@/types/service";
 
-export default function ServicesShowcase() {
-  const reducedMotion = useReducedMotion();
-  const airConditioning = getServicesByCategory("air-conditioning").slice(0, 8);
-  const refrigeration = getServicesByCategory("refrigeration").slice(0, 8);
-
-  return (
-    <section className="bg-white py-16 lg:py-24">
-      <div className="container-ags">
-        <motion.div
-          className="mx-auto max-w-2xl text-center"
-          initial={reducedMotion ? false : { opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <span className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
-            Service marketplace
-          </span>
-          <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
-            Air conditioning and refrigeration support without online
-            prices.
-          </h2>
-          <p className="mt-3 text-slate-600">
-            Choose the service area, tell us the equipment and AGS will confirm
-            the right scope before work begins.
-          </p>
-        </motion.div>
-
-        <ServiceChapter
-          eyebrow="Air conditioning"
-          title="Comfort systems for homes, offices and commercial spaces."
-          description="Installation, repairs, servicing, maintenance and diagnostics for wall-mounted, cassette, multi-split, VRV and VRF systems."
-          image="/images/services/wall-mounted-ac.webp"
-          imageAlt="Wall mounted air conditioning installation"
-          icon={Snowflake}
-          services={airConditioning}
-          href="/services?category=air-conditioning"
-          reverse={false}
-        />
-
-        <ServiceChapter
-          eyebrow="Refrigeration"
-          title="Commercial cold storage and display refrigeration kept reliable."
-          description="Support for fridges, freezers, cold rooms, walk-ins, display cabinets and ice machines."
-          image="/images/services/cold-storage.webp"
-          imageAlt="Cold room refrigeration environment"
-          icon={Refrigerator}
-          services={refrigeration}
-          href="/services?category=refrigeration"
-          reverse
-        />
-      </div>
-    </section>
-  );
-}
-
-function ServiceChapter({
-  eyebrow,
-  title,
-  description,
-  image,
-  imageAlt,
-  icon: Icon,
-  services,
-  href,
-  reverse,
-}: {
+interface CategoryPanel {
+  id: ServiceCategoryId;
   eyebrow: string;
   title: string;
   description: string;
   image: string;
   imageAlt: string;
   icon: ComponentType<{ className?: string }>;
-  services: ReturnType<typeof getServicesByCategory>;
-  href: string;
-  reverse?: boolean;
-}) {
-  const reducedMotion = useReducedMotion();
+}
 
+const panels: CategoryPanel[] = [
+  {
+    id: "air-conditioning",
+    eyebrow: "Air conditioning",
+    title: "Comfort systems for homes, offices and commercial spaces.",
+    description:
+      "Installation, repairs, servicing and diagnostics for wall-mounted, cassette, multi-split, VRV and VRF systems.",
+    image: "/images/services/wall-mounted-ac.webp",
+    imageAlt: "Wall mounted air conditioning installation",
+    icon: Snowflake,
+  },
+  {
+    id: "refrigeration",
+    eyebrow: "Refrigeration",
+    title: "Commercial cold storage and display kept reliable.",
+    description:
+      "Fridges, freezers, cold rooms, walk-ins, display cabinets, ice machines and industrial refrigeration plant.",
+    image: "/images/services/cold-storage.webp",
+    imageAlt: "Cold room refrigeration environment",
+    icon: Refrigerator,
+  },
+];
+
+export default function ServicesShowcase() {
   return (
-    <div className="mt-16 lg:mt-20">
-      <div
-        className={`grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-center ${
-          reverse ? "lg:grid-flow-col-dense" : ""
-        }`}
-      >
-        <motion.div
-          className={reverse ? "lg:col-start-2" : ""}
-          initial={reducedMotion ? false : { opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
-        >
-          <span className="inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
-            <Icon className="size-3.5" />
-            {eyebrow}
-          </span>
-          <h3 className="mt-4 max-w-xl font-display text-2xl font-extrabold tracking-tight text-navy-900 sm:text-3xl">
-            {title}
-          </h3>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-600">
-            {description}
-          </p>
-          <ButtonLink href={href} variant="secondary" size="lg" className="mt-6">
-            View All {eyebrow}
+    <section className="relative bg-white py-20 lg:py-28">
+      <div className="container-ags">
+        <Reveal className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <span className="ags-eyebrow">What we do</span>
+            <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-navy-900 sm:text-5xl">
+              Two specialisms.
+              <span className="block text-brand-600">One standard of work.</span>
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-600">
+              Choose your service area, tell us about the equipment, and AGS
+              confirms the right scope with you before any work begins.
+            </p>
+          </div>
+          <ButtonLink href="/services" variant="secondary" size="lg" className="self-start lg:self-auto">
+            Browse all services
             <ArrowRight className="size-4" />
           </ButtonLink>
-        </motion.div>
+        </Reveal>
 
-        <motion.div
-          className={`relative isolate ${reverse ? "lg:col-start-1" : ""}`}
-          initial={reducedMotion ? false : { opacity: 0, scale: 0.96 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          <div className="pointer-events-none absolute -inset-8 -z-10 hidden lg:block">
-            <span
-              className={`absolute top-4 h-28 w-44 rounded-2xl border border-brand-200/70 ags-float-slow ${
-                reverse ? "right-6" : "left-6"
-              }`}
-            />
-            <span
-              className={`absolute bottom-8 h-12 w-36 rounded-xl border border-accent-gold-400/35 ags-float-delayed ${
-                reverse ? "left-10" : "right-10"
-              }`}
-            />
-            <span
-              className={`absolute top-10 h-28 w-px bg-brand-300/45 ${
-                reverse ? "right-24" : "left-24"
-              }`}
-            />
-            <span className="absolute left-1/4 top-1/2 h-px w-2/3 -translate-y-1/2 rotate-[-12deg] bg-brand-300/45" />
-          </div>
-          <TiltCard
-            max={8}
-            glare
-            bodyClassName="relative aspect-16/10 overflow-hidden rounded-[2rem] ags-depth-xl"
-          >
-            <FadeInImage
-              src={image}
-              alt={imageAlt}
-              fill
-              sizes="(min-width: 1024px) 55vw, 92vw"
-              className="object-cover ags-image-reveal"
-            />
-            <div className="absolute inset-0 bg-ink-950/35" />
+        <RevealStagger className="mt-12 grid gap-6 lg:grid-cols-2" step={0.12}>
+          {panels.map((panel) => (
+            <RevealItem key={panel.id} distance={32}>
+              <CategoryCard panel={panel} />
+            </RevealItem>
+          ))}
+        </RevealStagger>
+
+        <Reveal delay={0.05} className="mt-6">
+          <div className="relative overflow-hidden rounded-3xl bg-ink-950 px-6 py-6 text-white sm:px-8 lg:flex lg:items-center lg:justify-between lg:gap-8">
             <div
-              className="ags-tilt-layer absolute bottom-5 left-5 rounded-2xl border border-white/70 bg-white/90 px-4 py-3 ags-depth-md backdrop-blur"
-              style={{ "--ags-z": "70px" } as CSSProperties}
-            >
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">
-                AGS specification
-              </p>
-              <p className="mt-1 text-sm font-semibold text-navy-900">
-                Survey, install, maintain and repair.
-              </p>
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-10 -top-24 size-72 rounded-full bg-accent-gold-500/20 blur-3xl"
+            />
+            <div className="relative flex items-start gap-4">
+              <span className="relative mt-1 flex size-3 shrink-0">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent-gold-400 opacity-60" />
+                <span className="relative inline-flex size-3 rounded-full bg-accent-gold-500" />
+              </span>
+              <div>
+                <p className="font-display text-xl font-bold">System down? Don&apos;t wait.</p>
+                <p className="mt-1 text-sm text-slate-300">
+                  Urgent breakdowns are prioritised. Call us and an engineer will take it from there.
+                </p>
+              </div>
             </div>
-          </TiltCard>
-        </motion.div>
+            <a
+              href={ORG.phones[0].href}
+              className="ags-focus relative mt-5 inline-flex h-12 items-center gap-2.5 rounded-xl bg-white px-6 text-base font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-brand-50 lg:mt-0 lg:shrink-0"
+            >
+              <Phone className="size-4 text-brand-600" />
+              {ORG.phones[0].display}
+            </a>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function CategoryCard({ panel }: { panel: CategoryPanel }) {
+  const all = getServicesByCategory(panel.id);
+  const featured = all.slice(0, 5);
+  const Icon = panel.icon;
+
+  return (
+    <article className="group relative isolate flex min-h-[560px] flex-col justify-end overflow-hidden rounded-3xl bg-ink-950 text-white shadow-2xl shadow-navy-900/15 ags-lift">
+      <FadeInImage
+        src={panel.image}
+        alt={panel.imageAlt}
+        fill
+        sizes="(min-width: 1024px) 48vw, 92vw"
+        className="-z-20 object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+      />
+      <div className="absolute inset-0 -z-10 bg-ink-950/65" />
+
+      <div className="absolute left-6 top-6 flex items-center gap-2 rounded-full border border-white/20 bg-ink-950/50 py-1.5 pl-2 pr-3.5 text-xs font-semibold backdrop-blur">
+        <span className="flex size-6 items-center justify-center rounded-full bg-brand-500">
+          <Icon className="size-3.5" />
+        </span>
+        {panel.eyebrow}
+        <span className="text-slate-300">· {all.length} services</span>
       </div>
 
-      <ServiceGrid services={services} className="mt-10" />
-    </div>
+      <div className="p-6 sm:p-8">
+        <h3 className="max-w-md font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">
+          {panel.title}
+        </h3>
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-300">{panel.description}</p>
+
+        <ul className="mt-6 flex flex-wrap gap-2">
+          {featured.map((service) => (
+            <li key={service.id}>
+              <Link
+                href={`/services/${service.categoryId}/${service.slug}`}
+                className="ags-focus inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold backdrop-blur transition-colors hover:border-white/50 hover:bg-white/20"
+              >
+                {service.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <Link
+          href={`/services?category=${panel.id}`}
+          className="ags-focus mt-7 inline-flex items-center gap-2 text-sm font-bold text-white"
+        >
+          <span className="border-b-2 border-brand-400 pb-0.5 transition-colors group-hover:border-white">
+            Explore {panel.eyebrow.toLowerCase()}
+          </span>
+          <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </Link>
+      </div>
+    </article>
   );
 }

@@ -5,6 +5,7 @@ import { serviceAreas } from "@/lib/data/service-areas";
 import PostcodeChecker from "@/components/service-areas/postcode-checker";
 import JsonLd from "@/components/seo/json-ld";
 import Reveal, { RevealStagger, RevealItem } from "@/components/ui/reveal";
+import PageHero from "@/components/ui/page-hero";
 import { breadcrumbSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -29,27 +30,17 @@ export default async function ServiceAreasPage({
           { name: "Service Areas", path: "/service-areas" },
         ])}
       />
-      <div className="border-b border-slate-200 bg-sky-50">
-        <div className="container-ags py-4 text-xs font-medium text-slate-500">
-          <Link href="/" className="hover:text-brand-600">Home</Link>
-          <span className="mx-2">/</span>
-          <span className="text-navy-700">Service Areas</span>
-        </div>
-      </div>
+      <PageHero
+        crumb="Service Areas"
+        eyebrow="Coverage"
+        title="Where we"
+        highlight="work."
+        description="AGS provides air conditioning and refrigeration services across the UK, with engineers based near major cities for fast response times."
+      />
 
       <div className="container-ags py-12 lg:py-16">
-        <Reveal className="mx-auto max-w-xl text-center">
-          <h1 className="font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
-            Where We Work
-          </h1>
-          <p className="mt-3 text-slate-600">
-            AGS provides air conditioning and refrigeration services across
-            the UK, with engineers based near major cities for fast
-            response times.
-          </p>
-        </Reveal>
 
-        <Reveal delay={0.08} className="mx-auto mt-10 max-w-2xl">
+        <Reveal delay={0.08} className="mx-auto max-w-2xl">
           <PostcodeChecker initialPostcode={postcodeParam} />
         </Reveal>
 

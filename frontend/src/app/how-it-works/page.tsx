@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CalendarCheck, ClipboardCheck, MessageSquare, Wrench } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import Reveal, { RevealStagger, RevealItem } from "@/components/ui/reveal";
+import PageHero from "@/components/ui/page-hero";
 
 export const metadata: Metadata = {
   title: "How It Works",
@@ -41,24 +41,15 @@ const steps = [
 export default function HowItWorksPage() {
   return (
     <div className="bg-white">
-      <div className="border-b border-slate-200 bg-sky-50">
-        <div className="container-ags py-4 text-xs font-medium text-slate-500">
-          <Link href="/" className="hover:text-brand-600">Home</Link>
-          <span className="mx-2">/</span>
-          <span className="text-navy-700">How It Works</span>
-        </div>
-      </div>
+      <PageHero
+        crumb="How It Works"
+        eyebrow="The process"
+        title="How it"
+        highlight="works."
+        description="Booking a service with AGS is straightforward, from your first request through to a completed job."
+      />
 
       <div className="container-ags py-12 lg:py-20">
-        <Reveal className="mx-auto max-w-xl text-center">
-          <h1 className="font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
-            How It Works
-          </h1>
-          <p className="mt-3 text-slate-600">
-            Booking a service with AGS is straightforward, from your first
-            request through to a completed job.
-          </p>
-        </Reveal>
 
         <RevealStagger step={0.12} className="mx-auto mt-14 max-w-3xl space-y-10">
           {steps.map((step, index) => (

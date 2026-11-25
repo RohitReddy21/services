@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Clock3, Mail, MapPin, Phone } from "lucide-react";
 import ContactForm from "@/components/contact/contact-form";
 import JsonLd from "@/components/seo/json-ld";
 import Reveal from "@/components/ui/reveal";
+import PageHero from "@/components/ui/page-hero";
 import { breadcrumbSchema, webPageSchema } from "@/lib/seo";
 import { ORG } from "@/lib/site";
 
@@ -33,26 +33,17 @@ export default function ContactPage() {
           { name: "Contact", path: "/contact" },
         ])}
       />
-      <div className="border-b border-slate-200 bg-sky-50">
-        <div className="container-ags py-4 text-xs font-medium text-slate-500">
-          <Link href="/" className="hover:text-brand-600">Home</Link>
-          <span className="mx-2">/</span>
-          <span className="text-navy-700">Contact</span>
-        </div>
-      </div>
+      <PageHero
+        crumb="Contact"
+        eyebrow="Contact"
+        title="Get in"
+        highlight="touch."
+        description="Questions about a service, a booking, or a Care Plan? Our team is here to help."
+      />
 
       <div className="container-ags py-12 lg:py-16">
-        <Reveal className="mx-auto max-w-xl text-center">
-          <h1 className="font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
-            Get in Touch
-          </h1>
-          <p className="mt-3 text-slate-600">
-            Questions about a service, a booking, or a Care Plan? Our team is
-            here to help.
-          </p>
-        </Reveal>
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-[320px_1fr]">
+        <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
           <Reveal variant="left" className="space-y-4">
             <ContactInfoCard icon={Phone} title="Phone">
               <div className="flex flex-col gap-1">

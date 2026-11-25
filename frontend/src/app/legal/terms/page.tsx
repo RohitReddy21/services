@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import PageHero from "@/components/ui/page-hero";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions",
@@ -8,20 +8,15 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <div className="bg-white">
-      <div className="border-b border-slate-200 bg-sky-50">
-        <div className="container-ags py-4 text-xs font-medium text-slate-500">
-          <Link href="/" className="hover:text-brand-600">Home</Link>
-          <span className="mx-2">/</span>
-          <span className="text-navy-700">Terms & Conditions</span>
-        </div>
-      </div>
+      <PageHero
+        crumb="Terms &amp; Conditions"
+        eyebrow="Legal"
+        title="Terms &amp; Conditions"
+        description="Last updated: August 2026"
+      />
 
       <div className="container-ags py-12 lg:py-16">
         <div className="mx-auto max-w-2xl">
-          <h1 className="font-display text-3xl font-extrabold tracking-tight text-navy-900">
-            Terms &amp; Conditions
-          </h1>
-          <p className="mt-2 text-sm text-slate-400">Last updated: August 2026</p>
 
           <div className="mt-8 space-y-7 text-sm leading-relaxed text-slate-600">
             <Section title="1. About These Terms">

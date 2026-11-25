@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import ServicesExplorer from "@/components/services/services-explorer";
-import FadeInImage from "@/components/ui/fade-in-image";
 import JsonLd from "@/components/seo/json-ld";
 import Reveal from "@/components/ui/reveal";
+import PageHero from "@/components/ui/page-hero";
 import { breadcrumbSchema } from "@/lib/seo";
 import { services, serviceCategories } from "@/lib/data/services";
 import type { ServiceCategoryId } from "@/types/service";
@@ -42,45 +42,19 @@ export default async function ServicesPage({
           { name: "Services", path: "/services" },
         ])}
       />
-      <div className="border-b border-slate-200 bg-sky-50">
-        <div className="container-ags py-4 text-xs font-medium text-slate-500">
-          <Link href="/" className="hover:text-brand-600">Home</Link>
-          <span className="mx-2">/</span>
-          <span className="text-navy-700">Services</span>
-        </div>
-      </div>
+      <PageHero
+        crumb="Services"
+        eyebrow="AGS services"
+        title="Our"
+        highlight="services."
+        description="Professional air conditioning and refrigeration services tailored to your needs. No prices are shown online; AGS confirms scope and requirements before work begins."
+        image={{
+          src: categoryHeroImage(activeCategory),
+          alt: `${categoryMeta(activeCategory)} service equipment`,
+        }}
+      />
 
       <div className="container-ags py-10 lg:py-14">
-        <div className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-end">
-          <Reveal className="max-w-2xl">
-            <span className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
-              AGS services
-            </span>
-            <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-5xl">
-              Our Services
-            </h1>
-            <p className="mt-3 text-slate-600">
-              Professional air conditioning and refrigeration
-              services tailored to your needs. No prices are shown online; AGS
-              confirms scope and requirements before work begins.
-            </p>
-          </Reveal>
-          <Reveal
-            variant="right"
-            delay={0.1}
-            className="relative hidden aspect-16/10 overflow-hidden rounded-2xl shadow-xl shadow-navy-900/10 lg:block"
-          >
-            <FadeInImage
-              src={categoryHeroImage(activeCategory)}
-              alt={`${categoryMeta(activeCategory)} service equipment`}
-              fill
-              priority
-              sizes="420px"
-              className="object-cover ags-image-reveal"
-            />
-            <div className="absolute inset-0 bg-ink-950/35" />
-          </Reveal>
-        </div>
 
         <Reveal delay={0.05} className="mt-8">
           <ServicesExplorer

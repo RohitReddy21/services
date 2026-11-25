@@ -43,7 +43,7 @@ export default function TechnicalShowcase() {
   return (
     <section
       ref={sectionRef}
-      className="overflow-hidden bg-white py-16 lg:py-24"
+      className="overflow-hidden bg-white py-20 lg:py-28"
     >
       <div className="container-ags grid gap-10 [perspective:1200px] lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
         <motion.div
@@ -52,10 +52,10 @@ export default function TechnicalShowcase() {
           viewport={{ once: true, margin: "-90px" }}
           transition={{ duration: 0.62, ease: "easeOut" }}
         >
-          <span className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-brand-600 shadow-sm shadow-brand-100">
+          <span className="ags-eyebrow">
             Technical assurance
           </span>
-          <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
+          <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-navy-900 sm:text-5xl">
             Engineered for reliable performance.
           </h2>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">

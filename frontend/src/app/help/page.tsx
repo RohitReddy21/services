@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, LifeBuoy } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import HelpCenterExplorer from "@/components/help/help-center-explorer";
 import JsonLd from "@/components/seo/json-ld";
 import Reveal from "@/components/ui/reveal";
+import PageHero from "@/components/ui/page-hero";
 import { breadcrumbSchema, faqSchema } from "@/lib/seo";
 import { helpCenterFaqs, helpCenterTopics } from "@/lib/data/help-center";
 
@@ -35,29 +36,17 @@ export default async function HelpCenterPage({ searchParams }: PageProps<"/help"
           { name: "Help Center", path: "/help" },
         ])}
       />
-      <div className="border-b border-slate-200 bg-sky-50">
-        <div className="container-ags py-4 text-xs font-medium text-slate-500">
-          <Link href="/" className="hover:text-brand-600">Home</Link>
-          <span className="mx-2">/</span>
-          <span className="text-navy-700">Help Center</span>
-        </div>
-      </div>
+      <PageHero
+        crumb="Help Center"
+        eyebrow="Help Center"
+        title="How can we"
+        highlight="help?"
+        description="Search common questions about bookings, Care Plans, rewards and more."
+      />
 
       <div className="container-ags py-10 lg:py-14">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-700">
-            <LifeBuoy className="size-3.5" />
-            Help Center
-          </span>
-          <h1 className="mt-5 font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">
-            How can we help?
-          </h1>
-          <p className="mt-3 text-slate-600">
-            Search common questions about bookings, Care Plans, rewards and more.
-          </p>
-        </Reveal>
 
-        <Reveal delay={0.08} className="mt-10">
+        <Reveal delay={0.08}>
           <HelpCenterExplorer
             faqs={helpCenterFaqs}
             topics={helpCenterTopics}
