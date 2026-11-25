@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
-import LoopVideo from "@/components/ui/loop-video";
 import { serviceAreas } from "@/lib/data/service-areas";
 
 export function TechnicianSection() {
@@ -176,7 +175,15 @@ export function BookingCtaSection() {
     <section className="bg-white py-20 lg:py-28">
       <div className="container-ags">
         <div className="relative overflow-hidden rounded-2xl bg-ink-950 p-8 text-white shadow-2xl shadow-navy-900/20 sm:p-10 lg:p-12">
-          <LoopVideo src="/videos/ags-frozen-aisle" />
+          <div className="absolute inset-0 opacity-30">
+            <FadeInImage
+              src="/images/services/ac-installation.webp"
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
           <div className="absolute inset-0 bg-ink-950/65" />
           <div aria-hidden="true" className="ags-blueprint absolute inset-0" />
           <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">

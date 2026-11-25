@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import FadeInImage from "@/components/ui/fade-in-image";
-import LoopVideo from "@/components/ui/loop-video";
 import JsonLd from "@/components/seo/json-ld";
 import Reveal from "@/components/ui/reveal";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
@@ -121,11 +120,15 @@ export default async function ServiceDetailPage({
       </div>
 
       <section className="relative overflow-hidden bg-ink-950 text-white">
-        <LoopVideo
-          src={categoryId === "refrigeration" ? "/videos/ags-fridge-open" : "/videos/ags-ac-install"}
-          className="opacity-100"
+        <FadeInImage
+          src={service.heroImage}
+          alt={service.name}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
         />
-        <div className="absolute inset-0 bg-ink-950/60" />
+        <div className="absolute inset-0 bg-ink-950/55" />
 
         <div className="container-ags relative grid gap-10 py-16 lg:grid-cols-[1fr_360px] lg:items-end lg:py-24">
           <Reveal className="max-w-3xl">

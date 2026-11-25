@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Phone, Refrigerator, Snowflake } from "lucide-react";
 import type { ComponentType } from "react";
 import { ButtonLink } from "@/components/ui/button";
-import LoopVideo from "@/components/ui/loop-video";
+import FadeInImage from "@/components/ui/fade-in-image";
 import Reveal, { RevealItem, RevealStagger } from "@/components/ui/reveal";
 import { getServicesByCategory } from "@/lib/data/services";
 import { ORG } from "@/lib/site";
@@ -14,7 +14,6 @@ interface CategoryPanel {
   title: string;
   description: string;
   image: string;
-  video: string;
   imageAlt: string;
   icon: ComponentType<{ className?: string }>;
 }
@@ -27,7 +26,6 @@ const panels: CategoryPanel[] = [
     description:
       "Installation, repairs, servicing and diagnostics for wall-mounted, cassette, multi-split, VRV and VRF systems.",
     image: "/images/services/wall-mounted-ac.webp",
-    video: "/videos/ags-ac-install",
     imageAlt: "Wall mounted air conditioning installation",
     icon: Snowflake,
   },
@@ -37,8 +35,7 @@ const panels: CategoryPanel[] = [
     title: "Commercial cold storage and display kept reliable.",
     description:
       "Fridges, freezers, cold rooms, walk-ins, display cabinets and ice machines.",
-    image: "/images/services/cold-storage.webp",
-    video: "/videos/ags-fridge-open",
+    image: "/images/services/commercial-refrigeration.webp",
     imageAlt: "Cold room refrigeration environment",
     icon: Refrigerator,
   },
@@ -108,30 +105,35 @@ function CategoryCard({ panel }: { panel: CategoryPanel }) {
   const Icon = panel.icon;
 
   return (
-    <article className="group relative isolate flex min-h-[560px] flex-col justify-end overflow-hidden rounded-2xl bg-ink-950 text-white shadow-2xl shadow-navy-900/15 ags-lift">
-      <LoopVideo src={panel.video} className="-z-20" />
-      <div className="absolute inset-0 -z-10 bg-ink-950/60" />
-
-      <div className="absolute left-6 top-6 flex items-center gap-2 rounded-full border border-white/20 bg-ink-950/50 py-1.5 pl-2 pr-3.5 text-xs font-semibold">
-        <span className="flex size-6 items-center justify-center rounded-full bg-brand-500">
-          <Icon className="size-3.5" />
-        </span>
-        {panel.eyebrow}
-        <span className="text-slate-300">· {all.length} services</span>
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white ags-lift">
+      <div className="relative aspect-16/10 overflow-hidden bg-slate-100">
+        <FadeInImage
+          src={panel.image}
+          alt={panel.imageAlt}
+          fill
+          sizes="(min-width: 1024px) 48vw, 92vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        />
       </div>
 
-      <div className="p-6 sm:p-8">
-        <h3 className="max-w-md font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">
+      <div className="flex flex-1 flex-col p-6 sm:p-8">
+        <div className="flex items-center gap-2 text-sm font-semibold text-brand-600">
+          <Icon className="size-4" />
+          {panel.eyebrow}
+          <span className="font-medium text-slate-500">· {all.length} services</span>
+        </div>
+
+        <h3 className="mt-3 font-display text-2xl font-extrabold leading-tight tracking-tight text-navy-900 sm:text-3xl">
           {panel.title}
         </h3>
-        <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-300">{panel.description}</p>
+        <p className="mt-3 text-sm leading-relaxed text-slate-600">{panel.description}</p>
 
-        <ul className="mt-6 flex flex-wrap gap-2">
+        <ul className="mt-5 flex flex-wrap gap-2">
           {featured.map((service) => (
             <li key={service.id}>
               <Link
                 href={`/services/${service.categoryId}/${service.slug}`}
-                className="ags-focus inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors hover:border-white/50 hover:bg-white/20"
+                className="ags-focus inline-flex items-center rounded-full border border-slate-200 px-3.5 py-1.5 text-xs font-semibold text-navy-800 transition-colors hover:border-brand-500 hover:text-brand-600"
               >
                 {service.name}
               </Link>
@@ -141,11 +143,9 @@ function CategoryCard({ panel }: { panel: CategoryPanel }) {
 
         <Link
           href={`/services?category=${panel.id}`}
-          className="ags-focus mt-7 inline-flex items-center gap-2 text-sm font-bold text-white"
+          className="ags-focus mt-auto inline-flex items-center gap-2 pt-7 text-sm font-bold text-brand-600"
         >
-          <span className="border-b-2 border-brand-400 pb-0.5 transition-colors group-hover:border-white">
-            Explore {panel.eyebrow.toLowerCase()}
-          </span>
+          Explore {panel.eyebrow.toLowerCase()}
           <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </Link>
       </div>
